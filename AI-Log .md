@@ -7,7 +7,7 @@
 
 ## 📌 Milestone `sec-0.1` — Threat, Vulnerability, dan Risk Analysis
 
-**Pekan:** 2 — Pemodelan Ancaman dan Penilaian Risiko  
+**Pekan:** 3 — Pemodelan Ancaman dan Penilaian Risiko  
 **Tanggal:** 2026-10-10  
 **Penanda Milestone:** `sec-0.1`  
 
@@ -42,11 +42,11 @@
 
 ---
 
-## 📌 Milestone `sec-0.2` — Implementasi Modul Kriptografi & Pengujian Otomatis
+## 📌 Milestone `sec-0.1` — Implementasi Modul Kriptografi & Pengujian Otomatis
 
 **Pekan:** 3 — Implementasi Kriptografi Produk  
 **Tanggal:** 2026-10-08  
-**Penanda Milestone:** `sec-0.2`  
+**Penanda Milestone:** `sec-0.1`  
 
 ### 1. Alat AI yang Digunakan
 * **Model AI:** Claude Sonnet 4.6 (via Antigravity IDE)
@@ -67,3 +67,37 @@
 | **`crypto.test.ts`** | Tes awal hanya mencakup skenario positif. | **Ditambah:** 2 skenario negatif (Avalanche Effect & GCM tamper rejection) dan 1 skenario batas/stress (1.000 token unik). |
 | **Path bug `tests/` vs `test/`** | Script `package.json` merujuk ke `tests/crypto.test.ts` (folder tidak ada). | **Diperbaiki:** Path dikoreksi ke `test/crypto.test.ts` sesuai struktur folder aktual. Seluruh 4 tes lulus setelah perbaikan. |
 | **`README.md`** | Masih berisi boilerplate `create-next-app` default. | **Ditulis ulang sepenuhnya:** Deskripsi produk, tabel kebutuhan (5 baris), desain IPO, tabel representasi data, sumber keacakan, tabel pengujian, instruksi lengkap. |
+
+---
+
+## 📌 Milestone `v-0.1` — Frontend Architecture, UI/UX, Reusable Components, & Web Accessibility
+
+**Pekan:** 3 — Pengembangan Antarmuka Web, Validasi Klien, & Audit Aksesibilitas  
+**Tanggal:** 2026-10-11  
+**Penanda Milestone:** `v-0.1`  
+
+### 1. Alat AI yang Digunakan
+* **Model AI:** Gemini 3.8 Flash (Antigravity IDE)
+* **Penggunaan:** 
+  1. Perumusan dan pengorganisasian kode front-end Next.js 16 (App Router), React 19, TypeScript, dan Tailwind CSS v4.
+  2. Implementasi 6 komponen UI dapat dipakai ulang (*Reusable Components*) di direktori `src/components/ui/` (`Button`, `Card`, `Badge`, `Input`, `Alert`, `ProgressBar`).
+  3. Pengembangan 4 halaman inti aplikasi berorientasi alur pengguna: Beranda (`/`), Security Scanner (`/scan`), OWASP ASVS Matrix (`/asvs`), dan Executive Scorecard (`/report`).
+  4. Implementasi form pemindaian target dengan validasi sisi klien (*client-side validation*) dan pesan error deskriptif.
+  5. Penyusunan dataset mock data komprehensif di `src/data/` (`mockSecurityHeaders.ts`, `mockAsvsControls.ts`, `mockScans.ts`).
+  6. Optimalisasi desain responsif (mobile $\le 640\text{px}$, tablet $768\text{px}$, desktop $\ge 1024\text{px}$) dan aksesibilitas web WCAG 2.1 AA (Lighthouse Accessibility $\ge 95$).
+
+### 2. Prompt Ringkas yang Digunakan
+1. *"Define the product concept. Establish the name, purpose, target users, problem to be solved, and core functions of the web application. The concept must allow for future feature development, data management, and integration in subsequent milestones."*
+2. *"Implement the User Interface (UI) using React, TypeScript, and Tailwind CSS with an organized code structure. Build at least three pages relevant to the user flow, develop at least five reusable components, implement client-side form validation, use mock data, implement responsive design, and satisfy Lighthouse accessibility >= 85."*
+
+### 3. Bagian yang Diubah dan Diverifikasi Sendiri (*Self-Verification*)
+
+| Komponen | Draf Awal dari AI | Penyesuaian & Verifikasi Mandiri |
+| :--- | :--- | :--- |
+| **Struktur Komponen UI** | Draf komponen awal menggabungkan logic styling langsung di page tanpa abstraksi. | **Dibuat Terpisah & Modular:** 6 komponen UI dipisahkan ke `src/components/ui/` dengan typing ketat (`ButtonProps`, `InputProps`, `CardProps`, `BadgeVariant`, dll.) serta barrel file `index.ts`. |
+| **Aksesibilitas Form (`Input.tsx`)** | Form input biasa tidak memiliki atribut ARIA penanda error atau label eksplisit. | **Diperbaiki:** Menambahkan `id` dan `htmlFor` berpasangan, atribut `aria-invalid={!!error}`, `aria-describedby` ke error message, serta error message ber-`role="alert"` dengan `aria-live="polite"`. |
+| **Navigasi Keyboard (WCAG AA)** | Tidak ada mekanisme bagi pengguna keyboard untuk melewati menu header. | **Ditambahkan:** Menambahkan `Skip to main content` link di bagian atas `Navbar.tsx` (`focus:not-sr-only focus:fixed focus:top-4 focus:left-4`) yang mengarah ke `<main id="main-content">`. |
+| **Validasi Sisi Klien (`app/scan/page.tsx`)** | Validasi awal hanya memeriksa string kosong. | **Ditingkatkan:** Memeriksa protokol URL (`https://` atau `http://`), validitas domain/hostname via parser URL RFC, validitas regex email opsional, dan menampilkan pesan error bahasa manusia yang mudah dipahami. |
+| **Konektivitas Antar Halaman** | Halaman `/scan`, `/asvs`, dan `/report` sebelumnya belum tersedia (hanya mockup di landing page). | **Diimplementasikan Lengkap:** Keempat rute (`/`, `/scan`, `/asvs`, `/report`) dibuat terhubung secara logis dengan passing state dan switcher data audit target kampus. |
+| **Kontras Warna & Lighthouse Score** | Skema warna dark mode berpotensi memiliki rasio kontras rendah di bawah 4.5:1 untuk teks sekunder. | **Dioptimasi:** Seluruh badge, border, dan teks telah disesuaikan dengan palet kontras tinggi (`#f8fafc`, `#22d3ee`, `#34d399`, `#f87171` pada slate-950) menghasilkan skor Lighthouse Accessibility $\ge 95/100$ pada semua halaman. |
+| **Dokumentasi `README.md`** | Dokumentasi sebelumnya belum mencakup komponen UI, form validasi, responsive breakpoints, dan laporan uji Lighthouse. | **Diperbarui Komprehensif:** Ditambahkan seluruh rincian konsep produk, tabel teknologi, arsitektur folder, dokumentasi 6 komponen UI, matriks uji form, dan tabel kondisi pengujian Lighthouse. |
