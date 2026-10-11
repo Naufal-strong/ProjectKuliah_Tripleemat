@@ -1,485 +1,473 @@
-﻿"use client";
+"use client";
 
+import React, { useState } from "react";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { Button } from "../src/components/ui/Button";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../src/components/ui/Card";
+import { Badge } from "../src/components/ui/Badge";
 
-function ShieldIcon({ style }: { style?: React.CSSProperties }) {
-  return (
-    <svg style={style} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-    </svg>
-  );
-}
+export default function HomePage() {
+  const [activeTab, setActiveTab] = useState<"features" | "standards" | "architecture">("features");
 
-function ScanIcon({ style }: { style?: React.CSSProperties }) {
-  return (
-    <svg style={style} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 7V5a2 2 0 0 1 2-2h2" />
-      <path d="M17 3h2a2 2 0 0 1 2 2v2" />
-      <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
-      <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
-      <rect x="7" y="7" width="10" height="10" rx="1" />
-    </svg>
-  );
-}
+  const coreModules = [
+    {
+      id: "scan",
+      title: "Passive HTTP & SSL Analyzer",
+      description:
+        "Automatically audits HTTP security headers (CSP, HSTS, X-Frame-Options, CORS) and inspects SSL/TLS cipher suites without disruptive active intrusion.",
+      tags: ["CSP", "HSTS", "TLS 1.3", "CORS"],
+      href: "/scan",
+      badgeText: "Real-time Scanner",
+      badgeVariant: "cyan" as const,
+      icon: (
+        <svg className="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+      ),
+    },
+    {
+      id: "asvs",
+      title: "OWASP ASVS Compliance Matrix",
+      description:
+        "Interactive compliance verification matrix based on OWASP ASVS v4.0.3 (Levels 1 & 2). Evaluates authentication, session binding, and least privilege.",
+      tags: ["OWASP ASVS", "NIST SP 800-53", "CIA Triad"],
+      href: "/asvs",
+      badgeText: "Framework Engine",
+      badgeVariant: "passed" as const,
+      icon: (
+        <svg className="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+        </svg>
+      ),
+    },
+    {
+      id: "report",
+      title: "Executive Security Scorecard",
+      description:
+        "Generates structured audit reports with cryptographic integrity signatures (SHA-256), risk distributions, and actionable remediation instructions.",
+      tags: ["Executive Summary", "SHA-256 Signature", "CWE / CVE"],
+      href: "/report",
+      badgeText: "Audit History",
+      badgeVariant: "warning" as const,
+      icon: (
+        <svg className="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      ),
+    },
+  ];
 
-function ChecklistIcon({ style }: { style?: React.CSSProperties }) {
-  return (
-    <svg style={style} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M9 11l3 3L22 4" />
-      <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
-    </svg>
-  );
-}
-
-function DatabaseIcon({ style }: { style?: React.CSSProperties }) {
-  return (
-    <svg style={style} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <ellipse cx="12" cy="5" rx="9" ry="3" />
-      <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
-      <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
-    </svg>
-  );
-}
-
-function ReportIcon({ style }: { style?: React.CSSProperties }) {
-  return (
-    <svg style={style} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-      <polyline points="14 2 14 8 20 8" />
-      <line x1="16" y1="13" x2="8" y2="13" />
-      <line x1="16" y1="17" x2="8" y2="17" />
-    </svg>
-  );
-}
-
-function ArrowRightIcon({ style }: { style?: React.CSSProperties }) {
-  return (
-    <svg style={style} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="5" y1="12" x2="19" y2="12" />
-      <polyline points="12 5 19 12 12 19" />
-    </svg>
-  );
-}
-
-function ChevronDownIcon({ style }: { style?: React.CSSProperties }) {
-  return (
-    <svg style={style} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="6 9 12 15 18 9" />
-    </svg>
-  );
-}
-
-function AnimatedCounter({ target, suffix = "" }: { target: number; suffix?: string }) {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    let start = 0;
-    const step = target / (2000 / 16);
-    const timer = setInterval(() => {
-      start += step;
-      if (start >= target) { setCount(target); clearInterval(timer); }
-      else { setCount(Math.floor(start)); }
-    }, 16);
-    return () => clearInterval(timer);
-  }, [target]);
-  return <span>{count.toLocaleString()}{suffix}</span>;
-}
-
-const features = [
-  {
-    id: "scan", Icon: ScanIcon, title: "Passive HTTP & SSL Analyzer",
-    description: "Automatically scans security headers (CSP, HSTS, X-Frame-Options, CORS) and validates SSL/TLS certificates — no active intrusion required.",
-    tags: ["CSP", "HSTS", "SSL/TLS", "CORS"], href: "/scan",
-    gradBg: "linear-gradient(135deg,#06b6d4,#2563eb)", accentColor: "#22d3ee",
-  },
-  {
-    id: "asvs", Icon: ChecklistIcon, title: "OWASP ASVS Compliance Engine",
-    description: "Interactive verification matrix based on OWASP ASVS Level 1 & 2. Get real-time compliance scores and actionable remediation steps.",
-    tags: ["OWASP", "ASVS L1", "ASVS L2", "NIST"], href: "/asvs",
-    gradBg: "linear-gradient(135deg,#8b5cf6,#7c3aed)", accentColor: "#a78bfa",
-  },
-  {
-    id: "pii", Icon: DatabaseIcon, title: "PII & Data Leakage Audit",
-    description: "Analyzes API responses for Personally Identifiable Information exposure, detecting sensitive data leakage before attackers do.",
-    tags: ["PII", "API Audit", "GDPR", "Privacy"], href: "/scan",
-    gradBg: "linear-gradient(135deg,#f59e0b,#ea580c)", accentColor: "#fbbf24",
-  },
-  {
-    id: "report", Icon: ReportIcon, title: "Executive Security Scorecard",
-    description: "Generate professional PDF audit reports with risk visualizations (High / Medium / Low) ready for formal documentation and stakeholder review.",
-    tags: ["PDF Export", "Risk Score", "Audit Trail"], href: "/report",
-    gradBg: "linear-gradient(135deg,#10b981,#0d9488)", accentColor: "#34d399",
-  },
-];
-
-const stats = [
-  { value: 200, suffix: "+", label: "ASVS Controls" },
-  { value: 12, suffix: "", label: "Security Headers" },
-  { value: 99, suffix: "%", label: "Detection Rate" },
-  { value: 3, suffix: "s", label: "Avg Scan Time" },
-];
-
-const standards = ["OWASP ASVS", "NIST SP 800-53", "ISO 27001", "GDPR", "PCI-DSS"];
-
-function FeatureCard({ feature }: { feature: typeof features[0] }) {
-  const [hovered, setHovered] = useState(false);
-  const { Icon } = feature;
-  return (
-    <Link
-      id={`feature-card-${feature.id}`}
-      href={feature.href}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        position:"relative", padding:"1.75rem", borderRadius:"1.5rem",
-        border:`1px solid ${hovered?"rgba(71,85,105,0.9)":"rgba(51,65,85,0.5)"}`,
-        backgroundColor: hovered?"rgba(30,41,59,0.8)":"rgba(30,41,59,0.35)",
-        backdropFilter:"blur(8px)", textDecoration:"none", display:"block",
-        transition:"all 0.3s", overflow:"hidden",
-        transform: hovered?"translateY(-6px)":"translateY(0)",
-        boxShadow: hovered?"0 25px 50px -12px rgba(0,0,0,0.6)":"0 4px 6px -1px rgba(0,0,0,0.2)",
-      }}
-    >
-      <div style={{
-        position:"absolute", inset:0, borderRadius:"1.5rem",
-        background:feature.gradBg, opacity: hovered?0.08:0, transition:"opacity 0.3s",
-      }} />
-      <div style={{
-        display:"inline-flex", width:"3.5rem", height:"3.5rem", borderRadius:"1rem",
-        background:feature.gradBg, alignItems:"center", justifyContent:"center",
-        marginBottom:"1.25rem", boxShadow:"0 10px 25px rgba(0,0,0,0.3)",
-        transform: hovered?"scale(1.12)":"scale(1)", transition:"transform 0.3s",
-      }}>
-        <Icon style={{ width:"1.75rem", height:"1.75rem", color:"white" }} />
-      </div>
-      <h3 style={{ fontSize:"1.2rem", fontWeight:700, color:"white", marginBottom:"0.75rem" }}>
-        {feature.title}
-      </h3>
-      <p style={{ color: hovered?"#cbd5e1":"#94a3b8", fontSize:"0.9rem", lineHeight:1.7, marginBottom:"1.25rem", transition:"color 0.3s" }}>
-        {feature.description}
-      </p>
-      <div style={{ display:"flex", flexWrap:"wrap", gap:"0.4rem", marginBottom:"1rem" }}>
-        {feature.tags.map((tag) => (
-          <span key={tag} style={{
-            padding:"0.2rem 0.65rem", fontSize:"0.72rem", fontWeight:600, borderRadius:"9999px",
-            border:"1px solid rgba(71,85,105,0.6)", backgroundColor:"rgba(51,65,85,0.5)", color:"#cbd5e1",
-          }}>{tag}</span>
-        ))}
-      </div>
-      <div style={{ display:"flex", alignItems:"center", gap:"0.375rem", fontSize:"0.875rem", fontWeight:600, color:feature.accentColor }}>
-        Explore Module
-        <ArrowRightIcon style={{ width:"1rem", height:"1rem", transform: hovered?"translateX(4px)":"translateX(0)", transition:"transform 0.2s" }} />
-      </div>
-    </Link>
-  );
-}
-
-function StandardBadge({ label }: { label: string }) {
-  const [hovered, setHovered] = useState(false);
-  return (
-    <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        padding:"0.65rem 1.4rem", borderRadius:"9999px",
-        border:`1px solid ${hovered?"rgba(6,182,212,0.5)":"rgba(71,85,105,0.6)"}`,
-        backgroundColor: hovered?"rgba(6,182,212,0.1)":"rgba(30,41,59,0.6)",
-        backdropFilter:"blur(8px)", color: hovered?"#67e8f9":"#e2e8f0",
-        fontWeight:600, fontSize:"0.875rem", cursor:"default",
-        transition:"all 0.2s",
-      }}
-    >
-      {label}
-    </div>
-  );
-}
-
-function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", fn);
-    return () => window.removeEventListener("scroll", fn);
-  }, []);
-  const [navHover, setNavHover] = useState(false);
+  const quickStats = [
+    { label: "OWASP ASVS Controls", value: "200+", detail: "Levels 1 & 2 Covered" },
+    { label: "Security Headers Inspected", value: "12", detail: "CSP, HSTS, XFO & More" },
+    { label: "Cryptographic Standard", value: "FIPS 199", detail: "node:crypto AES-256-GCM" },
+    { label: "Average Audit Latency", value: "< 2.5s", detail: "Non-Intrusive Engine" },
+  ];
 
   return (
-    <nav id="navbar" style={{
-      position:"fixed", top:0, left:0, right:0, zIndex:50,
-      transition:"all 0.3s",
-      backgroundColor: scrolled?"rgba(2,6,23,0.92)":"transparent",
-      backdropFilter: scrolled?"blur(20px)":"none",
-      borderBottom: scrolled?"1px solid rgba(51,65,85,0.5)":"1px solid transparent",
-      boxShadow: scrolled?"0 20px 25px -5px rgba(0,0,0,0.4)":"none",
-    }}>
-      <div style={{ maxWidth:"1280px", margin:"0 auto", padding:"1rem 1.5rem", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-        <div style={{ display:"flex", alignItems:"center", gap:"0.75rem" }}>
-          <div style={{ position:"relative" }}>
-            <div style={{ width:"2.25rem", height:"2.25rem", borderRadius:"0.75rem", background:"linear-gradient(135deg,#22d3ee,#2563eb)", display:"flex", alignItems:"center", justifyContent:"center", boxShadow:"0 8px 20px rgba(34,211,238,0.3)" }}>
-              <ShieldIcon style={{ width:"1.25rem", height:"1.25rem", color:"white" }} />
-            </div>
-            <div style={{ position:"absolute", top:"-2px", right:"-2px", width:"10px", height:"10px", backgroundColor:"#34d399", borderRadius:"50%", border:"2px solid #020617", animation:"tm-pulse 2s infinite" }} />
+    <main id="main-content" className="flex-1 flex flex-col">
+      {/* Hero Section */}
+      <section
+        aria-labelledby="hero-heading"
+        className="relative overflow-hidden pt-12 pb-20 md:pt-20 md:pb-28 border-b border-slate-800/60"
+      >
+        {/* Glow backgrounds */}
+        <div
+          className="absolute -top-40 left-1/2 -translate-x-1/2 w-[45rem] h-[25rem] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none"
+          aria-hidden="true"
+        />
+        <div
+          className="absolute top-60 right-10 w-[25rem] h-[20rem] bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none"
+          aria-hidden="true"
+        />
+
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
+          {/* Tagline Badge */}
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-cyan-500/30 bg-cyan-950/40 text-cyan-300 text-xs font-semibold mb-6 backdrop-blur-md">
+            <span className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse" aria-hidden="true" />
+            <span>Tripleemat Security Assessor • Milestone v1.0 Release</span>
           </div>
-          <div>
-            <span style={{ color:"white", fontWeight:700, fontSize:"1.1rem", letterSpacing:"-0.02em" }}>Tripleemat</span>
-            <span style={{ color:"#22d3ee", fontWeight:700, fontSize:"1.1rem" }}> SA</span>
-          </div>
-        </div>
 
-        <div style={{ display:"flex", alignItems:"center", gap:"2rem" }}>
-          {[{label:"Features",href:"#features"},{label:"Standards",href:"#standards"},{label:"Stats",href:"#stats"}].map((item) => (
-            <a key={item.label} href={item.href} style={{ color:"#94a3b8", fontSize:"0.875rem", fontWeight:500, textDecoration:"none", transition:"color 0.2s" }}
-              onMouseEnter={(e)=>e.currentTarget.style.color="white"}
-              onMouseLeave={(e)=>e.currentTarget.style.color="#94a3b8"}
-            >{item.label}</a>
-          ))}
-        </div>
-
-        <Link id="navbar-start-scan" href="/scan"
-          onMouseEnter={()=>setNavHover(true)} onMouseLeave={()=>setNavHover(false)}
-          style={{
-            display:"flex", alignItems:"center", gap:"0.5rem",
-            padding:"0.6rem 1.25rem", background:"linear-gradient(135deg,#06b6d4,#2563eb)",
-            color:"white", fontSize:"0.875rem", fontWeight:600, borderRadius:"9999px", textDecoration:"none",
-            boxShadow: navHover?"0 15px 30px rgba(6,182,212,0.5)":"0 8px 20px rgba(6,182,212,0.3)",
-            transform: navHover?"scale(1.05)":"scale(1)", transition:"all 0.2s",
-          }}
-        >
-          <ScanIcon style={{ width:"1rem", height:"1rem" }} />
-          Start Scan
-        </Link>
-      </div>
-    </nav>
-  );
-}
-
-function Hero() {
-  const [scanHover, setScanHover] = useState(false);
-  return (
-    <section id="hero" style={{ position:"relative", minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", overflow:"hidden", padding:"0 1.5rem" }}>
-      <div style={{ position:"absolute", top:"20%", left:"15%", width:"28rem", height:"28rem", backgroundColor:"rgba(6,182,212,0.07)", borderRadius:"50%", filter:"blur(80px)", animation:"tm-pulse 5s ease-in-out infinite" }} />
-      <div style={{ position:"absolute", bottom:"20%", right:"15%", width:"22rem", height:"22rem", backgroundColor:"rgba(124,58,237,0.07)", borderRadius:"50%", filter:"blur(80px)", animation:"tm-pulse 5s ease-in-out infinite 1.5s" }} />
-      <div style={{ position:"absolute", top:"50%", left:"50%", transform:"translate(-50%,-50%)", width:"50rem", height:"50rem", backgroundColor:"rgba(37,99,235,0.04)", borderRadius:"50%", filter:"blur(100px)" }} />
-
-      <div style={{ position:"relative", zIndex:10, textAlign:"center", maxWidth:"64rem", margin:"0 auto", paddingTop:"5rem" }}>
-        <div style={{ display:"inline-flex", alignItems:"center", gap:"0.5rem", padding:"0.5rem 1rem", borderRadius:"9999px", border:"1px solid rgba(6,182,212,0.3)", backgroundColor:"rgba(6,182,212,0.07)", backdropFilter:"blur(8px)", marginBottom:"2rem" }}>
-          <span style={{ width:"0.5rem", height:"0.5rem", backgroundColor:"#34d399", borderRadius:"50%", display:"inline-block", animation:"tm-pulse 2s infinite" }} />
-          <span style={{ color:"#67e8f9", fontSize:"0.875rem", fontWeight:500 }}>Automated Security &amp; Compliance Assessment</span>
-        </div>
-
-        <h1 style={{ fontSize:"clamp(2.75rem,8vw,5rem)", fontWeight:800, color:"white", marginBottom:"1.5rem", lineHeight:1.06, letterSpacing:"-0.03em" }}>
-          Secure Your Web App<br />
-          <span style={{ background:"linear-gradient(135deg,#22d3ee,#60a5fa,#a78bfa)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text" }}>
-            with Confidence
-          </span>
-        </h1>
-
-        <p style={{ color:"#94a3b8", fontSize:"1.125rem", maxWidth:"42rem", margin:"0 auto 2.5rem", lineHeight:1.8 }}>
-          Tripleemat Security Assessor is an{" "}
-          <span style={{ color:"#e2e8f0", fontWeight:500 }}>all-in-one platform</span> for auditing web
-          application security against{" "}
-          <span style={{ color:"#22d3ee", fontWeight:600 }}>OWASP ASVS</span> and{" "}
-          <span style={{ color:"#a78bfa", fontWeight:600 }}>NIST SP 800-53</span> — built for security
-          auditors, developers, and IT teams.
-        </p>
-
-        <div style={{ display:"flex", flexWrap:"wrap", alignItems:"center", justifyContent:"center", gap:"1rem", marginBottom:"4.5rem" }}>
-          <Link id="hero-start-scan" href="/scan"
-            onMouseEnter={()=>setScanHover(true)} onMouseLeave={()=>setScanHover(false)}
-            style={{
-              display:"inline-flex", alignItems:"center", gap:"0.5rem",
-              padding:"1rem 2rem", background:"linear-gradient(135deg,#06b6d4,#2563eb)",
-              color:"white", fontWeight:700, fontSize:"1rem", borderRadius:"1rem", textDecoration:"none",
-              boxShadow: scanHover?"0 25px 50px rgba(6,182,212,0.55)":"0 15px 30px rgba(6,182,212,0.3)",
-              transform: scanHover?"scale(1.05)":"scale(1)", transition:"all 0.3s",
-            }}
+          {/* Primary Page Heading (Single H1) */}
+          <h1
+            id="hero-heading"
+            className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white max-w-4xl mx-auto leading-tight md:leading-tight"
           >
-            <ScanIcon style={{ width:"1.25rem", height:"1.25rem" }} />
-            Run Security Scan
-            <ArrowRightIcon style={{ width:"1rem", height:"1rem", transform:scanHover?"translateX(4px)":"translateX(0)", transition:"transform 0.2s" }} />
-          </Link>
-          <Link id="hero-view-asvs" href="/asvs" style={{
-            display:"inline-flex", alignItems:"center", gap:"0.5rem", padding:"1rem 2rem",
-            backgroundColor:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)",
-            backdropFilter:"blur(8px)", color:"white", fontWeight:600, fontSize:"1rem",
-            borderRadius:"1rem", textDecoration:"none", transition:"all 0.3s",
-          }}
-            onMouseEnter={(e)=>{e.currentTarget.style.backgroundColor="rgba(255,255,255,0.1)";}}
-            onMouseLeave={(e)=>{e.currentTarget.style.backgroundColor="rgba(255,255,255,0.05)";}}
-          >
-            <ChecklistIcon style={{ width:"1.25rem", height:"1.25rem", color:"#a78bfa" }} />
-            OWASP ASVS Checklist
-          </Link>
-        </div>
-
-        <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:"0.5rem", color:"#475569", animation:"tm-bounce 2s ease-in-out infinite" }}>
-          <span style={{ fontSize:"0.7rem", fontWeight:500, letterSpacing:"0.12em", textTransform:"uppercase" }}>Explore Features</span>
-          <ChevronDownIcon style={{ width:"1.25rem", height:"1.25rem" }} />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function StatsSection() {
-  return (
-    <section id="stats" style={{ padding:"4rem 1.5rem" }}>
-      <div style={{ maxWidth:"64rem", margin:"0 auto" }}>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(130px,1fr))", gap:"1rem" }}>
-          {stats.map((s) => (
-            <div key={s.label} style={{ textAlign:"center", padding:"1.5rem", borderRadius:"1rem", border:"1px solid rgba(51,65,85,0.5)", backgroundColor:"rgba(15,23,42,0.5)", backdropFilter:"blur(8px)" }}>
-              <div style={{ fontSize:"2.5rem", fontWeight:800, color:"white", marginBottom:"0.25rem" }}>
-                <AnimatedCounter target={s.value} suffix={s.suffix} />
-              </div>
-              <div style={{ color:"#64748b", fontSize:"0.875rem", fontWeight:500 }}>{s.label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function FeaturesSection() {
-  return (
-    <section id="features" style={{ padding:"6rem 1.5rem" }}>
-      <div style={{ maxWidth:"1280px", margin:"0 auto" }}>
-        <div style={{ textAlign:"center", marginBottom:"4rem" }}>
-          <div style={{ display:"inline-flex", alignItems:"center", padding:"0.375rem 1rem", borderRadius:"9999px", border:"1px solid rgba(51,65,85,0.5)", backgroundColor:"rgba(15,23,42,0.5)", marginBottom:"1.25rem" }}>
-            <span style={{ color:"#64748b", fontSize:"0.875rem", fontWeight:500 }}>Core Modules</span>
-          </div>
-          <h2 style={{ fontSize:"clamp(1.75rem,5vw,2.75rem)", fontWeight:700, color:"white", marginBottom:"1rem", letterSpacing:"-0.025em" }}>
-            Everything You Need to{" "}
-            <span style={{ background:"linear-gradient(135deg,#22d3ee,#a78bfa)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text" }}>
-              Audit &amp; Remediate
+            Automated Security &amp; Compliance Assessment for{" "}
+            <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
+              Modern Web Applications
             </span>
+          </h1>
+
+          <p className="mt-6 text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
+            Evaluate your web applications against <strong className="text-white">OWASP ASVS</strong> and{" "}
+            <strong className="text-white">NIST SP 800-53</strong> standards. Passive HTTP header analysis, SSL/TLS
+            cipher auditing, and cryptographic report signing designed for auditors and developers.
+          </p>
+
+          {/* Primary Actions */}
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link href="/scan" className="w-full sm:w-auto">
+              <Button
+                id="hero-cta-scan"
+                size="lg"
+                variant="primary"
+                className="w-full sm:w-auto"
+                leftIcon={
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                }
+              >
+                Launch Security Scanner
+              </Button>
+            </Link>
+
+            <Link href="/asvs" className="w-full sm:w-auto">
+              <Button
+                id="hero-cta-asvs"
+                size="lg"
+                variant="secondary"
+                className="w-full sm:w-auto"
+                leftIcon={
+                  <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                }
+              >
+                Explore ASVS Matrix
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Quick Stats Grid */}
+      <section
+        aria-labelledby="stats-heading"
+        className="py-10 bg-slate-900/40 border-b border-slate-800/80"
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 id="stats-heading" className="sr-only">
+            Platform Capabilities &amp; Verification Metrics
           </h2>
-          <p style={{ color:"#64748b", fontSize:"1.1rem", maxWidth:"38rem", margin:"0 auto" }}>
-            Four powerful modules, one unified platform — from passive scanning to formal PDF reports.
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+            {quickStats.map((stat) => (
+              <div
+                key={stat.label}
+                className="p-5 rounded-2xl bg-slate-950/60 border border-slate-800 text-center"
+              >
+                <div className="text-2xl sm:text-3xl font-extrabold text-cyan-400 font-mono tracking-tight">
+                  {stat.value}
+                </div>
+                <div className="text-sm font-semibold text-slate-100 mt-1">
+                  {stat.label}
+                </div>
+                <div className="text-xs text-slate-400 mt-0.5">{stat.detail}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Core Modules Showcase */}
+      <section
+        aria-labelledby="modules-heading"
+        className="py-16 md:py-24 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full"
+      >
+        <div className="text-center max-w-2xl mx-auto mb-12">
+          <Badge variant="cyan" size="md">
+            Integrated Suite
+          </Badge>
+          <h2
+            id="modules-heading"
+            className="text-2xl sm:text-3xl font-bold text-white mt-3 tracking-tight"
+          >
+            Core Functions &amp; Audit Workflow
+          </h2>
+          <p className="text-slate-400 text-sm sm:text-base mt-2">
+            A cohesive three-stage security assessment lifecycle: Scan target endpoints, verify compliance controls, and examine signed audit reports.
           </p>
         </div>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))", gap:"1.5rem" }}>
-          {features.map((f) => <FeatureCard key={f.id} feature={f} />)}
-        </div>
-      </div>
-    </section>
-  );
-}
 
-function StandardsSection() {
-  return (
-    <section id="standards" style={{ position:"relative", padding:"5rem 1.5rem", overflow:"hidden" }}>
-      <div style={{ position:"absolute", inset:0, background:"linear-gradient(to bottom,transparent,rgba(15,23,42,0.4),transparent)" }} />
-      <div style={{ position:"absolute", left:"50%", top:"50%", transform:"translate(-50%,-50%)", width:"50rem", height:"14rem", backgroundColor:"rgba(6,182,212,0.04)", borderRadius:"9999px", filter:"blur(60px)" }} />
-      <div style={{ position:"relative", maxWidth:"56rem", margin:"0 auto", textAlign:"center" }}>
-        <h2 style={{ fontSize:"clamp(1.75rem,4vw,2.5rem)", fontWeight:700, color:"white", marginBottom:"1rem", letterSpacing:"-0.025em" }}>
-          Aligned With Industry Standards
-        </h2>
-        <p style={{ color:"#64748b", marginBottom:"3rem", maxWidth:"32rem", margin:"0 auto 3rem" }}>
-          All assessments are mapped to globally recognized security frameworks and compliance requirements.
-        </p>
-        <div style={{ display:"flex", flexWrap:"wrap", alignItems:"center", justifyContent:"center", gap:"1rem" }}>
-          {standards.map((s) => <StandardBadge key={s} label={s} />)}
-        </div>
-      </div>
-    </section>
-  );
-}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {coreModules.map((module) => (
+            <Card
+              key={module.id}
+              variant="glass"
+              isHoverable
+              className="flex flex-col justify-between"
+            >
+              <div>
+                <CardHeader className="flex-row items-center justify-between space-y-0 pb-3">
+                  <div className="p-2.5 rounded-xl bg-slate-800/80 border border-slate-700/60">
+                    {module.icon}
+                  </div>
+                  <Badge variant={module.badgeVariant} size="sm">
+                    {module.badgeText}
+                  </Badge>
+                </CardHeader>
+                <CardTitle as="h3" className="mt-2 text-lg">
+                  {module.title}
+                </CardTitle>
+                <CardDescription className="mt-2">
+                  {module.description}
+                </CardDescription>
 
-function CTABanner() {
-  const [scanHover, setScanHover] = useState(false);
-  return (
-    <section id="cta" style={{ padding:"6rem 1.5rem" }}>
-      <div style={{ maxWidth:"56rem", margin:"0 auto" }}>
-        <div style={{ position:"relative", borderRadius:"2rem", overflow:"hidden", border:"1px solid rgba(51,65,85,0.6)", background:"linear-gradient(135deg,rgba(15,23,42,0.9),rgba(30,41,59,0.7),rgba(2,6,23,0.9))", backdropFilter:"blur(20px)", padding:"4rem 2rem", textAlign:"center" }}>
-          <div style={{ position:"absolute", top:0, left:"20%", width:"18rem", height:"18rem", backgroundColor:"rgba(6,182,212,0.12)", borderRadius:"50%", filter:"blur(60px)" }} />
-          <div style={{ position:"absolute", bottom:0, right:"20%", width:"18rem", height:"18rem", backgroundColor:"rgba(124,58,237,0.12)", borderRadius:"50%", filter:"blur(60px)" }} />
-          <div style={{ position:"relative", zIndex:10 }}>
-            <div style={{ display:"flex", justifyContent:"center", marginBottom:"1.5rem" }}>
-              <div style={{ width:"5rem", height:"5rem", borderRadius:"1.5rem", background:"linear-gradient(135deg,#22d3ee,#2563eb)", display:"flex", alignItems:"center", justifyContent:"center", boxShadow:"0 25px 50px rgba(6,182,212,0.4)" }}>
-                <ShieldIcon style={{ width:"2.5rem", height:"2.5rem", color:"white" }} />
+                <div className="mt-4 flex flex-wrap gap-1.5">
+                  {module.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
+
+              <div className="mt-6 pt-4 border-t border-slate-800">
+                <Link href={module.href} className="w-full block">
+                  <Button
+                    id={`module-btn-${module.id}`}
+                    variant="outline"
+                    size="sm"
+                    className="w-full justify-between"
+                    rightIcon={
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      </svg>
+                    }
+                  >
+                    Open {module.title.split(" ")[0]}
+                  </Button>
+                </Link>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      {/* Target Users & Problem Solved Tabs */}
+      <section
+        aria-labelledby="overview-tabs-heading"
+        className="py-12 bg-slate-900/30 border-y border-slate-800/70"
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
+            <div>
+              <h2
+                id="overview-tabs-heading"
+                className="text-xl sm:text-2xl font-bold text-white tracking-tight"
+              >
+                Product Concept &amp; Architecture
+              </h2>
+              <p className="text-slate-400 text-xs sm:text-sm mt-1">
+                Engineered for security compliance and future database &amp; microservice expansion.
+              </p>
             </div>
-            <h2 style={{ fontSize:"clamp(2rem,5vw,3rem)", fontWeight:800, color:"white", marginBottom:"1rem", letterSpacing:"-0.025em" }}>
-              Ready to Secure Your<br />
-              <span style={{ background:"linear-gradient(135deg,#22d3ee,#a78bfa)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text" }}>
-                Web Application?
-              </span>
+
+            {/* Accessible Tab List */}
+            <div
+              role="tablist"
+              aria-label="Concept Details"
+              className="inline-flex rounded-xl bg-slate-900 border border-slate-800 p-1"
+            >
+              <button
+                role="tab"
+                id="tab-features"
+                aria-selected={activeTab === "features"}
+                aria-controls="panel-features"
+                onClick={() => setActiveTab("features")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400 ${activeTab === "features"
+                    ? "bg-cyan-500 text-slate-950 shadow-md"
+                    : "text-slate-400 hover:text-white"
+                  }`}
+              >
+                Target Users &amp; Problem
+              </button>
+              <button
+                role="tab"
+                id="tab-standards"
+                aria-selected={activeTab === "standards"}
+                aria-controls="panel-standards"
+                onClick={() => setActiveTab("standards")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400 ${activeTab === "standards"
+                    ? "bg-cyan-500 text-slate-950 shadow-md"
+                    : "text-slate-400 hover:text-white"
+                  }`}
+              >
+                Standards &amp; Frameworks
+              </button>
+              <button
+                role="tab"
+                id="tab-architecture"
+                aria-selected={activeTab === "architecture"}
+                aria-controls="panel-architecture"
+                onClick={() => setActiveTab("architecture")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400 ${activeTab === "architecture"
+                    ? "bg-cyan-500 text-slate-950 shadow-md"
+                    : "text-slate-400 hover:text-white"
+                  }`}
+              >
+                Future Extensibility
+              </button>
+            </div>
+          </div>
+
+          {/* Tab Panels */}
+          <div className="mt-4">
+            {activeTab === "features" && (
+              <div
+                id="panel-features"
+                role="tabpanel"
+                aria-labelledby="tab-features"
+                className="grid grid-cols-1 md:grid-cols-3 gap-6"
+              >
+                <div className="p-6 rounded-2xl bg-slate-950/70 border border-slate-800">
+                  <div className="text-cyan-400 font-bold text-sm uppercase tracking-wider mb-2">
+                    Target Users
+                  </div>
+                  <h3 className="text-base font-semibold text-white mb-2">
+                    Security Auditors &amp; IT Administrators
+                  </h3>
+                  <p className="text-xs text-slate-400 leading-relaxed">
+                    Designed for university IT teams, enterprise DevSecOps, and independent auditors requiring systematic, repeatable verification of web applications against recognized benchmarks.
+                  </p>
+                </div>
+
+                <div className="p-6 rounded-2xl bg-slate-950/70 border border-slate-800">
+                  <div className="text-rose-400 font-bold text-sm uppercase tracking-wider mb-2">
+                    Problem to be Solved
+                  </div>
+                  <h3 className="text-base font-semibold text-white mb-2">
+                    Inconsistent Audits &amp; Weak Configurations
+                  </h3>
+                  <p className="text-xs text-slate-400 leading-relaxed">
+                    Manual security verification is slow and error-prone. Many campus systems run with missing HSTS, permissive CSPs, and unverified ASVS controls, leaving them open to preventable exploits.
+                  </p>
+                </div>
+
+                <div className="p-6 rounded-2xl bg-slate-950/70 border border-slate-800">
+                  <div className="text-emerald-400 font-bold text-sm uppercase tracking-wider mb-2">
+                    Our Solution
+                  </div>
+                  <h3 className="text-base font-semibold text-white mb-2">
+                    Passive, Automated &amp; Verifiable Assessment
+                  </h3>
+                  <p className="text-xs text-slate-400 leading-relaxed">
+                    Tripleemat delivers instant non-intrusive scans, maps findings to OWASP ASVS and NIST SP 800-53, and guarantees report integrity through SHA-256 and AES-256-GCM cryptography.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {activeTab === "standards" && (
+              <div
+                id="panel-standards"
+                role="tabpanel"
+                aria-labelledby="tab-standards"
+                className="grid grid-cols-1 md:grid-cols-2 gap-6"
+              >
+                <div className="p-6 rounded-2xl bg-slate-950/70 border border-slate-800">
+                  <h3 className="text-base font-semibold text-white mb-2">
+                    OWASP ASVS v4.0.3 Alignment
+                  </h3>
+                  <p className="text-xs text-slate-400 leading-relaxed mb-4">
+                    The Application Security Verification Standard provides a basis for testing web application technical security controls:
+                  </p>
+                  <ul className="space-y-1.5 text-xs text-slate-300">
+                    <li className="flex items-center gap-2">
+                      <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
+                      <span><strong>Level 1 (Opportunistic):</strong> Bare minimum for all web software.</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="h-1.5 w-1.5 rounded-full bg-blue-400" />
+                      <span><strong>Level 2 (Standard):</strong> For apps handling business-critical and PII data.</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
+                      <span><strong>Level 3 (Advanced):</strong> For military, healthcare, and critical infrastructure.</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="p-6 rounded-2xl bg-slate-950/70 border border-slate-800">
+                  <h3 className="text-base font-semibold text-white mb-2">
+                    NIST SP 800-53 &amp; FIPS 199
+                  </h3>
+                  <p className="text-xs text-slate-400 leading-relaxed mb-4">
+                    Federal Information Processing Standards mapping ensuring government &amp; academic compliance:
+                  </p>
+                  <ul className="space-y-1.5 text-xs text-slate-300">
+                    <li className="flex items-center gap-2">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                      <span><strong>SC-8 / SC-13:</strong> Cryptographic Protection &amp; Transmission Integrity.</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                      <span><strong>AC-3 / AC-6:</strong> Access Enforcement &amp; Principle of Least Privilege.</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                      <span><strong>CIA Triad Categorization:</strong> Tailored for university asset protection.</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            )}
+
+            {activeTab === "architecture" && (
+              <div
+                id="panel-architecture"
+                role="tabpanel"
+                aria-labelledby="tab-architecture"
+                className="p-6 rounded-2xl bg-slate-950/70 border border-slate-800"
+              >
+                <h3 className="text-base font-semibold text-white mb-3">
+                  Architecture Designed for Milestone 2 Expansion
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-slate-300">
+                  <div className="p-4 rounded-xl bg-slate-900 border border-slate-800">
+                    <strong className="text-cyan-300 block mb-1">Database Integration</strong>
+                    Domain models (`ScanResult`, `AsvsControl`, `SecurityHeader`) are strictly typed to map 1:1 to Prisma / PostgreSQL relational tables.
+                  </div>
+                  <div className="p-4 rounded-xl bg-slate-900 border border-slate-800">
+                    <strong className="text-cyan-300 block mb-1">Background Audit Workers</strong>
+                    Scanner inputs are decoupled via standard payload structures, ready for Redis/BullMQ background queue processing.
+                  </div>
+                  <div className="p-4 rounded-xl bg-slate-900 border border-slate-800">
+                    <strong className="text-cyan-300 block mb-1">Hardened Cryptography</strong>
+                    Native integration with `src/lib/crypto` modules for AES-256-GCM report encryption and CSPRNG session management.
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Call to Action Banner */}
+      <section aria-labelledby="cta-heading" className="py-16 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
+        <div className="relative rounded-3xl overflow-hidden border border-slate-800 bg-gradient-to-r from-slate-900 via-slate-950 to-slate-900 p-8 sm:p-12 text-center">
+          <div className="absolute inset-0 bg-cyan-500/5 backdrop-blur-3xl" aria-hidden="true" />
+          <div className="relative z-10 max-w-2xl mx-auto space-y-4">
+            <h2 id="cta-heading" className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+              Ready to verify your web endpoint?
             </h2>
-            <p style={{ color:"#64748b", fontSize:"1.1rem", maxWidth:"36rem", margin:"0 auto 2.5rem", lineHeight:1.8 }}>
-              Run your first passive security assessment in seconds. No installation. No active intrusion. Just results.
+            <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+              Execute client-side header audits and compliance evaluation in seconds with Tripleemat Security Assessor.
             </p>
-            <div style={{ display:"flex", flexWrap:"wrap", gap:"1rem", justifyContent:"center" }}>
-              <Link id="cta-start-scan" href="/scan"
-                onMouseEnter={()=>setScanHover(true)} onMouseLeave={()=>setScanHover(false)}
-                style={{
-                  display:"inline-flex", alignItems:"center", gap:"0.5rem",
-                  padding:"1rem 2.5rem", background:"linear-gradient(135deg,#06b6d4,#2563eb)",
-                  color:"white", fontWeight:700, fontSize:"1rem", borderRadius:"1rem", textDecoration:"none",
-                  boxShadow: scanHover?"0 25px 50px rgba(6,182,212,0.55)":"0 15px 30px rgba(6,182,212,0.35)",
-                  transform: scanHover?"scale(1.05)":"scale(1)", transition:"all 0.3s",
-                }}
-              >
-                <ScanIcon style={{ width:"1.25rem", height:"1.25rem" }} />
-                Start Free Scan
-                <ArrowRightIcon style={{ width:"1rem", height:"1rem" }} />
-              </Link>
-              <Link id="cta-view-report" href="/report" style={{
-                display:"inline-flex", alignItems:"center", gap:"0.5rem", padding:"1rem 2.5rem",
-                backgroundColor:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.12)",
-                color:"white", fontWeight:600, fontSize:"1rem", borderRadius:"1rem", textDecoration:"none", transition:"all 0.3s",
-              }}
-                onMouseEnter={(e)=>{e.currentTarget.style.backgroundColor="rgba(255,255,255,0.1)";}}
-                onMouseLeave={(e)=>{e.currentTarget.style.backgroundColor="rgba(255,255,255,0.05)";}}
-              >
-                <ReportIcon style={{ width:"1.25rem", height:"1.25rem", color:"#34d399" }} />
-                View Sample Report
+            <div className="pt-2">
+              <Link href="/scan">
+                <Button id="cta-banner-scan" size="lg" variant="primary">
+                  Start Security Audit Now
+                </Button>
               </Link>
             </div>
           </div>
         </div>
-      </div>
-    </section>
-  );
-}
-
-function Footer() {
-  return (
-    <footer style={{ borderTop:"1px solid rgba(15,23,42,1)", padding:"2.5rem 1.5rem" }}>
-      <div style={{ maxWidth:"1280px", margin:"0 auto", display:"flex", flexWrap:"wrap", alignItems:"center", justifyContent:"space-between", gap:"1rem" }}>
-        <div style={{ display:"flex", alignItems:"center", gap:"0.625rem" }}>
-          <div style={{ width:"1.75rem", height:"1.75rem", borderRadius:"0.5rem", background:"linear-gradient(135deg,#22d3ee,#2563eb)", display:"flex", alignItems:"center", justifyContent:"center" }}>
-            <ShieldIcon style={{ width:"1rem", height:"1rem", color:"white" }} />
-          </div>
-          <span style={{ color:"#475569", fontSize:"0.875rem" }}>
-            <span style={{ color:"white", fontWeight:600 }}>Tripleemat Security Assessor</span>
-            {" "}— OWASP ASVS &amp; NIST Compliance Platform
-          </span>
-        </div>
-        <div style={{ display:"flex", alignItems:"center", gap:"1.5rem", color:"#334155", fontSize:"0.875rem" }}>
-          <span>Built with Next.js &amp; TypeScript</span>
-          <span>•</span>
-          <span>© {new Date().getFullYear()} Tripleemat</span>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
-export default function Home() {
-  return (
-    <div style={{ minHeight:"100vh", backgroundColor:"#020617", color:"white", fontFamily:"var(--font-geist-sans),Inter,system-ui,sans-serif" }}>
-      <style>{`
-        @keyframes tm-pulse { 0%,100%{opacity:1} 50%{opacity:0.45} }
-        @keyframes tm-bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-      `}</style>
-      <Navbar />
-      <Hero />
-      <StatsSection />
-      <FeaturesSection />
-      <StandardsSection />
-      <CTABanner />
-      <Footer />
-    </div>
+      </section>
+    </main>
   );
 }
