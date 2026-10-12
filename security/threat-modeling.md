@@ -1,11 +1,12 @@
 # 🛡️ Threat Modeling & Risk Assessment — Tripleemat Security Assessor
 
 **Milestone:** `sec-0.1` — Threat, Vulnerability, and Risk Analysis  
+**Tag:** `sec-0.1`  
 **Metodologi:** STRIDE, DFD Level 0 (Shostack), NIST SP 800-30  
 **Status Dokumen:** Approved / Baselines Established  
-**Terakhir Diperbarui:** 2026-10-10  
+**Terakhir Diperbarui:** 2026-10-12  
 
-Dokumen ini menyajikan pemodelan ancaman (*threat modeling*) komprehensif, evaluasi matriks risiko, dan rencana kontrol mitigasi untuk platform **Tripleemat Security Assessor**. Pemodelan ini dibangun berdasarkan elemen-elemen arsitektur sistem dan batas kepercayaan (*trust boundaries*).
+Dokumen ini menyajikan pemodelan ancaman (*threat modeling*) komprehensif, evaluasi matriks risiko, dan rencana kontrol mitigasi untuk platform **Tripleemat Security Assessor**. Pemodelan ini dibangun berdasarkan elemen-elemen arsitektur sistem dan batas kepercayaan (*trust boundaries*), serta disesuaikan dengan implementasi produk yang sedang berjalan: URL input, passive scan, evaluasi ASVS, dan laporan hasil audit.
 
 ---
 

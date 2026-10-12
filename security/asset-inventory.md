@@ -1,10 +1,13 @@
 # 🛡️ Asset & Data Inventory — Tripleemat Security Assessor
 
 **Milestone:** `sec-0.1` — Threat, Vulnerability, and Risk Analysis  
+**Tag:** `sec-0.1`  
 **Standard Acuan:** FIPS 199, NIST SP 800-30, OWASP ASVS  
-**Terakhir Diperbarui:** 2026-10-10  
+**Terakhir Diperbarui:** 2026-10-12  
 
 Dokumen ini memuat inventarisasi aset dan aliran data utama pada platform evaluasi dan audit kepatuhan keamanan siber **Tripleemat Security Assessor**. Penilaian dampak kerahasiaan (*Confidentiality* / C), integritas (*Integrity* / I), dan ketersediaan (*Availability* / A) mengacu pada standar **FIPS 199** (*Standards for Security Categorization of Federal Information and Information Systems*) dan **NIST SP 800-30**.
+
+Aset dan aliran data pada dokumen ini sesuai dengan implementasi produk saat ini: Next.js UI untuk `/scan`, `/asvs`, dan `/report`, serta modul kriptografi di `src/lib/crypto` yang mengecek integritas, menghasilkan token acak, dan mengenkripsi hasil audit.
 
 *Catatan: Seluruh aset yang dilindungi atau divalidasi dengan mekanisme kriptografi industri (`node:crypto`) ditandai dengan label **[Proteksi Kriptografi]**.*
 

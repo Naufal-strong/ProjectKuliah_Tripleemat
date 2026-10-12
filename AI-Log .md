@@ -2,6 +2,8 @@
 
 **Mata Kuliah:** Keamanan Komputasi dan Siber, Kriptografi, Pemrograman Web dan Aplikasi
 **Topik Produk:** Tripleemat Security Assessor Platform  
+**Tag:** `sec-0.1`  
+**Status Update:** Dokumen ini telah disesuaikan dengan implementasi produk Tripleemat yang sedang berjalan, bukan template generik.
 
 ---
 
