@@ -57,7 +57,7 @@ export function ProgressBar({
         aria-valuenow={percentage}
         aria-valuemin={0}
         aria-valuemax={100}
-        aria-label={label || "Progress"}
+        aria-label={label || "Kemajuan"}
         className={`w-full rounded-full bg-slate-800/80 overflow-hidden ${sizeClasses[size]}`}
       >
         <div

@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Button } from "../src/components/ui/Button";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../src/components/ui/Card";
+import { Card, CardHeader, CardTitle, CardDescription } from "../src/components/ui/Card";
 import { Badge } from "../src/components/ui/Badge";
 
 export default function HomePage() {
@@ -12,12 +12,12 @@ export default function HomePage() {
   const coreModules = [
     {
       id: "scan",
-      title: "Passive HTTP & SSL Analyzer",
+      title: "Penganalisis Pasif HTTP & SSL",
       description:
-        "Automatically audits HTTP security headers (CSP, HSTS, X-Frame-Options, CORS) and inspects SSL/TLS cipher suites without disruptive active intrusion.",
+        "Secara otomatis mengaudit header keamanan HTTP (CSP, HSTS, X-Frame-Options, CORS) dan memeriksa cipher suite SSL/TLS tanpa intrusi aktif yang mengganggu.",
       tags: ["CSP", "HSTS", "TLS 1.3", "CORS"],
       href: "/scan",
-      badgeText: "Real-time Scanner",
+      badgeText: "Pemindai Waktu Nyata",
       badgeVariant: "cyan" as const,
       icon: (
         <svg className="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -27,12 +27,12 @@ export default function HomePage() {
     },
     {
       id: "asvs",
-      title: "OWASP ASVS Compliance Matrix",
+      title: "Matriks Kepatuhan OWASP ASVS",
       description:
-        "Interactive compliance verification matrix based on OWASP ASVS v4.0.3 (Levels 1 & 2). Evaluates authentication, session binding, and least privilege.",
-      tags: ["OWASP ASVS", "NIST SP 800-53", "CIA Triad"],
+        "Matriks verifikasi kepatuhan interaktif berbasis OWASP ASVS v4.0.3 (Level 1 & 2). Mengevaluasi autentikasi, pengikatan sesi, dan prinsip hak akses terendah.",
+      tags: ["OWASP ASVS", "NIST SP 800-53", "Triad CIA"],
       href: "/asvs",
-      badgeText: "Framework Engine",
+      badgeText: "Mesin Kerangka Kerja",
       badgeVariant: "passed" as const,
       icon: (
         <svg className="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -42,12 +42,12 @@ export default function HomePage() {
     },
     {
       id: "report",
-      title: "Executive Security Scorecard",
+      title: "Scorecard Keamanan Eksekutif",
       description:
-        "Generates structured audit reports with cryptographic integrity signatures (SHA-256), risk distributions, and actionable remediation instructions.",
-      tags: ["Executive Summary", "SHA-256 Signature", "CWE / CVE"],
+        "Menghasilkan laporan audit terstruktur dengan tanda tangan integritas kriptografis (SHA-256), distribusi risiko, dan panduan remediasi yang praktis.",
+      tags: ["Ringkasan Eksekutif", "Tanda Tangan SHA-256", "CWE / CVE"],
       href: "/report",
-      badgeText: "Audit History",
+      badgeText: "Riwayat Audit",
       badgeVariant: "warning" as const,
       icon: (
         <svg className="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -58,10 +58,10 @@ export default function HomePage() {
   ];
 
   const quickStats = [
-    { label: "OWASP ASVS Controls", value: "200+", detail: "Levels 1 & 2 Covered" },
-    { label: "Security Headers Inspected", value: "12", detail: "CSP, HSTS, XFO & More" },
-    { label: "Cryptographic Standard", value: "FIPS 199", detail: "node:crypto AES-256-GCM" },
-    { label: "Average Audit Latency", value: "< 2.5s", detail: "Non-Intrusive Engine" },
+    { label: "Kontrol OWASP ASVS", value: "200+", detail: "Mencakup Level 1 & 2" },
+    { label: "Header Keamanan Diinspeksi", value: "12", detail: "CSP, HSTS, XFO & Lainnya" },
+    { label: "Standar Kriptografi", value: "FIPS 199", detail: "node:crypto AES-256-GCM" },
+    { label: "Rata-rata Latensi Audit", value: "< 2.5s", detail: "Mesin Non-Intrusif Cepat" },
   ];
 
   return (
@@ -85,7 +85,7 @@ export default function HomePage() {
           {/* Tagline Badge */}
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-cyan-500/30 bg-cyan-950/40 text-cyan-300 text-xs font-semibold mb-6 backdrop-blur-md">
             <span className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse" aria-hidden="true" />
-            <span>Tripleemat Security Assessor • Milestone v1.0 Release</span>
+            <span>Tripleemat Security Assessor • Rilis Milestone v1.0</span>
           </div>
 
           {/* Primary Page Heading (Single H1) */}
@@ -93,16 +93,16 @@ export default function HomePage() {
             id="hero-heading"
             className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white max-w-4xl mx-auto leading-tight md:leading-tight"
           >
-            Automated Security &amp; Compliance Assessment for{" "}
+            Penilaian Keamanan &amp; Kepatuhan Otomatis untuk{" "}
             <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
-              Modern Web Applications
+              Aplikasi Web Modern
             </span>
           </h1>
 
           <p className="mt-6 text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
-            Evaluate your web applications against <strong className="text-white">OWASP ASVS</strong> and{" "}
-            <strong className="text-white">NIST SP 800-53</strong> standards. Passive HTTP header analysis, SSL/TLS
-            cipher auditing, and cryptographic report signing designed for auditors and developers.
+            Evaluasi aplikasi web Anda terhadap standar <strong className="text-white">OWASP ASVS</strong> dan{" "}
+            <strong className="text-white">NIST SP 800-53</strong>. Analisis header HTTP pasif, audit cipher SSL/TLS,
+            serta penandatanganan laporan kriptografis yang dirancang ramah untuk auditor dan pengembang dari segala kalangan.
           </p>
 
           {/* Primary Actions */}
@@ -119,7 +119,7 @@ export default function HomePage() {
                   </svg>
                 }
               >
-                Launch Security Scanner
+                Buka Pemindai Keamanan
               </Button>
             </Link>
 
@@ -135,7 +135,7 @@ export default function HomePage() {
                   </svg>
                 }
               >
-                Explore ASVS Matrix
+                Jelajahi Matriks ASVS
               </Button>
             </Link>
           </div>
@@ -149,7 +149,7 @@ export default function HomePage() {
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 id="stats-heading" className="sr-only">
-            Platform Capabilities &amp; Verification Metrics
+            Kemampuan Platform &amp; Metrik Verifikasi
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
             {quickStats.map((stat) => (
@@ -177,16 +177,16 @@ export default function HomePage() {
       >
         <div className="text-center max-w-2xl mx-auto mb-12">
           <Badge variant="cyan" size="md">
-            Integrated Suite
+            Rangkaian Terpadu
           </Badge>
           <h2
             id="modules-heading"
             className="text-2xl sm:text-3xl font-bold text-white mt-3 tracking-tight"
           >
-            Core Functions &amp; Audit Workflow
+            Fungsi Utama &amp; Alur Kerja Audit
           </h2>
           <p className="text-slate-400 text-sm sm:text-base mt-2">
-            A cohesive three-stage security assessment lifecycle: Scan target endpoints, verify compliance controls, and examine signed audit reports.
+            Tiga tahapan siklus penilaian keamanan yang terintegrasi: Pindai endpoint target, verifikasi kontrol kepatuhan, dan telusuri laporan audit bertanda tangan digital.
           </p>
         </div>
 
@@ -239,7 +239,7 @@ export default function HomePage() {
                       </svg>
                     }
                   >
-                    Open {module.title.split(" ")[0]}
+                    Buka {module.title.split(" ")[0]}
                   </Button>
                 </Link>
               </div>
@@ -260,17 +260,17 @@ export default function HomePage() {
                 id="overview-tabs-heading"
                 className="text-xl sm:text-2xl font-bold text-white tracking-tight"
               >
-                Product Concept &amp; Architecture
+                Konsep Produk &amp; Arsitektur
               </h2>
               <p className="text-slate-400 text-xs sm:text-sm mt-1">
-                Engineered for security compliance and future database &amp; microservice expansion.
+                Direkayasa untuk kepatuhan keamanan dan ekspansi database serta layanan masa depan.
               </p>
             </div>
 
             {/* Accessible Tab List */}
             <div
               role="tablist"
-              aria-label="Concept Details"
+              aria-label="Detail Konsep"
               className="inline-flex rounded-xl bg-slate-900 border border-slate-800 p-1"
             >
               <button
@@ -279,12 +279,13 @@ export default function HomePage() {
                 aria-selected={activeTab === "features"}
                 aria-controls="panel-features"
                 onClick={() => setActiveTab("features")}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400 ${activeTab === "features"
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400 cursor-pointer ${
+                  activeTab === "features"
                     ? "bg-cyan-500 text-slate-950 shadow-md"
                     : "text-slate-400 hover:text-white"
-                  }`}
+                }`}
               >
-                Target Users &amp; Problem
+                Target Pengguna &amp; Masalah
               </button>
               <button
                 role="tab"
@@ -292,12 +293,13 @@ export default function HomePage() {
                 aria-selected={activeTab === "standards"}
                 aria-controls="panel-standards"
                 onClick={() => setActiveTab("standards")}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400 ${activeTab === "standards"
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400 cursor-pointer ${
+                  activeTab === "standards"
                     ? "bg-cyan-500 text-slate-950 shadow-md"
                     : "text-slate-400 hover:text-white"
-                  }`}
+                }`}
               >
-                Standards &amp; Frameworks
+                Standar &amp; Regulasi
               </button>
               <button
                 role="tab"
@@ -305,12 +307,13 @@ export default function HomePage() {
                 aria-selected={activeTab === "architecture"}
                 aria-controls="panel-architecture"
                 onClick={() => setActiveTab("architecture")}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400 ${activeTab === "architecture"
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400 cursor-pointer ${
+                  activeTab === "architecture"
                     ? "bg-cyan-500 text-slate-950 shadow-md"
                     : "text-slate-400 hover:text-white"
-                  }`}
+                }`}
               >
-                Future Extensibility
+                Ekstensibilitas Masa Depan
               </button>
             </div>
           </div>
@@ -326,37 +329,37 @@ export default function HomePage() {
               >
                 <div className="p-6 rounded-2xl bg-slate-950/70 border border-slate-800">
                   <div className="text-cyan-400 font-bold text-sm uppercase tracking-wider mb-2">
-                    Target Users
+                    Target Pengguna
                   </div>
                   <h3 className="text-base font-semibold text-white mb-2">
-                    Security Auditors &amp; IT Administrators
+                    Auditor Keamanan &amp; Tim IT Kampus
                   </h3>
                   <p className="text-xs text-slate-400 leading-relaxed">
-                    Designed for university IT teams, enterprise DevSecOps, and independent auditors requiring systematic, repeatable verification of web applications against recognized benchmarks.
+                    Dirancang untuk tim IT universitas, DevSecOps enterprise, dan auditor independen yang membutuhkan verifikasi aplikasi web secara berulang dan sistematis sesuai tolok ukur resmi.
                   </p>
                 </div>
 
                 <div className="p-6 rounded-2xl bg-slate-950/70 border border-slate-800">
                   <div className="text-rose-400 font-bold text-sm uppercase tracking-wider mb-2">
-                    Problem to be Solved
+                    Masalah yang Diselesaikan
                   </div>
                   <h3 className="text-base font-semibold text-white mb-2">
-                    Inconsistent Audits &amp; Weak Configurations
+                    Audit Tidak Konsisten &amp; Konfigurasi Lemah
                   </h3>
                   <p className="text-xs text-slate-400 leading-relaxed">
-                    Manual security verification is slow and error-prone. Many campus systems run with missing HSTS, permissive CSPs, and unverified ASVS controls, leaving them open to preventable exploits.
+                    Verifikasi keamanan manual memakan waktu lama dan rawan kesalahan. Banyak portal beroperasi tanpa HSTS, CSP terlalu longgar, dan kontrol ASVS yang tidak terverifikasi.
                   </p>
                 </div>
 
                 <div className="p-6 rounded-2xl bg-slate-950/70 border border-slate-800">
                   <div className="text-emerald-400 font-bold text-sm uppercase tracking-wider mb-2">
-                    Our Solution
+                    Solusi Kami
                   </div>
                   <h3 className="text-base font-semibold text-white mb-2">
-                    Passive, Automated &amp; Verifiable Assessment
+                    Penilaian Pasif, Otomatis &amp; Terverifikasi
                   </h3>
                   <p className="text-xs text-slate-400 leading-relaxed">
-                    Tripleemat delivers instant non-intrusive scans, maps findings to OWASP ASVS and NIST SP 800-53, and guarantees report integrity through SHA-256 and AES-256-GCM cryptography.
+                    Tripleemat menyajikan pemindaian instan non-intrusif, memetakan temuan ke OWASP ASVS dan NIST SP 800-53, serta menjamin integritas laporan dengan kriptografi SHA-256 dan AES-256-GCM.
                   </p>
                 </div>
               </div>
@@ -371,23 +374,23 @@ export default function HomePage() {
               >
                 <div className="p-6 rounded-2xl bg-slate-950/70 border border-slate-800">
                   <h3 className="text-base font-semibold text-white mb-2">
-                    OWASP ASVS v4.0.3 Alignment
+                    Kesesuaian OWASP ASVS v4.0.3
                   </h3>
                   <p className="text-xs text-slate-400 leading-relaxed mb-4">
-                    The Application Security Verification Standard provides a basis for testing web application technical security controls:
+                    Standar Verifikasi Keamanan Aplikasi yang menjadi dasar pengujian kontrol keamanan teknis aplikasi web:
                   </p>
                   <ul className="space-y-1.5 text-xs text-slate-300">
                     <li className="flex items-center gap-2">
                       <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
-                      <span><strong>Level 1 (Opportunistic):</strong> Bare minimum for all web software.</span>
+                      <span><strong>Level 1 (Opportunistic):</strong> Standar minimum mutlak untuk seluruh perangkat lunak web.</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <span className="h-1.5 w-1.5 rounded-full bg-blue-400" />
-                      <span><strong>Level 2 (Standard):</strong> For apps handling business-critical and PII data.</span>
+                      <span><strong>Level 2 (Standard):</strong> Untuk aplikasi yang menangani data bisnis krusial dan informasi pribadi (PII).</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
-                      <span><strong>Level 3 (Advanced):</strong> For military, healthcare, and critical infrastructure.</span>
+                      <span><strong>Level 3 (Advanced):</strong> Untuk infrastruktur militer, layanan kesehatan, dan sistem kritikal.</span>
                     </li>
                   </ul>
                 </div>
@@ -397,20 +400,20 @@ export default function HomePage() {
                     NIST SP 800-53 &amp; FIPS 199
                   </h3>
                   <p className="text-xs text-slate-400 leading-relaxed mb-4">
-                    Federal Information Processing Standards mapping ensuring government &amp; academic compliance:
+                    Pemetaan Standar Pemrosesan Informasi Federal guna menjamin kepatuhan tingkat institusi:
                   </p>
                   <ul className="space-y-1.5 text-xs text-slate-300">
                     <li className="flex items-center gap-2">
                       <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                      <span><strong>SC-8 / SC-13:</strong> Cryptographic Protection &amp; Transmission Integrity.</span>
+                      <span><strong>SC-8 / SC-13:</strong> Perlindungan Kriptografi &amp; Integritas Transmisi Data.</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                      <span><strong>AC-3 / AC-6:</strong> Access Enforcement &amp; Principle of Least Privilege.</span>
+                      <span><strong>AC-3 / AC-6:</strong> Penegakan Akses &amp; Prinsip Hak Akses Terendah (Least Privilege).</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                      <span><strong>CIA Triad Categorization:</strong> Tailored for university asset protection.</span>
+                      <span><strong>Kategorisasi Triad CIA:</strong> Disesuaikan untuk perlindungan aset digital institusi.</span>
                     </li>
                   </ul>
                 </div>
@@ -425,20 +428,20 @@ export default function HomePage() {
                 className="p-6 rounded-2xl bg-slate-950/70 border border-slate-800"
               >
                 <h3 className="text-base font-semibold text-white mb-3">
-                  Architecture Designed for Milestone 2 Expansion
+                  Arsitektur Dirancang untuk Ekspansi Milestone Selanjutnya
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-slate-300">
                   <div className="p-4 rounded-xl bg-slate-900 border border-slate-800">
-                    <strong className="text-cyan-300 block mb-1">Database Integration</strong>
-                    Domain models (`ScanResult`, `AsvsControl`, `SecurityHeader`) are strictly typed to map 1:1 to Prisma / PostgreSQL relational tables.
+                    <strong className="text-cyan-300 block mb-1">Integrasi Database</strong>
+                    Model domain (`ScanResult`, `AsvsControl`, `SecurityHeader`) memiliki tipe ketat yang dapat dipetakan 1:1 ke tabel Prisma / PostgreSQL.
                   </div>
                   <div className="p-4 rounded-xl bg-slate-900 border border-slate-800">
-                    <strong className="text-cyan-300 block mb-1">Background Audit Workers</strong>
-                    Scanner inputs are decoupled via standard payload structures, ready for Redis/BullMQ background queue processing.
+                    <strong className="text-cyan-300 block mb-1">Worker Audit Latar Belakang</strong>
+                    Masukan pemindai dirancang terpisah dengan muatan standar, siap dihubungkan ke antrean pemrosesan latar belakang Redis/BullMQ.
                   </div>
                   <div className="p-4 rounded-xl bg-slate-900 border border-slate-800">
-                    <strong className="text-cyan-300 block mb-1">Hardened Cryptography</strong>
-                    Native integration with `src/lib/crypto` modules for AES-256-GCM report encryption and CSPRNG session management.
+                    <strong className="text-cyan-300 block mb-1">Kriptografi Handal</strong>
+                    Integrasi native dengan modul `src/lib/crypto` untuk enkripsi laporan AES-256-GCM dan pengelolaan token sesi CSPRNG.
                   </div>
                 </div>
               </div>
@@ -453,15 +456,15 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-cyan-500/5 backdrop-blur-3xl" aria-hidden="true" />
           <div className="relative z-10 max-w-2xl mx-auto space-y-4">
             <h2 id="cta-heading" className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-              Ready to verify your web endpoint?
+              Siap memverifikasi endpoint web Anda?
             </h2>
             <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-              Execute client-side header audits and compliance evaluation in seconds with Tripleemat Security Assessor.
+              Jalankan audit header dan evaluasi kepatuhan secara instan dalam hitungan detik bersama Tripleemat Security Assessor.
             </p>
             <div className="pt-2">
               <Link href="/scan">
                 <Button id="cta-banner-scan" size="lg" variant="primary">
-                  Start Security Audit Now
+                  Mulai Audit Keamanan Sekarang
                 </Button>
               </Link>
             </div>
