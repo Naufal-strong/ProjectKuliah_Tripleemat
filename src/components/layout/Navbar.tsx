@@ -3,38 +3,39 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import TautanNav from "@/components/TautanNav";
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
   const navLinks = [
-    { label: "Overview", href: "/" },
-    { label: "Security Scanner", href: "/scan" },
-    { label: "OWASP ASVS Matrix", href: "/asvs" },
-    { label: "Audit Reports", href: "/report" },
+    { label: "Beranda", href: "/" },
+    { label: "Pemindai Keamanan", href: "/scan" },
+    { label: "Matriks OWASP ASVS", href: "/asvs" },
+    { label: "Laporan Audit", href: "/report" },
   ];
 
   return (
     <>
-      {/* Skip to Main Content Link for Keyboard Accessibility */}
+      {/* Tautan Pintasan Konten Utama untuk Aksesibilitas Keyboard */}
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-cyan-500 focus:text-slate-950 focus:font-bold focus:rounded-xl focus:shadow-2xl focus:outline-none focus:ring-2 focus:ring-white"
       >
-        Skip to main content
+        Lewati ke konten utama
       </a>
 
       <header className="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl">
         <nav
-          aria-label="Main Navigation"
+          aria-label="Navigasi Utama"
           className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 h-16"
         >
           {/* Logo / Brand */}
           <Link
             href="/"
             className="flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 rounded-lg p-1"
-            aria-label="Tripleemat Security Assessor Home"
+            aria-label="Beranda Tripleemat Security Assessor"
           >
             <div className="relative">
               <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-cyan-500 via-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform duration-200">
@@ -66,25 +67,9 @@ export function Navbar() {
             </div>
           </Link>
 
-          {/* Desktop Navigation Links */}
-          <div className="hidden md:flex items-center gap-1 lg:gap-2">
-            {navLinks.map((link) => {
-              const isActive = pathname === link.href;
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  aria-current={isActive ? "page" : undefined}
-                  className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${
-                    isActive
-                      ? "bg-slate-800/80 text-cyan-400 font-semibold shadow-inner"
-                      : "text-slate-300 hover:text-white hover:bg-slate-800/40"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              );
-            })}
+          {/* Desktop Navigation Links via TautanNav (Client Component) */}
+          <div className="hidden md:flex items-center">
+            <TautanNav tautan={navLinks} />
           </div>
 
           {/* Quick CTA Action */}
@@ -108,7 +93,7 @@ export function Navbar() {
                   d="M13 10V3L4 14h7v7l9-11h-7z"
                 />
               </svg>
-              <span>Audit Target</span>
+              <span>Pindai Target</span>
             </Link>
           </div>
 
@@ -119,7 +104,7 @@ export function Navbar() {
               id="mobile-menu-toggle"
               aria-expanded={mobileMenuOpen}
               aria-controls="mobile-navigation-drawer"
-              aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-label={mobileMenuOpen ? "Tutup menu navigasi" : "Buka menu navigasi"}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
             >
@@ -165,7 +150,8 @@ export function Navbar() {
             className="md:hidden border-b border-slate-800 bg-slate-950/95 px-4 pt-2 pb-6 space-y-2 backdrop-blur-2xl transition-all"
           >
             {navLinks.map((link) => {
-              const isActive = pathname === link.href;
+              const isActive =
+                link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
               return (
                 <Link
                   key={link.href}
@@ -188,7 +174,7 @@ export function Navbar() {
                 onClick={() => setMobileMenuOpen(false)}
                 className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-sm tracking-wide shadow-md"
               >
-                <span>Audit Target Now</span>
+                <span>Pindai Target Sekarang</span>
               </Link>
             </div>
           </div>

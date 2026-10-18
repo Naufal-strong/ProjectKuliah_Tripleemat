@@ -16,19 +16,19 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Tripleemat Security Assessor | OWASP ASVS & NIST Compliance Platform",
+  title: "Tripleemat Security Assessor | Platform Penilaian Kepatuhan OWASP ASVS & NIST",
   description:
-    "Automated Security & Compliance Assessment platform for auditing web applications against OWASP ASVS v4.0.3 and NIST SP 800-53 standards. Scan security headers, SSL/TLS, and generate verifiable audit reports.",
+    "Platform Penilaian Keamanan & Kepatuhan Otomatis untuk mengaudit aplikasi web terhadap standar OWASP ASVS v4.0.3 dan NIST SP 800-53. Pindai header keamanan, validasi SSL/TLS, dan hasilkan laporan audit kriptografis terverifikasi.",
   keywords: [
-    "Security Scanner",
+    "Pemindai Keamanan",
     "OWASP ASVS",
     "NIST SP 800-53",
-    "Cybersecurity Audit",
+    "Audit Keamanan Siber",
     "HTTP Security Headers",
-    "SSL TLS Assessment",
-    "Web Security",
+    "Penilaian SSL TLS",
+    "Keamanan Web",
   ],
-  authors: [{ name: "Tripleemat Security Team" }],
+  authors: [{ name: "Tim Keamanan Tripleemat" }],
 };
 
 export default function RootLayout({
@@ -38,7 +38,8 @@ export default function RootLayout({
 }) {
   return (
     <html
-      lang="en"
+      lang="id"
+      data-scroll-behavior="smooth"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
       <body className="min-h-full flex flex-col bg-slate-950 text-slate-100 font-sans">

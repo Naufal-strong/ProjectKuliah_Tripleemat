@@ -21,24 +21,24 @@ export default function ReportPage() {
       encodeURIComponent(JSON.stringify(activeScan, null, 2));
     const downloadAnchor = document.createElement("a");
     downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", `${activeScan.id}-audit-report.json`);
+    downloadAnchor.setAttribute("download", `${activeScan.id}-laporan-audit.json`);
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
 
     setExportFeedback(
-      `Audit report ${activeScan.id} successfully exported as JSON with cryptographic SHA-256 digest.`
+      `Laporan audit ${activeScan.id} berhasil diekspor sebagai JSON dengan digest kriptografis SHA-256.`
     );
   };
 
   const handlePrintPdf = () => {
     setExportFeedback(
-      "Preparing PDF audit document... Print dialog triggered."
+      "Menyiapkan dokumen audit PDF... Dialog pencetakan telah dipicu."
     );
     window.print();
   };
 
-  // Severity count
+  // Hitung jumlah tingkat keparahan
   const severityCount = {
     critical: activeScan.findings.filter((f) => f.severity === "critical").length,
     high: activeScan.findings.filter((f) => f.severity === "high").length,
@@ -46,29 +46,59 @@ export default function ReportPage() {
     low: activeScan.findings.filter((f) => f.severity === "low").length,
   };
 
+  const getSeverityLabel = (sev: string) => {
+    switch (sev) {
+      case "critical":
+        return "Kritis";
+      case "high":
+        return "Tinggi";
+      case "medium":
+        return "Sedang";
+      case "low":
+        return "Rendah";
+      default:
+        return "Info";
+    }
+  };
+
   return (
     <main id="main-content" className="flex-1 py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
-      {/* Header */}
+      {/* Header Halaman */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <div className="flex items-center gap-2 mb-2">
             <Badge variant="cyan" size="sm">
-              Executive Module
+              Modul Eksekutif
             </Badge>
             <span className="text-xs text-slate-500">•</span>
-            <span className="text-xs text-slate-400 font-mono">FIPS 199 &amp; ISO 27001 Aligned</span>
+            <span className="text-xs text-slate-400 font-mono">FIPS 199 &amp; Selaras ISO 27001</span>
           </div>
           <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Security Audit Scorecard &amp; Report
+            Scorecard Keamanan &amp; Laporan Audit
           </h1>
           <p className="mt-2 text-sm sm:text-base text-slate-400 max-w-3xl leading-relaxed">
-            Formal assessment breakdown for target web endpoints. Review identified vulnerabilities,
-            remediation priorities, and cryptographic proof of record integrity.
+            Rincian asesmen formal untuk endpoint web target. Tinjau kerentanan yang teridentifikasi,
+            prioritas remediasi, dan bukti matematis integritas catatan audit.
           </p>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <Link href={`/report/${activeScan.id}`}>
+            <Button
+              id="open-report-id-btn"
+              variant="primary"
+              size="sm"
+              leftIcon={
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              }
+            >
+              Buka Halaman [id] ({activeScan.id}) ↗
+            </Button>
+          </Link>
+
           <Button
             id="export-json-btn"
             variant="outline"
@@ -80,7 +110,7 @@ export default function ReportPage() {
               </svg>
             }
           >
-            Export JSON
+            Ekspor JSON
           </Button>
 
           <Button
@@ -94,7 +124,7 @@ export default function ReportPage() {
               </svg>
             }
           >
-            Print / PDF Report
+            Cetak / Laporan PDF
           </Button>
         </div>
       </div>
@@ -103,7 +133,7 @@ export default function ReportPage() {
       {exportFeedback && (
         <Alert
           variant="success"
-          title="Export Operation Complete"
+          title="Operasi Ekspor Selesai"
           className="mb-6"
           onDismiss={() => setExportFeedback(null)}
         >
@@ -111,28 +141,45 @@ export default function ReportPage() {
         </Alert>
       )}
 
-      {/* Target Audit Switcher Tabs */}
+      {/* Target Audit Switcher Tabs & Quick Route Action */}
       <section aria-labelledby="target-selector-heading" className="mb-6">
         <h2 id="target-selector-heading" className="sr-only">
-          Select Audit Report
+          Pilih Laporan Audit Target
         </h2>
-        <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-2xl bg-slate-900/60 border border-slate-800">
-          <span className="text-xs font-semibold text-slate-400 px-3">
-            Switch Target:
-          </span>
-          {sampleScanResults.map((s) => (
-            <button
-              key={s.id}
-              onClick={() => setSelectedScanId(s.id)}
-              className={`px-3.5 py-2 rounded-xl text-xs font-semibold font-mono transition-all duration-150 cursor-pointer ${
-                activeScan.id === s.id
-                  ? "bg-cyan-500 text-slate-950 shadow-md"
-                  : "bg-slate-950/60 text-slate-400 hover:text-white hover:bg-slate-800"
-              }`}
+        <div className="flex flex-wrap items-center justify-between gap-3 p-2 rounded-2xl bg-slate-900/60 border border-slate-800">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs font-semibold text-slate-400 px-3">
+              Pilih Target:
+            </span>
+            {sampleScanResults.map((s) => (
+              <button
+                key={s.id}
+                onClick={() => setSelectedScanId(s.id)}
+                className={`px-3.5 py-2 rounded-xl text-xs font-semibold font-mono transition-all duration-150 cursor-pointer ${
+                  activeScan.id === s.id
+                    ? "bg-cyan-500 text-slate-950 shadow-md font-bold"
+                    : "bg-slate-950/60 text-slate-400 hover:text-white hover:bg-slate-800"
+                }`}
+              >
+                {s.targetUrl.replace("https://", "")} (Peringkat {s.grade})
+              </button>
+            ))}
+          </div>
+
+          <Link href={`/report/${activeScan.id}`}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-cyan-500/40 text-cyan-300 hover:bg-cyan-950/40 text-xs font-mono"
+              rightIcon={
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              }
             >
-              {s.targetUrl.replace("https://", "")} ({s.grade})
-            </button>
-          ))}
+              Buka Halaman Rinci /report/{activeScan.id} →
+            </Button>
+          </Link>
         </div>
       </section>
 
@@ -142,10 +189,10 @@ export default function ReportPage() {
         <Card variant="glass" className="lg:col-span-4 flex flex-col justify-between">
           <CardHeader>
             <CardTitle as="h2" className="text-base text-slate-300">
-              Executive Health Rating
+              Peringkat Kesehatan Keamanan
             </CardTitle>
             <CardDescription>
-              Cumulative score mapped from HTTP headers, SSL ciphers, and ASVS controls.
+              Skor kumulatif yang dipetakan dari header HTTP, cipher SSL, dan kontrol ASVS.
             </CardDescription>
           </CardHeader>
           <CardContent className="my-auto py-4 text-center">
@@ -159,15 +206,15 @@ export default function ReportPage() {
             </div>
             <p className="text-xs text-slate-400 mt-1">
               {activeScan.overallScore >= 85
-                ? "Hardened Security Posture"
+                ? "Postur Keamanan Sangat Kokoh (Hardened)"
                 : activeScan.overallScore >= 70
-                ? "Moderate Risk Posture — Action Recommended"
-                : "Elevated Risk Posture — Immediate Remediation Required"}
+                ? "Postur Risiko Sedang — Tindakan Direkomendasikan"
+                : "Postur Risiko Tinggi — Tindakan Perbaikan Segera Diperlukan"}
             </p>
           </CardContent>
           <div className="pt-4 border-t border-slate-800/80 text-xs text-slate-400 flex items-center justify-between">
-            <span>Audit Latency: {activeScan.durationMs}ms</span>
-            <span className="text-emerald-400 font-semibold">100% Non-Intrusive</span>
+            <span>Latensi Audit: {activeScan.durationMs}ms</span>
+            <span className="text-emerald-400 font-semibold">100% Non-Intrusif</span>
           </div>
         </Card>
 
@@ -176,28 +223,28 @@ export default function ReportPage() {
           <div>
             <CardHeader>
               <CardTitle as="h2" className="text-base text-slate-300">
-                Audit Target Metadata &amp; Cryptographic Signature
+                Metadata Target &amp; Tanda Tangan Kriptografis
               </CardTitle>
               <CardDescription>
-                FIPS 199 cryptographic verification and TLS connection telemetry.
+                Verifikasi kriptografis FIPS 199 dan telemetri koneksi TLS.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                 <div className="p-3 rounded-xl bg-slate-950/70 border border-slate-800">
-                  <div className="text-slate-500 font-mono">TARGET ENDPOINT</div>
+                  <div className="text-slate-500 font-mono">ENDPOINT TARGET</div>
                   <div className="text-white font-semibold font-mono mt-0.5 break-all">
                     {activeScan.targetUrl}
                   </div>
                 </div>
                 <div className="p-3 rounded-xl bg-slate-950/70 border border-slate-800">
-                  <div className="text-slate-500 font-mono">AUDIT TIMESTAMP</div>
+                  <div className="text-slate-500 font-mono">WAKTU AUDIT</div>
                   <div className="text-white font-semibold font-mono mt-0.5">
                     {new Date(activeScan.scannedAt).toUTCString()}
                   </div>
                 </div>
                 <div className="p-3 rounded-xl bg-slate-950/70 border border-slate-800">
-                  <div className="text-slate-500 font-mono">SSL / TLS ISSUER</div>
+                  <div className="text-slate-500 font-mono">PENERBIT SERTIFIKAT SSL/TLS</div>
                   <div className="text-white font-semibold mt-0.5">
                     {activeScan.sslInfo.issuer}
                   </div>
@@ -217,10 +264,10 @@ export default function ReportPage() {
                     <svg className="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
-                    FIPS 199 Integrity Digest (SHA-256)
+                    Digest Integritas FIPS 199 (SHA-256)
                   </span>
                   <Badge variant="passed" size="sm">
-                    Verified
+                    Terverifikasi
                   </Badge>
                 </div>
                 <div className="font-mono text-[11px] text-cyan-300 break-all bg-slate-900/80 p-2 rounded-lg border border-slate-800">
@@ -236,25 +283,25 @@ export default function ReportPage() {
               <span className="font-bold text-rose-400 text-sm block">
                 {severityCount.critical}
               </span>
-              <span className="text-slate-400 text-[10px]">Critical</span>
+              <span className="text-slate-400 text-[10px]">Kritis</span>
             </div>
             <div className="p-2 rounded-lg bg-red-950/30 border border-red-900/40">
               <span className="font-bold text-red-400 text-sm block">
                 {severityCount.high}
               </span>
-              <span className="text-slate-400 text-[10px]">High</span>
+              <span className="text-slate-400 text-[10px]">Tinggi</span>
             </div>
             <div className="p-2 rounded-lg bg-amber-950/30 border border-amber-900/40">
               <span className="font-bold text-amber-400 text-sm block">
                 {severityCount.medium}
               </span>
-              <span className="text-slate-400 text-[10px]">Medium</span>
+              <span className="text-slate-400 text-[10px]">Sedang</span>
             </div>
             <div className="p-2 rounded-lg bg-sky-950/30 border border-sky-900/40">
               <span className="font-bold text-sky-400 text-sm block">
                 {severityCount.low}
               </span>
-              <span className="text-slate-400 text-[10px]">Low / Info</span>
+              <span className="text-slate-400 text-[10px]">Rendah / Info</span>
             </div>
           </div>
         </Card>
@@ -264,17 +311,17 @@ export default function ReportPage() {
       <section aria-labelledby="findings-heading" className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 id="findings-heading" className="text-xl font-bold text-white tracking-tight">
-            Identified Vulnerabilities &amp; Remediation Plan
+            Temuan Kerentanan &amp; Rencana Remediasi
           </h2>
           <span className="text-xs text-slate-400">
-            {activeScan.findings.length} Items Flagged for Action
+            {activeScan.findings.length} Butir Memerlukan Tindakan
           </span>
         </div>
 
         {activeScan.findings.length === 0 ? (
           <Card variant="subtle" className="text-center py-10">
             <p className="text-sm text-emerald-400 font-semibold">
-              No security anomalies detected! Target exhibits high conformity.
+              Tidak ada anomali keamanan yang terdeteksi! Target menunjukkan tingkat kesesuaian tinggi.
             </p>
           </Card>
         ) : (
@@ -284,14 +331,14 @@ export default function ReportPage() {
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-3">
                   <div className="flex flex-wrap items-center gap-2">
                     <Badge variant={finding.severity} size="md" dot>
-                      {finding.severity}
+                      {getSeverityLabel(finding.severity)}
                     </Badge>
                     <span className="font-mono text-xs font-bold text-slate-300">
                       {finding.id}
                     </span>
                     <span className="text-slate-600">•</span>
                     <span className="text-xs text-slate-400">
-                      Category: {finding.category}
+                      Kategori: {finding.category}
                     </span>
                   </div>
 
@@ -323,7 +370,7 @@ export default function ReportPage() {
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
-                    Recommended Remediation:
+                    Rekomendasi Tindakan Remediasi:
                   </div>
                   <div className="font-mono text-xs text-slate-200 bg-slate-900/90 p-2.5 rounded-lg border border-slate-800 overflow-x-auto">
                     {finding.remediation}
@@ -335,20 +382,82 @@ export default function ReportPage() {
         )}
       </section>
 
+      {/* Katalog Semua Laporan Audit (Akses Rute Dinamis /report/[id]) */}
+      <section aria-labelledby="all-reports-heading" className="mt-12 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h2 id="all-reports-heading" className="text-xl font-bold text-white tracking-tight">
+              Katalog Laporan Audit (Rute Dinamis /report/[id])
+            </h2>
+            <p className="text-xs text-slate-400 mt-0.5">
+              Klik judul kartu atau tombol di bawah untuk membuka halaman rute dinamis spesifik tiap laporan.
+            </p>
+          </div>
+          <Badge variant="cyan" size="sm">
+            Total: {sampleScanResults.length} Laporan Tersedia
+          </Badge>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {sampleScanResults.map((item) => (
+            <Card
+              key={item.id}
+              variant={item.id === activeScan.id ? "glass" : "default"}
+              isHoverable
+              className={`p-5 flex flex-col justify-between ${
+                item.id === activeScan.id ? "ring-1 ring-cyan-500/50" : ""
+              }`}
+            >
+              <div>
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <Badge variant={item.grade === "A" ? "passed" : item.grade === "B" ? "cyan" : "failed"} size="sm">
+                    Peringkat {item.grade} • {item.overallScore}/100
+                  </Badge>
+                  <span className="font-mono text-[11px] text-slate-400">
+                    {item.id}
+                  </span>
+                </div>
+
+                <h3 className="text-base font-bold text-white mb-1">
+                  <Link href={`/report/${item.id}`} className="hover:text-cyan-400 hover:underline transition-colors">
+                    {item.targetUrl.replace("https://", "")}
+                  </Link>
+                </h3>
+
+                <p className="text-xs text-slate-400 mb-4">
+                  {item.findings.length} temuan teridentifikasi • Sertifikat: {item.sslInfo.issuer.split(" ")[0]}
+                </p>
+              </div>
+
+              <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between">
+                <span className="text-[11px] font-mono text-cyan-400">
+                  /report/{item.id}
+                </span>
+                <Link href={`/report/${item.id}`}>
+                  <Button size="sm" variant="primary" className="text-xs">
+                    Buka Laporan →
+                  </Button>
+                </Link>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </section>
+
       {/* Navigation Footer */}
       <div className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-slate-800 text-xs text-slate-400">
         <div>
-          Next Milestone Plan: Automatic PDF generation &amp; database sync with PostgreSQL.
+          Rencana Milestone Berikutnya: Ekspor otomatis format PDF &amp; sinkronisasi database relasional PostgreSQL.
         </div>
         <div className="flex items-center gap-3">
           <Link href="/scan">
             <Button variant="outline" size="sm">
-              Scan New Endpoint
+              Pindai Endpoint Baru
             </Button>
           </Link>
           <Link href="/asvs">
             <Button variant="secondary" size="sm">
-              Review ASVS Controls
+              Tinjau Kontrol ASVS
             </Button>
           </Link>
         </div>

@@ -8,7 +8,7 @@ import { Badge } from "../../src/components/ui/Badge";
 import { Input } from "../../src/components/ui/Input";
 import { Alert } from "../../src/components/ui/Alert";
 import { ProgressBar } from "../../src/components/ui/ProgressBar";
-import { ScanFormData, FormErrors, ScanResult, SecurityHeader } from "../../src/types";
+import { ScanFormData, FormErrors, ScanResult } from "../../src/types";
 import { defaultSecurityHeaders } from "../../src/data/mockSecurityHeaders";
 import { sampleScanResults } from "../../src/data/mockScans";
 
@@ -34,28 +34,28 @@ export default function ScannerPage() {
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
 
-    // URL Validation
+    // Validasi URL
     const urlTrimmed = formData.targetUrl.trim();
     if (!urlTrimmed) {
-      newErrors.targetUrl = "Target URL is required. Please specify a web application endpoint to audit.";
+      newErrors.targetUrl = "URL target wajib diisi. Silakan tentukan endpoint aplikasi web yang akan diaudit.";
     } else if (!/^https?:\/\//i.test(urlTrimmed)) {
-      newErrors.targetUrl = "Invalid protocol. Target URL must begin with https:// or http:// (e.g., https://portal.kampus.ac.id).";
+      newErrors.targetUrl = "Protokol tidak valid. URL target harus diawali dengan https:// atau http:// (contoh: https://portal.kampus.ac.id).";
     } else {
       try {
         const parsed = new URL(urlTrimmed);
         if (!parsed.hostname || parsed.hostname.indexOf(".") === -1) {
-          newErrors.targetUrl = "Invalid domain name. Please include a valid hostname (e.g., https://example.com).";
+          newErrors.targetUrl = "Nama domain tidak valid. Pastikan menyertakan hostname yang valid (contoh: https://example.com).";
         }
       } catch {
-        newErrors.targetUrl = "Invalid URL format. Please enter a valid RFC-compliant URL.";
+        newErrors.targetUrl = "Format URL tidak valid. Masukkan URL yang mematuhi standar RFC.";
       }
     }
 
-    // Email validation if provided
+    // Validasi Email jika diisi
     if (formData.auditorEmail && formData.auditorEmail.trim() !== "") {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(formData.auditorEmail.trim())) {
-        newErrors.auditorEmail = "Invalid email format. Please provide a valid address (e.g., auditor@kampus.ac.id) or clear the field.";
+        newErrors.auditorEmail = "Format email tidak valid. Masukkan alamat email yang benar (contoh: auditor@kampus.ac.id) atau kosongkan kolom.";
       }
     }
 
@@ -72,33 +72,33 @@ export default function ScannerPage() {
       return;
     }
 
-    // Start simulated audit scanning
+    // Mulai simulasi pemindaian audit
     setIsScanning(true);
     setScanProgress(10);
-    setScanStepText("Initiating DNS resolution & TLS Handshake...");
+    setScanStepText("Memulai resolusi DNS & jabat tangan (handshake) TLS...");
     setActiveResult(null);
 
     setTimeout(() => {
       setScanProgress(40);
-      setScanStepText("Harvesting and inspecting HTTP response headers (CSP, HSTS, XFO)...");
+      setScanStepText("Mengumpulkan dan memeriksa header respons HTTP (CSP, HSTS, XFO)...");
     }, 600);
 
     setTimeout(() => {
       setScanProgress(75);
-      setScanStepText(`Evaluating compliance against OWASP ASVS ${formData.asvsLevel} controls...`);
+      setScanStepText(`Mengevaluasi kepatuhan terhadap kontrol OWASP ASVS ${formData.asvsLevel}...`);
     }, 1200);
 
     setTimeout(() => {
       setScanProgress(95);
-      setScanStepText("Computing cryptographic integrity signature with SHA-256...");
+      setScanStepText("Menghitung tanda tangan integritas kriptografis dengan SHA-256...");
     }, 1700);
 
     setTimeout(() => {
       setScanProgress(100);
       setIsScanning(false);
-      setScanStepText("Audit completed successfully.");
+      setScanStepText("Audit berhasil diselesaikan.");
 
-      // Construct simulated result based on input
+      // Bentuk hasil audit tiruan berdasarkan masukan
       const simulatedResult: ScanResult = {
         id: `scan-${Date.now().toString().slice(-6)}`,
         targetUrl: formData.targetUrl.trim(),
@@ -141,22 +141,22 @@ export default function ScannerPage() {
       <div className="mb-8">
         <div className="flex flex-wrap items-center gap-2 mb-2">
           <Badge variant="cyan" size="sm">
-            Core Scanner Module
+            Modul Pemindai Utama
           </Badge>
           <span className="text-xs text-slate-500">•</span>
           <span className="text-xs text-slate-400 font-mono">OWASP ASVS &amp; NIST SP 800-53</span>
         </div>
         <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
-          Passive Security &amp; Header Scanner
+          Pemindai Pasif Keamanan &amp; Header
         </h1>
         <p className="mt-2 text-sm sm:text-base text-slate-400 max-w-3xl leading-relaxed">
-          Launch non-intrusive security evaluations on web applications. Analyze HTTP response headers,
-          verify SSL/TLS encryption parameters, and generate cryptographically signed audit records.
+          Jalankan evaluasi keamanan non-intrusif pada aplikasi web. Analisis header respons HTTP,
+          verifikasi parameter enkripsi SSL/TLS, dan hasilkan catatan audit bertanda tangan kriptografis.
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Left Column: Audit Configuration Form */}
+        {/* Left Column: Form Konfigurasi Audit */}
         <section aria-labelledby="form-heading" className="lg:col-span-6 space-y-6">
           <Card variant="glass">
             <CardHeader>
@@ -175,22 +175,22 @@ export default function ScannerPage() {
                     d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
                   />
                 </svg>
-                Audit Target Configuration
+                Konfigurasi Target Audit
               </CardTitle>
               <CardDescription>
-                Provide the web address and audit scope. All inputs undergo client-side validation.
+                Masukkan alamat web target dan cakupan audit. Seluruh masukan diverifikasi langsung di sisi klien.
               </CardDescription>
             </CardHeader>
 
             <CardContent>
-              {/* Form Level Error Alert if submission had invalid data */}
+              {/* Form Level Error Alert */}
               {isSubmitted && Object.keys(errors).length > 0 && (
                 <Alert
                   variant="danger"
-                  title="Form Validation Failed"
+                  title="Validasi Formulir Gagal"
                   className="mb-6"
                 >
-                  Please review and resolve the errors highlighted below before proceeding with the scan.
+                  Silakan periksa dan perbaiki kesalahan yang tersorot di bawah ini sebelum melanjutkan pemindaian.
                 </Alert>
               )}
 
@@ -198,7 +198,7 @@ export default function ScannerPage() {
                 {/* Target URL Input */}
                 <div>
                   <Input
-                    label="Target Web Application URL"
+                    label="URL Aplikasi Web Target"
                     id="target-url-input"
                     name="targetUrl"
                     isRequired
@@ -211,8 +211,8 @@ export default function ScannerPage() {
                       }
                     }}
                     error={errors.targetUrl}
-                    helperText="Must include protocol (e.g. https://portal.kampus.ac.id)"
-                    placeholder="https://your-domain.ac.id"
+                    helperText="Wajib menyertakan protokol (contoh: https://portal.kampus.ac.id)"
+                    placeholder="https://domain-anda.ac.id"
                     leftIcon={
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
@@ -222,7 +222,7 @@ export default function ScannerPage() {
 
                   {/* Quick Fill Suggestions */}
                   <div className="mt-2 flex flex-wrap items-center gap-1.5 text-xs text-slate-400">
-                    <span className="text-slate-500">Quick fill:</span>
+                    <span className="text-slate-500">Pilihan cepat:</span>
                     <button
                       type="button"
                       onClick={() => handleQuickUrlFill("https://portal.kampus.ac.id")}
@@ -246,7 +246,7 @@ export default function ScannerPage() {
                     htmlFor="audit-scope-select"
                     className="block text-sm font-medium text-slate-200 mb-1.5"
                   >
-                    Audit Scope
+                    Cakupan Audit
                   </label>
                   <select
                     id="audit-scope-select"
@@ -260,25 +260,26 @@ export default function ScannerPage() {
                     }
                     className="w-full rounded-xl bg-slate-950/70 border border-slate-800 px-3.5 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20"
                   >
-                    <option value="standard">Standard (HTTP Security Headers &amp; TLS)</option>
-                    <option value="full">Full Assessment (Headers, SSL, &amp; ASVS Matrix)</option>
-                    <option value="ssl-only">SSL/TLS Certificate Inspection Only</option>
+                    <option value="standard">Standar (Header Keamanan HTTP &amp; TLS)</option>
+                    <option value="full">Penilaian Penuh (Header, SSL, &amp; Matriks ASVS)</option>
+                    <option value="ssl-only">Hanya Inspeksi Sertifikat SSL/TLS</option>
                   </select>
                 </div>
 
                 {/* ASVS Verification Level */}
                 <fieldset className="space-y-2">
                   <legend className="text-sm font-medium text-slate-200">
-                    OWASP ASVS Verification Level Target
+                    Target Level Verifikasi OWASP ASVS
                   </legend>
                   <div className="grid grid-cols-3 gap-2">
                     {(["L1", "L2", "L3"] as const).map((level) => (
                       <label
                         key={level}
-                        className={`flex items-center justify-center p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${formData.asvsLevel === level
-                          ? "bg-cyan-950/60 border-cyan-500/80 text-cyan-300 shadow-sm"
-                          : "bg-slate-950/40 border-slate-800 text-slate-400 hover:text-slate-200"
-                          }`}
+                        className={`flex items-center justify-center p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
+                          formData.asvsLevel === level
+                            ? "bg-cyan-950/60 border-cyan-500/80 text-cyan-300 shadow-sm"
+                            : "bg-slate-950/40 border-slate-800 text-slate-400 hover:text-slate-200"
+                        }`}
                       >
                         <input
                           type="radio"
@@ -293,13 +294,13 @@ export default function ScannerPage() {
                     ))}
                   </div>
                   <p className="text-xs text-slate-400">
-                    Level 1 is opportunistic baseline; Level 2 is recommended for apps handling sensitive data.
+                    Level 1 adalah tolok ukur dasar; Level 2 direkomendasikan untuk aplikasi yang menangani data sensitif.
                   </p>
                 </fieldset>
 
-                {/* Auditor Email (Optional with client-side regex validation) */}
+                {/* Auditor Email */}
                 <Input
-                  label="Auditor Notification Email (Optional)"
+                  label="Email Notifikasi Auditor (Opsional)"
                   id="auditor-email-input"
                   name="auditorEmail"
                   type="email"
@@ -311,7 +312,7 @@ export default function ScannerPage() {
                     }
                   }}
                   error={errors.auditorEmail}
-                  helperText="Provide an email to receive audit completion alerts"
+                  helperText="Kirimkan salinan ringkasan audit ke email ini setelah selesai"
                   placeholder="auditor@kampus.ac.id"
                   leftIcon={
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -333,9 +334,9 @@ export default function ScannerPage() {
                   />
                   <label htmlFor="notify-checkbox" className="text-xs text-slate-300">
                     <span className="font-semibold text-white block">
-                      Enforce FIPS 199 Cryptographic Report Signing
+                      Terapkan Penandatanganan Kriptografis FIPS 199
                     </span>
-                    Sign the audit report with SHA-256 digest to prevent tampering with findings.
+                    Tandatangani laporan audit dengan digest SHA-256 untuk mencegah pemalsuan temuan.
                   </label>
                 </div>
 
@@ -355,7 +356,7 @@ export default function ScannerPage() {
                       </svg>
                     }
                   >
-                    {isScanning ? "Executing Security Audit..." : "Execute Audit Scan"}
+                    {isScanning ? "Menjalankan Audit Keamanan..." : "Eksekusi Pemindaian Audit"}
                   </Button>
                 </div>
               </form>
@@ -366,13 +367,13 @@ export default function ScannerPage() {
           <Card variant="default">
             <CardHeader>
               <CardTitle as="h3" className="text-base flex items-center justify-between">
-                <span>Recent Audits in Repository</span>
+                <span>Riwayat Audit Tersimpan</span>
                 <Badge variant="info" size="sm">
-                  Mock Data
+                  Data Tiruan
                 </Badge>
               </CardTitle>
               <CardDescription>
-                Historical assessments stored for preparation of Milestone 2 database integration.
+                Contoh rekaman asesmen historis yang disiapkan untuk integrasi database mendatang.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -387,7 +388,7 @@ export default function ScannerPage() {
                         {item.targetUrl}
                       </div>
                       <div className="text-slate-400 text-[11px] mt-0.5">
-                        Score: {item.overallScore}/100 • Grade: {item.grade} • {item.findings.length} findings
+                        Skor: {item.overallScore}/100 • Peringkat: {item.grade} • {item.findings.length} temuan
                       </div>
                     </div>
                     <div className="shrink-0 flex items-center gap-2">
@@ -399,8 +400,13 @@ export default function ScannerPage() {
                           setFormData((prev) => ({ ...prev, targetUrl: item.targetUrl }));
                         }}
                       >
-                        Inspect
+                        Inspeksi
                       </Button>
+                      <Link href={`/report/${item.id}`}>
+                        <Button size="sm" variant="outline" className="border-cyan-500/30 text-cyan-400 hover:bg-cyan-950/40">
+                          Laporan [id] →
+                        </Button>
+                      </Link>
                     </div>
                   </div>
                 ))}
@@ -416,16 +422,16 @@ export default function ScannerPage() {
             <Card variant="glow" className="animate-pulse-subtle">
               <CardHeader>
                 <CardTitle id="progress-heading" as="h2" className="text-lg text-cyan-300">
-                  Audit Execution in Progress
+                  Audit Sedang Berlangsung
                 </CardTitle>
                 <CardDescription>
-                  Inspecting security posture of <span className="font-mono text-white">{formData.targetUrl}</span>
+                  Memeriksa postur keamanan pada <span className="font-mono text-white">{formData.targetUrl}</span>
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <ProgressBar
                   value={scanProgress}
-                  label="Scan Completion"
+                  label="Kemajuan Pemindaian"
                   colorScheme="cyan"
                   size="md"
                 />
@@ -445,7 +451,7 @@ export default function ScannerPage() {
                 <CardHeader className="flex-row items-center justify-between space-y-0 pb-4">
                   <div>
                     <CardTitle id="results-heading" as="h2" className="text-xl">
-                      Audit Assessment Results
+                      Hasil Penilaian Audit
                     </CardTitle>
                     <CardDescription className="font-mono text-xs mt-0.5">
                       Target: {activeResult.targetUrl}
@@ -459,7 +465,7 @@ export default function ScannerPage() {
                       variant={activeResult.grade === "A" ? "passed" : activeResult.grade === "B" ? "warning" : "critical"}
                       size="sm"
                     >
-                      Grade {activeResult.grade}
+                      Peringkat {activeResult.grade}
                     </Badge>
                   </div>
                 </CardHeader>
@@ -468,21 +474,21 @@ export default function ScannerPage() {
                   {/* Status Metrics */}
                   <div className="grid grid-cols-3 gap-3 text-center text-xs">
                     <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800">
-                      <div className="text-slate-400">Headers Passed</div>
+                      <div className="text-slate-400">Header Lolos</div>
                       <div className="text-base font-bold text-emerald-400 mt-0.5">
                         {activeResult.headersPassed} / {activeResult.headersAnalyzed}
                       </div>
                     </div>
                     <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800">
-                      <div className="text-slate-400">TLS Protocol</div>
+                      <div className="text-slate-400">Protokol TLS</div>
                       <div className="text-base font-bold text-cyan-400 mt-0.5">
                         {activeResult.sslInfo.protocol}
                       </div>
                     </div>
                     <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800">
-                      <div className="text-slate-400">Total Findings</div>
+                      <div className="text-slate-400">Total Temuan</div>
                       <div className="text-base font-bold text-amber-400 mt-0.5">
-                        {activeResult.findings.length} Items
+                        {activeResult.findings.length} Butir
                       </div>
                     </div>
                   </div>
@@ -493,7 +499,7 @@ export default function ScannerPage() {
                       <svg className="w-3.5 h-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                       </svg>
-                      <span>SHA-256 Report Integrity Signature:</span>
+                      <span>Tanda Tangan Integritas Laporan (SHA-256):</span>
                     </div>
                     <span className="text-cyan-300 break-all">{activeResult.integrityHash}</span>
                   </div>
@@ -512,7 +518,7 @@ export default function ScannerPage() {
                           </svg>
                         }
                       >
-                        Inspect Full Executive Report &amp; Remediation
+                        Buka Laporan Eksekutif Lengkap &amp; Remediasi
                       </Button>
                     </Link>
                   </div>
@@ -523,10 +529,10 @@ export default function ScannerPage() {
               <Card variant="default">
                 <CardHeader>
                   <CardTitle as="h3" className="text-base">
-                    HTTP Security Headers Verification
+                    Verifikasi Header Keamanan HTTP
                   </CardTitle>
                   <CardDescription>
-                    Client-side header evaluation against modern browser defenses.
+                    Evaluasi header sisi klien terhadap proteksi pertahanan peramban modern.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -534,9 +540,9 @@ export default function ScannerPage() {
                     <table className="w-full text-left text-xs border-collapse">
                       <thead>
                         <tr className="border-b border-slate-800 text-slate-400">
-                          <th className="py-2.5 pr-4 font-semibold">Header Name</th>
+                          <th className="py-2.5 pr-4 font-semibold">Nama Header</th>
                           <th className="py-2.5 px-4 font-semibold">Status</th>
-                          <th className="py-2.5 pl-4 font-semibold">Finding</th>
+                          <th className="py-2.5 pl-4 font-semibold">Rekomendasi</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-800/60 font-mono">
@@ -547,7 +553,13 @@ export default function ScannerPage() {
                             </td>
                             <td className="py-2.5 px-4">
                               <Badge variant={h.status} size="sm">
-                                {h.status}
+                                {h.status === "passed"
+                                  ? "Terpenuhi"
+                                  : h.status === "warning"
+                                  ? "Peringatan"
+                                  : h.status === "failed"
+                                  ? "Gagal"
+                                  : "Tertunda"}
                               </Badge>
                             </td>
                             <td className="py-2.5 pl-4 text-slate-300 font-sans text-xs">
@@ -570,11 +582,11 @@ export default function ScannerPage() {
                 </svg>
               </div>
               <h2 id="results-heading" className="text-base font-semibold text-white">
-                No Scan Results Displayed
+                Belum Ada Hasil Pemindaian
               </h2>
               <p className="text-xs text-slate-400 max-w-sm mx-auto mt-1">
-                Configure your target parameters on the left and click &quot;Execute Audit Scan&quot;
-                or inspect one of the historical sample audits.
+                Tentukan parameter target pada formulir di sebelah kiri lalu klik &quot;Eksekusi Pemindaian Audit&quot;
+                atau telusuri salah satu contoh audit tersimpan.
               </p>
             </Card>
           ) : null}

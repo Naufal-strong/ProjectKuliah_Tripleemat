@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { Button } from "../../src/components/ui/Button";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../../src/components/ui/Card";
+import { Card } from "../../src/components/ui/Card";
 import { Badge } from "../../src/components/ui/Badge";
 import { Input } from "../../src/components/ui/Input";
 import { ProgressBar } from "../../src/components/ui/ProgressBar";
@@ -17,13 +17,13 @@ export default function AsvsMatrixPage() {
   const [selectedLevel, setSelectedLevel] = useState<string>("ALL");
   const [selectedStatus, setSelectedStatus] = useState<string>("ALL");
 
-  // Unique chapters from data
+  // Bab unik dari data kontrol
   const chapters = useMemo(() => {
     const list = Array.from(new Set(mockAsvsControls.map((c) => c.chapter)));
     return ["ALL", ...list];
   }, []);
 
-  // Filtered controls
+  // Filter kontrol aktif
   const filteredControls = useMemo(() => {
     return controls.filter((item) => {
       const matchesSearch =
@@ -46,7 +46,7 @@ export default function AsvsMatrixPage() {
     });
   }, [controls, searchQuery, selectedChapter, selectedLevel, selectedStatus]);
 
-  // Statistics
+  // Statistik Kepatuhan
   const stats = useMemo(() => {
     const total = controls.length;
     const passed = controls.filter((c) => c.status === "passed").length;
@@ -56,7 +56,7 @@ export default function AsvsMatrixPage() {
     return { total, passed, warning, failed, score };
   }, [controls]);
 
-  // Status toggle handler
+  // Handler toggle status kontrol
   const handleToggleStatus = (controlId: string) => {
     setControls((prev) =>
       prev.map((item) => {
@@ -81,24 +81,37 @@ export default function AsvsMatrixPage() {
     setSelectedStatus("ALL");
   };
 
+  const getStatusLabel = (status: ComplianceStatus) => {
+    switch (status) {
+      case "passed":
+        return "Terpenuhi";
+      case "warning":
+        return "Peringatan";
+      case "failed":
+        return "Gagal";
+      default:
+        return "Tertunda";
+    }
+  };
+
   return (
     <main id="main-content" className="flex-1 py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
-      {/* Header */}
+      {/* Header Halaman */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <div className="flex items-center gap-2 mb-2">
             <Badge variant="cyan" size="sm">
-              Standard Engine
+              Mesin Standar Kepatuhan
             </Badge>
             <span className="text-xs text-slate-500">•</span>
             <span className="text-xs text-slate-400 font-mono">OWASP ASVS v4.0.3</span>
           </div>
           <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
-            OWASP ASVS Compliance Matrix
+            Matriks Kepatuhan OWASP ASVS
           </h1>
           <p className="mt-2 text-sm sm:text-base text-slate-400 max-w-3xl leading-relaxed">
-            Interactive verification matrix mapping application security requirements to
-            OWASP ASVS Levels and NIST SP 800-53 controls. Toggle verification states to assess live compliance score.
+            Matriks verifikasi interaktif yang memetakan kriteria keamanan aplikasi ke
+            Level OWASP ASVS dan kontrol NIST SP 800-53. Klik lencana status untuk mengubah status verifikasi secara langsung.
           </p>
         </div>
 
@@ -114,7 +127,7 @@ export default function AsvsMatrixPage() {
                 </svg>
               }
             >
-              Run Live Header Scan
+              Pindai Header Langsung
             </Button>
           </Link>
           <Link href="/report">
@@ -128,7 +141,7 @@ export default function AsvsMatrixPage() {
                 </svg>
               }
             >
-              Executive Report
+              Laporan Eksekutif
             </Button>
           </Link>
         </div>
@@ -137,35 +150,35 @@ export default function AsvsMatrixPage() {
       {/* Compliance Score Gauge & Stats Banner */}
       <section aria-labelledby="score-banner-heading" className="mb-8">
         <h2 id="score-banner-heading" className="sr-only">
-          Current Compliance Status
+          Status Kepatuhan Saat Ini
         </h2>
         <Card variant="glass" className="border-cyan-500/20">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-            {/* Score circle / percentage */}
+            {/* Skor persentase */}
             <div className="md:col-span-4 flex items-center gap-5">
               <div className="h-20 w-20 rounded-2xl bg-gradient-to-tr from-cyan-500/20 to-blue-500/20 border border-cyan-500/40 flex flex-col items-center justify-center shrink-0">
                 <span className="text-2xl font-extrabold text-cyan-400 font-mono">
                   {stats.score}%
                 </span>
                 <span className="text-[10px] text-slate-400 uppercase font-semibold">
-                  Compliance
+                  Kepatuhan
                 </span>
               </div>
               <div>
                 <h3 className="font-bold text-white text-base">
-                  ASVS Verification Score
+                  Skor Verifikasi ASVS
                 </h3>
                 <p className="text-xs text-slate-400 mt-1">
-                  Dynamically updated based on active verification states.
+                  Dihitung secara dinamis berdasarkan status verifikasi kontrol yang aktif.
                 </p>
               </div>
             </div>
 
-            {/* Progress bar & breakdown */}
+            {/* Progress bar & rincian */}
             <div className="md:col-span-8 space-y-3">
               <ProgressBar
                 value={stats.score}
-                label="Overall ASVS Conformance"
+                label="Kesesuaian ASVS Keseluruhan"
                 colorScheme="dynamic"
                 size="md"
               />
@@ -175,19 +188,19 @@ export default function AsvsMatrixPage() {
                   <span className="text-emerald-400 font-bold block text-sm">
                     {stats.passed}
                   </span>
-                  <span className="text-slate-400 text-[11px]">Passed Controls</span>
+                  <span className="text-slate-400 text-[11px]">Kontrol Terpenuhi</span>
                 </div>
                 <div className="p-2 rounded-xl bg-amber-950/40 border border-amber-800/50">
                   <span className="text-amber-400 font-bold block text-sm">
                     {stats.warning}
                   </span>
-                  <span className="text-slate-400 text-[11px]">Action Required</span>
+                  <span className="text-slate-400 text-[11px]">Tindakan Diperlukan</span>
                 </div>
                 <div className="p-2 rounded-xl bg-rose-950/40 border border-rose-800/50">
                   <span className="text-rose-400 font-bold block text-sm">
                     {stats.failed}
                   </span>
-                  <span className="text-slate-400 text-[11px]">Non-Compliant</span>
+                  <span className="text-slate-400 text-[11px]">Tidak Sesuai</span>
                 </div>
               </div>
             </div>
@@ -198,19 +211,19 @@ export default function AsvsMatrixPage() {
       {/* Filter and Search Bar */}
       <section aria-labelledby="filters-heading" className="mb-6 space-y-4">
         <h2 id="filters-heading" className="sr-only">
-          Control Filters
+          Filter Kontrol Verifikasi
         </h2>
         <Card variant="subtle" className="p-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-center">
             {/* Search Input */}
             <div className="lg:col-span-5">
               <label htmlFor="search-asvs-input" className="sr-only">
-                Search verification controls
+                Cari kontrol verifikasi
               </label>
               <Input
                 id="search-asvs-input"
-                aria-label="Search verification controls"
-                placeholder="Search controls (e.g. crypto, session, V2.1)..."
+                aria-label="Cari kontrol verifikasi"
+                placeholder="Cari kontrol (contoh: kriptografi, sesi, V2.1)..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 leftIcon={
@@ -224,7 +237,7 @@ export default function AsvsMatrixPage() {
             {/* Chapter Filter */}
             <div className="lg:col-span-3">
               <label htmlFor="filter-chapter" className="sr-only">
-                Filter by Chapter
+                Filter berdasarkan Bab
               </label>
               <select
                 id="filter-chapter"
@@ -234,7 +247,7 @@ export default function AsvsMatrixPage() {
               >
                 {chapters.map((ch) => (
                   <option key={ch} value={ch}>
-                    {ch === "ALL" ? "All Chapters" : ch}
+                    {ch === "ALL" ? "Semua Bab" : ch}
                   </option>
                 ))}
               </select>
@@ -243,7 +256,7 @@ export default function AsvsMatrixPage() {
             {/* Level Filter */}
             <div className="lg:col-span-2">
               <label htmlFor="filter-level" className="sr-only">
-                Filter by Level
+                Filter berdasarkan Level
               </label>
               <select
                 id="filter-level"
@@ -251,7 +264,7 @@ export default function AsvsMatrixPage() {
                 onChange={(e) => setSelectedLevel(e.target.value)}
                 className="w-full rounded-xl bg-slate-950 border border-slate-800 px-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-cyan-400"
               >
-                <option value="ALL">All Levels</option>
+                <option value="ALL">Semua Level</option>
                 <option value="L1">Level 1 (L1)</option>
                 <option value="L2">Level 2 (L2)</option>
               </select>
@@ -265,7 +278,7 @@ export default function AsvsMatrixPage() {
                 onClick={handleResetFilters}
                 className="text-xs text-slate-400 hover:text-white"
               >
-                Reset Filters
+                Atur Ulang Filter
               </Button>
             </div>
           </div>
@@ -276,15 +289,15 @@ export default function AsvsMatrixPage() {
       <section aria-labelledby="controls-heading" className="space-y-4">
         <div className="flex items-center justify-between text-xs text-slate-400 px-1">
           <h2 id="controls-heading" className="font-semibold text-slate-200">
-            Showing {filteredControls.length} of {controls.length} Verification Criteria
+            Menampilkan {filteredControls.length} dari {controls.length} Kriteria Verifikasi
           </h2>
-          <span>Click status badge on any control to toggle verification</span>
+          <span>Klik lencana status pada setiap kontrol untuk beralih status</span>
         </div>
 
         {filteredControls.length === 0 ? (
           <Card variant="subtle" className="text-center py-12">
             <p className="text-sm text-slate-300">
-              No ASVS controls match your current search and filter criteria.
+              Tidak ada kontrol ASVS yang cocok dengan kata kunci atau filter saat ini.
             </p>
             <Button
               variant="outline"
@@ -292,7 +305,7 @@ export default function AsvsMatrixPage() {
               onClick={handleResetFilters}
               className="mt-4"
             >
-              Clear Filters
+              Hapus Filter
             </Button>
           </Card>
         ) : (
@@ -333,7 +346,7 @@ export default function AsvsMatrixPage() {
                     {control.notes && (
                       <div className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/80 text-xs text-slate-400 flex items-start gap-2">
                         <span className="text-cyan-400 font-semibold shrink-0">
-                          Audit Evidence:
+                          Bukti Audit:
                         </span>
                         <span>{control.notes}</span>
                       </div>
@@ -347,14 +360,14 @@ export default function AsvsMatrixPage() {
                       id={`toggle-${control.id}`}
                       onClick={() => handleToggleStatus(control.id)}
                       className="cursor-pointer group flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded-full"
-                      aria-label={`Toggle verification status for ${control.id}, currently ${control.status}`}
+                      aria-label={`Ubah status verifikasi untuk ${control.id}, saat ini ${getStatusLabel(control.status)}`}
                     >
                       <Badge variant={control.status} size="md" dot>
-                        {control.status}
+                        {getStatusLabel(control.status)}
                       </Badge>
                     </button>
                     <span className="text-[10px] text-slate-500 select-none hidden sm:inline">
-                      Click to toggle
+                      Klik untuk beralih
                     </span>
                   </div>
                 </div>

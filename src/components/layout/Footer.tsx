@@ -31,20 +31,20 @@ export function Footer() {
               </span>
             </div>
             <p className="text-xs text-slate-400 max-w-md leading-relaxed">
-              Automated Security &amp; Compliance Assessment platform engineered
-              to audit web targets against OWASP ASVS v4.0.3 and NIST SP 800-53
-              guidelines using industrial-grade cryptography.
+              Platform Penilaian Keamanan &amp; Kepatuhan Otomatis yang dirancang
+              untuk mengaudit target web terhadap panduan OWASP ASVS v4.0.3 dan NIST SP 800-53
+              menggunakan kriptografi berstandar industri.
             </p>
             <div className="flex items-center gap-2 pt-1 text-xs text-emerald-400 font-medium">
               <span className="h-2 w-2 rounded-full bg-emerald-400 inline-block animate-pulse" />
-              <span>All Cryptographic &amp; Audit Services Operational</span>
+              <span>Seluruh Layanan Kriptografi &amp; Audit Beroperasi Normal</span>
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
             <h3 className="text-xs font-semibold text-slate-200 uppercase tracking-wider mb-3">
-              Platform Modules
+              Modul Platform
             </h3>
             <ul className="space-y-2 text-xs">
               <li>
@@ -52,7 +52,7 @@ export function Footer() {
                   href="/scan"
                   className="hover:text-cyan-400 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400 rounded"
                 >
-                  Security Header Scanner
+                  Pemindai Header Keamanan
                 </Link>
               </li>
               <li>
@@ -60,7 +60,7 @@ export function Footer() {
                   href="/asvs"
                   className="hover:text-cyan-400 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400 rounded"
                 >
-                  OWASP ASVS Matrix
+                  Matriks OWASP ASVS
                 </Link>
               </li>
               <li>
@@ -68,7 +68,7 @@ export function Footer() {
                   href="/report"
                   className="hover:text-cyan-400 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400 rounded"
                 >
-                  Audit Reports &amp; History
+                  Laporan &amp; Riwayat Audit
                 </Link>
               </li>
             </ul>
@@ -77,7 +77,7 @@ export function Footer() {
           {/* Standards & References */}
           <div>
             <h3 className="text-xs font-semibold text-slate-200 uppercase tracking-wider mb-3">
-              Compliance Frameworks
+              Kerangka Kepatuhan
             </h3>
             <ul className="space-y-2 text-xs">
               <li>
@@ -97,7 +97,7 @@ export function Footer() {
         </div>
 
         <div className="pt-8 border-t border-slate-900/90 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-          <p>© {new Date().getFullYear()} Tripleemat Security Assessor. Educational &amp; Enterprise Project.</p>
+          <p>© 2026 Tripleemat Security Assessor. Educational &amp; Enterprise Project.</p>
           <div className="flex items-center gap-4">
             <span className="text-slate-400">Next.js 16 • React 19 • Tailwind CSS</span>
             <span>•</span>
