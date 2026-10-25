@@ -1,11 +1,20 @@
 import React, { HTMLAttributes } from "react";
 
+export type ProgressBarColor = "dynamic" | "ok" | "warn" | "fail" | "accent" | "info";
+
 export interface ProgressBarProps extends HTMLAttributes<HTMLDivElement> {
   value: number;
   max?: number;
   label?: string;
   showValueLabel?: boolean;
-  colorScheme?: "dynamic" | "cyan" | "emerald" | "amber" | "rose";
+  /**
+   * colorScheme / variant:
+   * - "dynamic": pilih warna status berdasarkan persentase (ok/warn/fail)
+   * - "ok" / "warn" / "fail": warna status tetap
+   * - "accent" / "info": warna brand/info (untuk progress non-status)
+   */
+  colorScheme?: ProgressBarColor;
+  variant?: ProgressBarColor;
   size?: "sm" | "md" | "lg";
 }
 
@@ -14,54 +23,57 @@ export function ProgressBar({
   max = 100,
   label,
   showValueLabel = true,
-  colorScheme = "dynamic",
+  colorScheme,
+  variant,
   size = "md",
   className = "",
   ...props
 }: ProgressBarProps) {
+  const activeColor: ProgressBarColor = colorScheme || variant || "dynamic";
   const percentage = Math.min(100, Math.max(0, Math.round((value / max) * 100)));
 
   const sizeClasses = {
     sm: "h-1.5",
-    md: "h-2.5",
-    lg: "h-4",
+    md: "h-2",
+    lg: "h-3",
   };
 
-  const getColorClass = () => {
-    if (colorScheme === "cyan") return "bg-cyan-500 shadow-cyan-500/50";
-    if (colorScheme === "emerald") return "bg-emerald-500 shadow-emerald-500/50";
-    if (colorScheme === "amber") return "bg-amber-500 shadow-amber-500/50";
-    if (colorScheme === "rose") return "bg-rose-500 shadow-rose-500/50";
+  const getColorClass = (): string => {
+    if (activeColor === "ok")      return "bg-ok";
+    if (activeColor === "warn")    return "bg-warn";
+    if (activeColor === "fail")    return "bg-fail";
+    if (activeColor === "accent" || activeColor === "info") return "bg-accent";
 
-    // Dynamic based on percentage
-    if (percentage >= 80) return "bg-gradient-to-r from-emerald-500 to-cyan-400 shadow-emerald-500/50";
-    if (percentage >= 50) return "bg-gradient-to-r from-amber-500 to-yellow-400 shadow-amber-500/50";
-    return "bg-gradient-to-r from-rose-600 to-red-500 shadow-rose-500/50";
+    // Dynamic berdasarkan persentase
+    if (percentage >= 80) return "bg-ok";
+    if (percentage >= 50) return "bg-warn";
+    return "bg-fail";
   };
 
   return (
     <div className={`w-full space-y-1.5 ${className}`} {...props}>
       {(label || showValueLabel) && (
-        <div className="flex justify-between items-center text-xs text-slate-300 font-medium">
+        <div className="flex justify-between items-center text-xs text-text-2 font-medium">
           {label && <span>{label}</span>}
           {showValueLabel && (
-            <span className="font-mono text-slate-200">
+            <span className="font-mono text-text-3 tabular-nums">
               {percentage}%
             </span>
           )}
         </div>
       )}
 
+      {/* Track bar: bg-surface-2, border-border (WCAG 1.4.11 boundary) */}
       <div
+        className={`w-full bg-surface-2 border border-border rounded-full overflow-hidden ${sizeClasses[size]}`}
         role="progressbar"
-        aria-valuenow={percentage}
+        aria-valuenow={value}
         aria-valuemin={0}
-        aria-valuemax={100}
+        aria-valuemax={max}
         aria-label={label || "Kemajuan"}
-        className={`w-full rounded-full bg-slate-800/80 overflow-hidden ${sizeClasses[size]}`}
       >
         <div
-          className={`h-full rounded-full transition-all duration-500 shadow-sm ${getColorClass()}`}
+          className={`${getColorClass()} h-full transition-[width] duration-300 ease-out`}
           style={{ width: `${percentage}%` }}
         />
       </div>

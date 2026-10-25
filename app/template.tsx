@@ -13,8 +13,12 @@ export default function Template({
   children: React.ReactNode;
 }) {
   return (
-    <div className="w-full flex-1 flex flex-col animate-page-enter">
-      {children}
-    </div>
+    <>
+      <div className="page-transition-progress" aria-hidden="true" />
+      <div className="cinematic-page-curtain" aria-hidden="true" />
+      <div className="w-full flex-1 flex flex-col animate-page-enter">
+        {children}
+      </div>
+    </>
   );
 }

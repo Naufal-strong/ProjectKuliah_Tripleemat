@@ -8,16 +8,21 @@ import { Badge } from "../../src/components/ui/Badge";
 import { Input } from "../../src/components/ui/Input";
 import { Alert } from "../../src/components/ui/Alert";
 import { ProgressBar } from "../../src/components/ui/ProgressBar";
+import { PageHeader } from "../../src/components/ui/PageHeader";
 import { ScanFormData, FormErrors, ScanResult } from "../../src/types";
 import { defaultSecurityHeaders } from "../../src/data/mockSecurityHeaders";
 import { sampleScanResults } from "../../src/data/mockScans";
+import { skemaTarget } from "@/lib/skema";
+import { z } from "zod";
 
 export default function ScannerPage() {
   // Form State
   const [formData, setFormData] = useState<ScanFormData>({
+    label: "",
     targetUrl: "",
     auditScope: "standard",
     asvsLevel: "L1",
+    intervalJam: "",
     auditorEmail: "",
     notifyOnComplete: false,
     notes: "",
@@ -30,37 +35,29 @@ export default function ScannerPage() {
   const [scanStepText, setScanStepText] = useState("");
   const [activeResult, setActiveResult] = useState<ScanResult | null>(null);
 
-  // Client-side Validation Logic
+  // Validasi Skema Zod 4 (Modul 5 — Validasi deklaratif tanpa if-else manual)
   const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
+    const hasil = skemaTarget.safeParse({
+      ...formData,
+      notifyOnComplete: formData.notifyOnComplete ? "on" : "false",
+    });
 
-    // Validasi URL
-    const urlTrimmed = formData.targetUrl.trim();
-    if (!urlTrimmed) {
-      newErrors.targetUrl = "URL target wajib diisi. Silakan tentukan endpoint aplikasi web yang akan diaudit.";
-    } else if (!/^https?:\/\//i.test(urlTrimmed)) {
-      newErrors.targetUrl = "Protokol tidak valid. URL target harus diawali dengan https:// atau http:// (contoh: https://portal.kampus.ac.id).";
-    } else {
-      try {
-        const parsed = new URL(urlTrimmed);
-        if (!parsed.hostname || parsed.hostname.indexOf(".") === -1) {
-          newErrors.targetUrl = "Nama domain tidak valid. Pastikan menyertakan hostname yang valid (contoh: https://example.com).";
+    if (!hasil.success) {
+      const fieldErrors = z.flattenError(hasil.error).fieldErrors;
+      const newErrors: FormErrors = {};
+
+      for (const [key, messages] of Object.entries(fieldErrors)) {
+        if (messages && messages.length > 0) {
+          newErrors[key as keyof FormErrors] = messages[0];
         }
-      } catch {
-        newErrors.targetUrl = "Format URL tidak valid. Masukkan URL yang mematuhi standar RFC.";
       }
+
+      setErrors(newErrors);
+      return false;
     }
 
-    // Validasi Email jika diisi
-    if (formData.auditorEmail && formData.auditorEmail.trim() !== "") {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(formData.auditorEmail.trim())) {
-        newErrors.auditorEmail = "Format email tidak valid. Masukkan alamat email yang benar (contoh: auditor@kampus.ac.id) atau kosongkan kolom.";
-      }
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    setErrors({});
+    return true;
   };
 
   // Form Submission
@@ -128,41 +125,37 @@ export default function ScannerPage() {
     }, 2200);
   };
 
-  const handleQuickUrlFill = (url: string) => {
-    setFormData((prev) => ({ ...prev, targetUrl: url }));
+  const handleQuickUrlFill = (url: string, suggestedLabel: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      targetUrl: url,
+      label: prev.label ? prev.label : suggestedLabel,
+    }));
     if (errors.targetUrl) {
       setErrors((prev) => ({ ...prev, targetUrl: undefined }));
+    }
+    if (errors.label) {
+      setErrors((prev) => ({ ...prev, label: undefined }));
     }
   };
 
   return (
-    <main id="main-content" className="flex-1 py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+    <main id="main-content" className="flex-1 py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full space-y-8">
       {/* Page Header */}
-      <div className="mb-8">
-        <div className="flex flex-wrap items-center gap-2 mb-2">
-          <Badge variant="cyan" size="sm">
-            Modul Pemindai Utama
-          </Badge>
-          <span className="text-xs text-slate-500">•</span>
-          <span className="text-xs text-slate-400 font-mono">OWASP ASVS &amp; NIST SP 800-53</span>
-        </div>
-        <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
-          Pemindai Pasif Keamanan &amp; Header
-        </h1>
-        <p className="mt-2 text-sm sm:text-base text-slate-400 max-w-3xl leading-relaxed">
-          Jalankan evaluasi keamanan non-intrusif pada aplikasi web. Analisis header respons HTTP,
-          verifikasi parameter enkripsi SSL/TLS, dan hasilkan catatan audit bertanda tangan kriptografis.
-        </p>
-      </div>
+      <PageHeader
+        title="Pemindai Pasif Keamanan & Header"
+        eyebrow="Modul Pemindai Utama"
+        description="Jalankan evaluasi keamanan non-intrusif pada aplikasi web. Analisis header respons HTTP, verifikasi parameter enkripsi SSL/TLS, dan hasilkan catatan audit bertanda tangan kriptografis."
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Column: Form Konfigurasi Audit */}
         <section aria-labelledby="form-heading" className="lg:col-span-6 space-y-6">
-          <Card variant="glass">
+          <Card variant="default">
             <CardHeader>
               <CardTitle id="form-heading" as="h2" className="text-lg flex items-center gap-2">
                 <svg
-                  className="w-5 h-5 text-cyan-400"
+                  className="w-5 h-5 text-accent"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -178,7 +171,7 @@ export default function ScannerPage() {
                 Konfigurasi Target Audit
               </CardTitle>
               <CardDescription>
-                Masukkan alamat web target dan cakupan audit. Seluruh masukan diverifikasi langsung di sisi klien.
+                Masukkan alamat web target dan cakupan audit. Seluruh masukan diverifikasi langsung di sisi klien dengan skema Zod.
               </CardDescription>
             </CardHeader>
 
@@ -186,7 +179,7 @@ export default function ScannerPage() {
               {/* Form Level Error Alert */}
               {isSubmitted && Object.keys(errors).length > 0 && (
                 <Alert
-                  variant="danger"
+                  variant="fail"
                   title="Validasi Formulir Gagal"
                   className="mb-6"
                 >
@@ -195,6 +188,32 @@ export default function ScannerPage() {
               )}
 
               <form onSubmit={handleSubmit} noValidate className="space-y-5">
+                {/* Target Label (Nama Target) Input */}
+                <div>
+                  <Input
+                    label="Nama / Label Target Audit"
+                    id="target-label-input"
+                    name="label"
+                    isRequired
+                    type="text"
+                    value={formData.label}
+                    onChange={(e) => {
+                      setFormData({ ...formData, label: e.target.value });
+                      if (errors.label) {
+                        setErrors({ ...errors, label: undefined });
+                      }
+                    }}
+                    error={errors.label}
+                    helperText="Minimal 3 karakter, maksimal 80 karakter (contoh: Portal SIAKAD Kampus)"
+                    placeholder="Portal Akademik Utama"
+                    leftIcon={
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                      </svg>
+                    }
+                  />
+                </div>
+
                 {/* Target URL Input */}
                 <div>
                   <Input
@@ -221,19 +240,19 @@ export default function ScannerPage() {
                   />
 
                   {/* Quick Fill Suggestions */}
-                  <div className="mt-2 flex flex-wrap items-center gap-1.5 text-xs text-slate-400">
-                    <span className="text-slate-500">Pilihan cepat:</span>
+                  <div className="mt-2 flex flex-wrap items-center gap-1.5 text-xs text-text-3">
+                    <span>Pilihan cepat:</span>
                     <button
                       type="button"
-                      onClick={() => handleQuickUrlFill("https://portal.kampus.ac.id")}
-                      className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-cyan-300 hover:text-cyan-200 transition-colors cursor-pointer"
+                      onClick={() => handleQuickUrlFill("https://portal.kampus.ac.id", "Portal Akademik Kampus")}
+                      className="px-2 py-0.5 rounded bg-surface-2 hover:bg-surface-0 text-text-2 hover:text-text-1 border border-border transition-colors cursor-pointer"
                     >
                       portal.kampus.ac.id
                     </button>
                     <button
                       type="button"
-                      onClick={() => handleQuickUrlFill("https://library.kampus.ac.id")}
-                      className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-cyan-300 hover:text-cyan-200 transition-colors cursor-pointer"
+                      onClick={() => handleQuickUrlFill("https://library.kampus.ac.id", "Perpustakaan Digital Kampus")}
+                      className="px-2 py-0.5 rounded bg-surface-2 hover:bg-surface-0 text-text-2 hover:text-text-1 border border-border transition-colors cursor-pointer"
                     >
                       library.kampus.ac.id
                     </button>
@@ -244,7 +263,7 @@ export default function ScannerPage() {
                 <div>
                   <label
                     htmlFor="audit-scope-select"
-                    className="block text-sm font-medium text-slate-200 mb-1.5"
+                    className="block text-sm font-medium text-text-2 mb-1.5"
                   >
                     Cakupan Audit
                   </label>
@@ -258,7 +277,7 @@ export default function ScannerPage() {
                         auditScope: e.target.value as ScanFormData["auditScope"],
                       })
                     }
-                    className="w-full rounded-xl bg-slate-950/70 border border-slate-800 px-3.5 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20"
+                    className="w-full rounded-lg bg-surface-1 border border-border-control px-3.5 py-2.5 text-sm text-text-1 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
                   >
                     <option value="standard">Standar (Header Keamanan HTTP &amp; TLS)</option>
                     <option value="full">Penilaian Penuh (Header, SSL, &amp; Matriks ASVS)</option>
@@ -268,17 +287,17 @@ export default function ScannerPage() {
 
                 {/* ASVS Verification Level */}
                 <fieldset className="space-y-2">
-                  <legend className="text-sm font-medium text-slate-200">
+                  <legend className="text-sm font-medium text-text-2">
                     Target Level Verifikasi OWASP ASVS
                   </legend>
                   <div className="grid grid-cols-3 gap-2">
                     {(["L1", "L2", "L3"] as const).map((level) => (
                       <label
                         key={level}
-                        className={`flex items-center justify-center p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
+                        className={`flex items-center justify-center p-2.5 rounded-lg border text-xs font-medium cursor-pointer transition-colors ${
                           formData.asvsLevel === level
-                            ? "bg-cyan-950/60 border-cyan-500/80 text-cyan-300 shadow-sm"
-                            : "bg-slate-950/40 border-slate-800 text-slate-400 hover:text-slate-200"
+                            ? "bg-accent text-accent-text border-accent font-semibold"
+                            : "bg-surface-2 border-border text-text-2 hover:text-text-1"
                         }`}
                       >
                         <input
@@ -293,7 +312,7 @@ export default function ScannerPage() {
                       </label>
                     ))}
                   </div>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-text-3">
                     Level 1 adalah tolok ukur dasar; Level 2 direkomendasikan untuk aplikasi yang menangani data sensitif.
                   </p>
                 </fieldset>
@@ -321,8 +340,62 @@ export default function ScannerPage() {
                   }
                 />
 
-                {/* Cryptographic Signing Checkbox */}
-                <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-950/40 border border-slate-800">
+                {/* Scan Interval Input (Optional) */}
+                <Input
+                  label="Interval Pemindaian Berulang (Jam, Opsional)"
+                  id="interval-jam-input"
+                  name="intervalJam"
+                  type="number"
+                  min={1}
+                  max={168}
+                  value={formData.intervalJam?.toString() ?? ""}
+                  onChange={(e) => {
+                    setFormData({ ...formData, intervalJam: e.target.value });
+                    if (errors.intervalJam) {
+                      setErrors({ ...errors, intervalJam: undefined });
+                    }
+                  }}
+                  error={errors.intervalJam}
+                  helperText="Rentang 1–168 jam (7 hari). Kosongkan jika hanya audit sekali jalan."
+                  placeholder="24"
+                  leftIcon={
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  }
+                />
+
+                {/* Notes Input (Optional) */}
+                <div>
+                  <label htmlFor="notes-input" className="block text-sm font-medium text-text-2 mb-1.5">
+                    Catatan Tambahan Auditor (Opsional)
+                  </label>
+                  <textarea
+                    id="notes-input"
+                    name="notes"
+                    rows={2}
+                    value={formData.notes ?? ""}
+                    onChange={(e) => {
+                      setFormData({ ...formData, notes: e.target.value });
+                      if (errors.notes) {
+                        setErrors({ ...errors, notes: undefined });
+                      }
+                    }}
+                    placeholder="Contoh: Fokus pada verifikasi CSP dan mitigasi TLS usang"
+                    className={`w-full rounded-lg bg-surface-1 border px-3.5 py-2.5 text-sm text-text-1 placeholder:text-text-3 focus:outline-none transition-colors ${
+                      errors.notes
+                        ? "border-fail focus:border-fail focus:ring-1 focus:ring-fail"
+                        : "border-border-control focus:border-accent focus:ring-1 focus:ring-accent"
+                    }`}
+                  />
+                  {errors.notes ? (
+                    <p className="mt-1 text-xs text-fail">{errors.notes}</p>
+                  ) : (
+                    <p className="mt-1 text-xs text-text-3">Maksimal 300 karakter.</p>
+                  )}
+                </div>
+
+                <div className="flex items-start gap-3 p-3 rounded-lg bg-surface-2 border border-border">
                   <input
                     type="checkbox"
                     id="notify-checkbox"
@@ -330,10 +403,10 @@ export default function ScannerPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, notifyOnComplete: e.target.checked })
                     }
-                    className="mt-1 h-4 w-4 rounded border-slate-700 bg-slate-900 text-cyan-500 focus:ring-cyan-400 focus:ring-offset-slate-950"
+                    className="mt-1 h-4 w-4 rounded border-border-control bg-surface-1 text-accent focus:ring-accent"
                   />
-                  <label htmlFor="notify-checkbox" className="text-xs text-slate-300">
-                    <span className="font-semibold text-white block">
+                  <label htmlFor="notify-checkbox" className="text-xs text-text-2 cursor-pointer">
+                    <span className="font-semibold text-text-1 block">
                       Terapkan Penandatanganan Kriptografis FIPS 199
                     </span>
                     Tandatangani laporan audit dengan digest SHA-256 untuk mencegah pemalsuan temuan.
@@ -369,7 +442,7 @@ export default function ScannerPage() {
               <CardTitle as="h3" className="text-base flex items-center justify-between">
                 <span>Riwayat Audit Tersimpan</span>
                 <Badge variant="info" size="sm">
-                  Data Tiruan
+                  Data Audit
                 </Badge>
               </CardTitle>
               <CardDescription>
@@ -381,13 +454,13 @@ export default function ScannerPage() {
                 {sampleScanResults.map((item) => (
                   <div
                     key={item.id}
-                    className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center justify-between gap-3 text-xs"
+                    className="p-3 rounded-lg bg-surface-2 border border-border flex items-center justify-between gap-3 text-xs"
                   >
                     <div className="min-w-0 flex-1">
-                      <div className="font-semibold text-white truncate">
+                      <div className="font-semibold text-text-1 truncate">
                         {item.targetUrl}
                       </div>
-                      <div className="text-slate-400 text-[11px] mt-0.5">
+                      <div className="text-text-3 text-xs mt-0.5">
                         Skor: {item.overallScore}/100 • Peringkat: {item.grade} • {item.findings.length} temuan
                       </div>
                     </div>
@@ -403,7 +476,7 @@ export default function ScannerPage() {
                         Inspeksi
                       </Button>
                       <Link href={`/report/${item.id}`}>
-                        <Button size="sm" variant="outline" className="border-cyan-500/30 text-cyan-400 hover:bg-cyan-950/40">
+                        <Button size="sm" variant="outline">
                           Laporan [id] →
                         </Button>
                       </Link>
@@ -419,24 +492,24 @@ export default function ScannerPage() {
         <section aria-labelledby="results-heading" className="lg:col-span-6 space-y-6">
           {/* Scanning Progress Banner */}
           {isScanning && (
-            <Card variant="glow" className="animate-pulse-subtle">
+            <Card variant="default">
               <CardHeader>
-                <CardTitle id="progress-heading" as="h2" className="text-lg text-cyan-300">
+                <CardTitle id="progress-heading" as="h2" className="text-lg text-text-1">
                   Audit Sedang Berlangsung
                 </CardTitle>
                 <CardDescription>
-                  Memeriksa postur keamanan pada <span className="font-mono text-white">{formData.targetUrl}</span>
+                  Memeriksa postur keamanan pada <span className="font-mono text-text-1">{formData.targetUrl}</span>
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <ProgressBar
                   value={scanProgress}
                   label="Kemajuan Pemindaian"
-                  colorScheme="cyan"
+                  variant="info"
                   size="md"
                 />
-                <div className="flex items-center gap-2 text-xs font-mono text-cyan-300 bg-slate-950/80 p-3 rounded-xl border border-cyan-500/20">
-                  <span className="h-2 w-2 rounded-full bg-cyan-400 animate-ping" />
+                <div className="flex items-center gap-2 text-xs font-mono text-accent bg-surface-2 p-3 rounded-lg border border-border">
+                  <span className="h-2 w-2 rounded-full bg-accent inline-block animate-pulse" aria-hidden="true" />
                   <span>{scanStepText}</span>
                 </div>
               </CardContent>
@@ -447,7 +520,7 @@ export default function ScannerPage() {
           {activeResult && !isScanning ? (
             <div className="space-y-6">
               {/* Scorecard Summary Card */}
-              <Card variant="glass">
+              <Card variant="default">
                 <CardHeader className="flex-row items-center justify-between space-y-0 pb-4">
                   <div>
                     <CardTitle id="results-heading" as="h2" className="text-xl">
@@ -458,11 +531,11 @@ export default function ScannerPage() {
                     </CardDescription>
                   </div>
                   <div className="text-right">
-                    <div className="text-3xl font-extrabold text-cyan-400 font-mono">
+                    <div className="text-3xl font-bold text-accent font-mono tabular-nums">
                       {activeResult.overallScore}/100
                     </div>
                     <Badge
-                      variant={activeResult.grade === "A" ? "passed" : activeResult.grade === "B" ? "warning" : "critical"}
+                      variant={activeResult.grade === "A" ? "ok" : activeResult.grade === "B" ? "warn" : "fail"}
                       size="sm"
                     >
                       Peringkat {activeResult.grade}
@@ -473,35 +546,35 @@ export default function ScannerPage() {
                 <CardContent className="space-y-5">
                   {/* Status Metrics */}
                   <div className="grid grid-cols-3 gap-3 text-center text-xs">
-                    <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800">
-                      <div className="text-slate-400">Header Lolos</div>
-                      <div className="text-base font-bold text-emerald-400 mt-0.5">
+                    <div className="p-3 rounded-lg bg-surface-2 border border-border">
+                      <div className="text-text-3">Header Lolos</div>
+                      <div className="text-base font-bold text-ok mt-0.5 tabular-nums">
                         {activeResult.headersPassed} / {activeResult.headersAnalyzed}
                       </div>
                     </div>
-                    <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800">
-                      <div className="text-slate-400">Protokol TLS</div>
-                      <div className="text-base font-bold text-cyan-400 mt-0.5">
+                    <div className="p-3 rounded-lg bg-surface-2 border border-border">
+                      <div className="text-text-3">Protokol TLS</div>
+                      <div className="text-base font-bold text-accent mt-0.5">
                         {activeResult.sslInfo.protocol}
                       </div>
                     </div>
-                    <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800">
-                      <div className="text-slate-400">Total Temuan</div>
-                      <div className="text-base font-bold text-amber-400 mt-0.5">
+                    <div className="p-3 rounded-lg bg-surface-2 border border-border">
+                      <div className="text-text-3">Total Temuan</div>
+                      <div className="text-base font-bold text-warn mt-0.5 tabular-nums">
                         {activeResult.findings.length} Butir
                       </div>
                     </div>
                   </div>
 
                   {/* SHA-256 Report Signature */}
-                  <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-[11px] font-mono">
-                    <div className="text-slate-400 flex items-center gap-1.5 mb-1">
-                      <svg className="w-3.5 h-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <div className="p-3 rounded-lg bg-surface-2 border border-border text-xs font-mono">
+                    <div className="text-text-3 flex items-center gap-1.5 mb-1 font-sans">
+                      <svg className="w-3.5 h-3.5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                       </svg>
                       <span>Tanda Tangan Integritas Laporan (SHA-256):</span>
                     </div>
-                    <span className="text-cyan-300 break-all">{activeResult.integrityHash}</span>
+                    <span className="text-accent break-all">{activeResult.integrityHash}</span>
                   </div>
 
                   {/* Link to Full Executive Report */}
@@ -539,20 +612,23 @@ export default function ScannerPage() {
                   <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs border-collapse">
                       <thead>
-                        <tr className="border-b border-slate-800 text-slate-400">
+                        <tr className="border-b border-border text-text-3">
                           <th className="py-2.5 pr-4 font-semibold">Nama Header</th>
                           <th className="py-2.5 px-4 font-semibold">Status</th>
                           <th className="py-2.5 pl-4 font-semibold">Rekomendasi</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-800/60 font-mono">
+                      <tbody className="divide-y divide-border">
                         {activeResult.headers.map((h) => (
-                          <tr key={h.name} className="hover:bg-slate-900/50">
-                            <td className="py-2.5 pr-4 text-white font-medium">
+                          <tr key={h.name} className="hover:bg-surface-2 transition-colors">
+                            <td className="py-2.5 pr-4 text-text-1 font-mono font-medium">
                               {h.name}
                             </td>
                             <td className="py-2.5 px-4">
-                              <Badge variant={h.status} size="sm">
+                              <Badge
+                                variant={h.status === "passed" ? "ok" : h.status === "warning" ? "warn" : "fail"}
+                                size="sm"
+                              >
                                 {h.status === "passed"
                                   ? "Terpenuhi"
                                   : h.status === "warning"
@@ -562,7 +638,7 @@ export default function ScannerPage() {
                                   : "Tertunda"}
                               </Badge>
                             </td>
-                            <td className="py-2.5 pl-4 text-slate-300 font-sans text-xs">
+                            <td className="py-2.5 pl-4 text-text-2 text-xs">
                               {h.recommendation}
                             </td>
                           </tr>
@@ -575,16 +651,16 @@ export default function ScannerPage() {
             </div>
           ) : !isScanning ? (
             /* Empty State */
-            <Card variant="subtle" className="text-center py-16 border-dashed border-slate-800">
-              <div className="mx-auto h-12 w-12 rounded-2xl bg-slate-900 flex items-center justify-center text-slate-500 mb-4">
+            <Card variant="subtle" className="text-center py-16 border-dashed border-border">
+              <div className="mx-auto h-12 w-12 rounded-lg bg-surface-2 border border-border flex items-center justify-center text-text-3 mb-4">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
-              <h2 id="results-heading" className="text-base font-semibold text-white">
+              <h2 id="results-heading" className="text-base font-semibold text-text-1">
                 Belum Ada Hasil Pemindaian
               </h2>
-              <p className="text-xs text-slate-400 max-w-sm mx-auto mt-1">
+              <p className="text-xs text-text-3 max-w-sm mx-auto mt-1">
                 Tentukan parameter target pada formulir di sebelah kiri lalu klik &quot;Eksekusi Pemindaian Audit&quot;
                 atau telusuri salah satu contoh audit tersimpan.
               </p>

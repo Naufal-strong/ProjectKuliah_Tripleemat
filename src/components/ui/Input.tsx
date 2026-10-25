@@ -37,27 +37,31 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-sm font-medium text-slate-200"
+            className="block text-sm font-medium text-text-2"
           >
             {label}
             {isRequired && (
-              <span className="ml-1 text-rose-400 font-bold" aria-hidden="true">
+              <span className="ml-1 text-fail font-bold" aria-hidden="true">
                 *
               </span>
             )}
           </label>
         )}
 
-        <div className="relative rounded-xl shadow-sm">
+        <div className="relative">
           {leftIcon && (
             <div
-              className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400"
+              className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-text-3"
               aria-hidden="true"
             >
               {leftIcon}
             </div>
           )}
 
+          {/*
+           * border-border-control (#64748B) → kontras vs surface-0 = 4.24 ✅ WCAG 1.4.11
+           * DILARANG border-border (#1E293B) pada kontrol — kontras hanya 1.38
+           */}
           <input
             ref={ref}
             id={inputId}
@@ -65,19 +69,19 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             aria-invalid={!!error}
             aria-describedby={describedBy}
             aria-required={isRequired}
-            className={`w-full rounded-xl bg-slate-950/70 border px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 transition-colors duration-150 focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50 ${
+            className={`w-full rounded-lg bg-surface-1 border px-3.5 py-2.5 text-sm text-text-1 placeholder-text-3 transition-colors duration-150 focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50 ${
               leftIcon ? "pl-10" : ""
             } ${rightIcon ? "pr-10" : ""} ${
               error
-                ? "border-rose-500/80 focus:border-rose-500 focus:ring-rose-500/30"
-                : "border-slate-800 focus:border-cyan-400 focus:ring-cyan-400/20"
+                ? "border-fail focus:border-fail focus:ring-fail/20"
+                : "border-border-control focus:border-accent focus:ring-accent/15"
             } ${className}`}
             {...props}
           />
 
           {rightIcon && (
             <div
-              className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400"
+              className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-text-3"
               aria-hidden="true"
             >
               {rightIcon}
@@ -90,7 +94,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             id={errorId}
             role="alert"
             aria-live="polite"
-            className="text-xs text-rose-400 font-medium flex items-center gap-1 mt-1"
+            className="text-xs text-fail font-medium flex items-center gap-1 mt-1"
           >
             <svg
               className="w-3.5 h-3.5 shrink-0"
@@ -109,7 +113,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
 
         {!error && helperText && (
-          <p id={helperId} className="text-xs text-slate-400">
+          <p id={helperId} className="text-xs text-text-3">
             {helperText}
           </p>
         )}

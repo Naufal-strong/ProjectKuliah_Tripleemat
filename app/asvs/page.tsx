@@ -7,6 +7,8 @@ import { Card } from "../../src/components/ui/Card";
 import { Badge } from "../../src/components/ui/Badge";
 import { Input } from "../../src/components/ui/Input";
 import { ProgressBar } from "../../src/components/ui/ProgressBar";
+import { PageHeader } from "../../src/components/ui/PageHeader";
+import { Section } from "../../src/components/ui/Section";
 import { AsvsControl, ComplianceStatus } from "../../src/types";
 import { mockAsvsControls } from "../../src/data/mockAsvsControls";
 
@@ -95,80 +97,68 @@ export default function AsvsMatrixPage() {
   };
 
   return (
-    <main id="main-content" className="flex-1 py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+    <main id="main-content" className="flex-1 py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full space-y-8">
       {/* Header Halaman */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            <Badge variant="cyan" size="sm">
-              Mesin Standar Kepatuhan
-            </Badge>
-            <span className="text-xs text-slate-500">•</span>
-            <span className="text-xs text-slate-400 font-mono">OWASP ASVS v4.0.3</span>
+      <PageHeader
+        title="Matriks Kepatuhan OWASP ASVS"
+        eyebrow="Mesin Standar Kepatuhan"
+        description="Matriks verifikasi interaktif yang memetakan kriteria keamanan aplikasi ke Level OWASP ASVS v4.0.3 dan kontrol NIST SP 800-53. Klik lencana status untuk mengubah status verifikasi secara langsung."
+        actions={
+          <div className="flex items-center gap-3">
+            <Link href="/scan">
+              <Button
+                id="asvs-to-scan-btn"
+                variant="outline"
+                size="sm"
+                leftIcon={
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                }
+              >
+                Pindai Header Langsung
+              </Button>
+            </Link>
+            <Link href="/report">
+              <Button
+                id="asvs-to-report-btn"
+                variant="secondary"
+                size="sm"
+                leftIcon={
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                }
+              >
+                Laporan Eksekutif
+              </Button>
+            </Link>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Matriks Kepatuhan OWASP ASVS
-          </h1>
-          <p className="mt-2 text-sm sm:text-base text-slate-400 max-w-3xl leading-relaxed">
-            Matriks verifikasi interaktif yang memetakan kriteria keamanan aplikasi ke
-            Level OWASP ASVS dan kontrol NIST SP 800-53. Klik lencana status untuk mengubah status verifikasi secara langsung.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <Link href="/scan">
-            <Button
-              id="asvs-to-scan-btn"
-              variant="outline"
-              size="sm"
-              leftIcon={
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              }
-            >
-              Pindai Header Langsung
-            </Button>
-          </Link>
-          <Link href="/report">
-            <Button
-              id="asvs-to-report-btn"
-              variant="secondary"
-              size="sm"
-              leftIcon={
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              }
-            >
-              Laporan Eksekutif
-            </Button>
-          </Link>
-        </div>
-      </div>
+        }
+      />
 
       {/* Compliance Score Gauge & Stats Banner */}
-      <section aria-labelledby="score-banner-heading" className="mb-8">
+      <section aria-labelledby="score-banner-heading">
         <h2 id="score-banner-heading" className="sr-only">
           Status Kepatuhan Saat Ini
         </h2>
-        <Card variant="glass" className="border-cyan-500/20">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+        <Card variant="default">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center p-2">
             {/* Skor persentase */}
-            <div className="md:col-span-4 flex items-center gap-5">
-              <div className="h-20 w-20 rounded-2xl bg-gradient-to-tr from-cyan-500/20 to-blue-500/20 border border-cyan-500/40 flex flex-col items-center justify-center shrink-0">
-                <span className="text-2xl font-extrabold text-cyan-400 font-mono">
+            <div className="md:col-span-4 flex items-center gap-4">
+              <div className="h-18 w-18 rounded-lg bg-surface-2 border border-border flex flex-col items-center justify-center shrink-0">
+                <span className="text-2xl font-bold text-accent font-mono tabular-nums">
                   {stats.score}%
                 </span>
-                <span className="text-[10px] text-slate-400 uppercase font-semibold">
+                <span className="text-[10px] text-text-3 font-medium">
                   Kepatuhan
                 </span>
               </div>
               <div>
-                <h3 className="font-bold text-white text-base">
+                <h3 className="font-semibold text-text-1 text-base">
                   Skor Verifikasi ASVS
                 </h3>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-text-3 mt-1">
                   Dihitung secara dinamis berdasarkan status verifikasi kontrol yang aktif.
                 </p>
               </div>
@@ -179,28 +169,28 @@ export default function AsvsMatrixPage() {
               <ProgressBar
                 value={stats.score}
                 label="Kesesuaian ASVS Keseluruhan"
-                colorScheme="dynamic"
+                variant={stats.score >= 80 ? "ok" : stats.score >= 50 ? "warn" : "fail"}
                 size="md"
               />
 
               <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                <div className="p-2 rounded-xl bg-emerald-950/40 border border-emerald-800/50">
-                  <span className="text-emerald-400 font-bold block text-sm">
+                <div className="p-2 rounded-lg bg-surface-2 border border-border">
+                  <span className="text-ok font-bold block text-sm tabular-nums">
                     {stats.passed}
                   </span>
-                  <span className="text-slate-400 text-[11px]">Kontrol Terpenuhi</span>
+                  <span className="text-text-3 text-xs">Kontrol Terpenuhi</span>
                 </div>
-                <div className="p-2 rounded-xl bg-amber-950/40 border border-amber-800/50">
-                  <span className="text-amber-400 font-bold block text-sm">
+                <div className="p-2 rounded-lg bg-surface-2 border border-border">
+                  <span className="text-warn font-bold block text-sm tabular-nums">
                     {stats.warning}
                   </span>
-                  <span className="text-slate-400 text-[11px]">Tindakan Diperlukan</span>
+                  <span className="text-text-3 text-xs">Tindakan Diperlukan</span>
                 </div>
-                <div className="p-2 rounded-xl bg-rose-950/40 border border-rose-800/50">
-                  <span className="text-rose-400 font-bold block text-sm">
+                <div className="p-2 rounded-lg bg-surface-2 border border-border">
+                  <span className="text-fail font-bold block text-sm tabular-nums">
                     {stats.failed}
                   </span>
-                  <span className="text-slate-400 text-[11px]">Tidak Sesuai</span>
+                  <span className="text-text-3 text-xs">Tidak Sesuai</span>
                 </div>
               </div>
             </div>
@@ -209,11 +199,11 @@ export default function AsvsMatrixPage() {
       </section>
 
       {/* Filter and Search Bar */}
-      <section aria-labelledby="filters-heading" className="mb-6 space-y-4">
+      <section aria-labelledby="filters-heading" className="space-y-4">
         <h2 id="filters-heading" className="sr-only">
           Filter Kontrol Verifikasi
         </h2>
-        <Card variant="subtle" className="p-4">
+        <Card variant="default" className="p-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-center">
             {/* Search Input */}
             <div className="lg:col-span-5">
@@ -243,7 +233,7 @@ export default function AsvsMatrixPage() {
                 id="filter-chapter"
                 value={selectedChapter}
                 onChange={(e) => setSelectedChapter(e.target.value)}
-                className="w-full rounded-xl bg-slate-950 border border-slate-800 px-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-cyan-400"
+                className="w-full rounded-lg bg-surface-1 border border-border-control px-3 py-2.5 text-xs text-text-1 focus:outline-none focus:border-accent"
               >
                 {chapters.map((ch) => (
                   <option key={ch} value={ch}>
@@ -262,7 +252,7 @@ export default function AsvsMatrixPage() {
                 id="filter-level"
                 value={selectedLevel}
                 onChange={(e) => setSelectedLevel(e.target.value)}
-                className="w-full rounded-xl bg-slate-950 border border-slate-800 px-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-cyan-400"
+                className="w-full rounded-lg bg-surface-1 border border-border-control px-3 py-2.5 text-xs text-text-1 focus:outline-none focus:border-accent"
               >
                 <option value="ALL">Semua Level</option>
                 <option value="L1">Level 1 (L1)</option>
@@ -276,7 +266,7 @@ export default function AsvsMatrixPage() {
                 variant="ghost"
                 size="sm"
                 onClick={handleResetFilters}
-                className="text-xs text-slate-400 hover:text-white"
+                className="text-xs text-text-3 hover:text-text-1"
               >
                 Atur Ulang Filter
               </Button>
@@ -286,17 +276,13 @@ export default function AsvsMatrixPage() {
       </section>
 
       {/* Controls List */}
-      <section aria-labelledby="controls-heading" className="space-y-4">
-        <div className="flex items-center justify-between text-xs text-slate-400 px-1">
-          <h2 id="controls-heading" className="font-semibold text-slate-200">
-            Menampilkan {filteredControls.length} dari {controls.length} Kriteria Verifikasi
-          </h2>
-          <span>Klik lencana status pada setiap kontrol untuk beralih status</span>
-        </div>
-
+      <Section
+        title={`Daftar Kriteria Verifikasi (${filteredControls.length} dari ${controls.length})`}
+        description="Klik lencana status pada setiap kontrol untuk beralih status verifikasi."
+      >
         {filteredControls.length === 0 ? (
           <Card variant="subtle" className="text-center py-12">
-            <p className="text-sm text-slate-300">
+            <p className="text-sm text-text-2">
               Tidak ada kontrol ASVS yang cocok dengan kata kunci atau filter saat ini.
             </p>
             <Button
@@ -314,38 +300,38 @@ export default function AsvsMatrixPage() {
               <Card
                 key={control.id}
                 variant="default"
-                className="transition-colors hover:border-slate-700 p-5"
+                className="p-5"
               >
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                   <div className="space-y-2 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="px-2 py-0.5 rounded font-mono font-bold text-xs bg-cyan-950 border border-cyan-800 text-cyan-300">
+                      <span className="px-2 py-0.5 rounded font-mono font-semibold text-xs bg-surface-2 border border-border text-accent">
                         {control.id}
                       </span>
-                      <span className="text-xs text-slate-400 font-mono">
+                      <span className="text-xs text-text-3 font-mono">
                         {control.chapter}
                       </span>
-                      <span className="text-slate-600">•</span>
-                      <span className="text-xs text-slate-400">
+                      <span className="text-text-3">•</span>
+                      <span className="text-xs text-text-3">
                         Level {control.level.replace("L", "")}
                       </span>
-                      <span className="text-slate-600">•</span>
-                      <span className="text-[11px] text-slate-400 font-mono">
+                      <span className="text-text-3">•</span>
+                      <span className="text-xs text-text-3 font-mono">
                         NIST: {control.nistRef}
                       </span>
                     </div>
 
-                    <h3 className="text-base font-bold text-white tracking-tight">
+                    <h3 className="text-base font-semibold text-text-1">
                       {control.title}
                     </h3>
 
-                    <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                    <p className="text-xs sm:text-sm text-text-2 leading-relaxed">
                       {control.description}
                     </p>
 
                     {control.notes && (
-                      <div className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/80 text-xs text-slate-400 flex items-start gap-2">
-                        <span className="text-cyan-400 font-semibold shrink-0">
+                      <div className="p-2.5 rounded-lg bg-surface-2 border border-border text-xs text-text-3 flex items-start gap-2">
+                        <span className="text-accent font-semibold shrink-0">
                           Bukti Audit:
                         </span>
                         <span>{control.notes}</span>
@@ -359,14 +345,18 @@ export default function AsvsMatrixPage() {
                       type="button"
                       id={`toggle-${control.id}`}
                       onClick={() => handleToggleStatus(control.id)}
-                      className="cursor-pointer group flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded-full"
+                      className="cursor-pointer group flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-full"
                       aria-label={`Ubah status verifikasi untuk ${control.id}, saat ini ${getStatusLabel(control.status)}`}
                     >
-                      <Badge variant={control.status} size="md" dot>
+                      <Badge
+                        variant={control.status === "passed" ? "ok" : control.status === "warning" ? "warn" : "fail"}
+                        size="md"
+                        dot
+                      >
                         {getStatusLabel(control.status)}
                       </Badge>
                     </button>
-                    <span className="text-[10px] text-slate-500 select-none hidden sm:inline">
+                    <span className="text-[11px] text-text-3 select-none hidden sm:inline">
                       Klik untuk beralih
                     </span>
                   </div>
@@ -375,7 +365,7 @@ export default function AsvsMatrixPage() {
             ))}
           </div>
         )}
-      </section>
+      </Section>
     </main>
   );
 }

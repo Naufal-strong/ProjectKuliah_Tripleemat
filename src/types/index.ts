@@ -63,17 +63,24 @@ export interface AsvsControl {
 }
 
 export interface ScanFormData {
+  label: string;
   targetUrl: string;
   auditScope: "standard" | "full" | "ssl-only";
   asvsLevel: AsvsLevel;
+  intervalJam?: number | string;
   auditorEmail?: string;
   notifyOnComplete: boolean;
   notes?: string;
 }
 
 export interface FormErrors {
+  label?: string;
   targetUrl?: string;
-  auditorEmail?: string;
   auditScope?: string;
+  asvsLevel?: string;
+  intervalJam?: string;
+  auditorEmail?: string;
+  notifyOnComplete?: string;
+  notes?: string;
   general?: string;
 }

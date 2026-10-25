@@ -9,9 +9,8 @@ export type Tautan = { href: string; label: string };
 /**
  * Komponen TautanNav (Client Component)
  *
- * Sesuai Modul 4 Bagian 4 Langkah 1:
  * Menandai tautan halaman aktif dengan aria-current="page".
- * Hook usePathname hanya dapat dipakai di Client Component ("use client").
+ * Menggunakan token desain sistem agar selaras dengan tema terang & dinamis.
  */
 export default function TautanNav({ tautan }: { tautan: Tautan[] }) {
   const pathname = usePathname();
@@ -27,10 +26,10 @@ export default function TautanNav({ tautan }: { tautan: Tautan[] }) {
             <Link
               href={t.href}
               aria-current={aktif ? "page" : undefined}
-              className={`block px-3.5 py-2 rounded-xl text-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${
+              className={`block px-3.5 py-2 rounded-lg text-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
                 aktif
-                  ? "bg-slate-800/80 text-cyan-400 font-semibold shadow-inner"
-                  : "text-slate-300 hover:text-white hover:bg-slate-800/40"
+                  ? "bg-accent/10 text-accent font-semibold"
+                  : "text-text-2 hover:text-text-1 hover:bg-surface-2"
               }`}
             >
               {t.label}

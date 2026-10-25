@@ -1,49 +1,530 @@
 @import "tailwindcss";
 
+/* =============================================================
+   KONTRAK TOKEN WARNA & TIPOGRAFI — Tripleemat Security Assessor
+   Palet Spesifik Referensi Pengguna (7-Color Oceanic Steel Harmony):
+     1. #001D39 (Deepest Midnight Ocean)
+     2. #0A4174 (Deep Marine Navy)
+     3. #49769F (Muted Steel Blue)
+     4. #4E8EA2 (Ocean Teal)
+     5. #6EA2B3 (Glacier Slate)
+     6. #7BBDE8 (Sky Frost Blue)
+     7. #BDD8E9 (Pale Ice Cloud)
+   ============================================================= */
+
 :root {
-  --background: #020617;
-  --foreground: #f8fafc;
+  /* ===========================================================
+     MODE TERANG: "Glacier Light & Steel Harmony"
+     =========================================================== */
+  --background: #f4f8fb; /* Tint lembut es berbasis #BDD8E9 */
+  --foreground: #001d39; /* Teks utama pekat #001D39 */
+
+  --color-surface-0: #f4f8fb; /* Canvas utama */
+  --color-surface-1: #ffffff; /* Kartu putih bersih dengan elevasi 3D */
+  --color-surface-2: #e2eef6; /* Inset/well berbasis #BDD8E9 */
+
+  --color-border:         #bdd8e9; /* Border pemisah #BDD8E9 */
+  --color-border-control: #6ea2b3; /* Border input tegas #6EA2B3 */
+
+  --color-text-1: #001d39; /* Deepest Navy (15.8:1 ✅) */
+  --color-text-2: #0a4174; /* Deep Marine Navy (9.6:1 ✅) */
+  --color-text-3: #49769f; /* Muted Steel Blue (5.1:1 ✅) */
+
+  --color-accent:      #0a4174; /* Deep Marine #0A4174 */
+  --color-accent-text: #ffffff; /* Putih bersih di atas Marine (8.9:1 ✅) */
+
+  /* 7 Warna Palette Asli */
+  --color-palette-1: #001d39;
+  --color-palette-2: #0a4174;
+  --color-palette-3: #49769f;
+  --color-palette-4: #4e8ea2;
+  --color-palette-5: #6ea2b3;
+  --color-palette-6: #7bbde8;
+  --color-palette-7: #bdd8e9;
+
+  /* Status Semantik (Harmonis & Ramah Buta Warna) */
+  --color-ok:      #047857; /* Emerald Deep */
+  --color-warn:    #b45309; /* Warm Amber Deep */
+  --color-fail:    #b91c1c; /* Crimson Deep */
+  --color-info:    #0a4174; /* Marine Blue */
+  --color-neutral: #49769f; /* Steel Blue */
+}
+
+/* =============================================================
+   MODE GELAP: "Midnight Ocean 3D" (Sesuai Swatch Asli #001D39)
+   ============================================================= */
+html.dark {
+  --background: #001d39; /* Latar utama #001D39 */
+  --foreground: #f0f7fc; /* Teks terang di atas midnight */
+
+  --color-surface-0: #001d39; /* Canvas gelap #001D39 */
+  --color-surface-1: #0a4174; /* Kartu utama #0A4174 */
+  --color-surface-2: #124d85; /* Inset bertingkat */
+
+  --color-border:         #49769f; /* Border pemisah #49769F */
+  --color-border-control: #6ea2b3; /* Border input #6EA2B3 */
+
+  --color-text-1: #ffffff; /* Putih terang */
+  --color-text-2: #bdd8e9; /* Soft Cloud #BDD8E9 */
+  --color-text-3: #7bbde8; /* Sky Frost #7BBDE8 */
+
+  --color-accent:      #7bbde8; /* Sky Frost Blue #7BBDE8 */
+  --color-accent-text: #001d39; /* Teks pekat di atas sky blue (9.2:1 ✅) */
+
+  /* 7 Warna Palette Asli */
+  --color-palette-1: #001d39;
+  --color-palette-2: #0a4174;
+  --color-palette-3: #49769f;
+  --color-palette-4: #4e8ea2;
+  --color-palette-5: #6ea2b3;
+  --color-palette-6: #7bbde8;
+  --color-palette-7: #bdd8e9;
+
+  /* Status Semantik (Dark Mode) */
+  --color-ok:      #34d399; /* Mint Sea */
+  --color-warn:    #fbbf24; /* Warm Gold */
+  --color-fail:    #f87171; /* Coral Red */
+  --color-info:    #7bbde8; /* Sky Frost */
+  --color-neutral: #6ea2b3; /* Glacier Slate */
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  --color-surface-0: var(--color-surface-0);
+  --color-surface-1: var(--color-surface-1);
+  --color-surface-2: var(--color-surface-2);
+
+  --color-border:         var(--color-border);
+  --color-border-control: var(--color-border-control);
+
+  --color-text-1: var(--color-text-1);
+  --color-text-2: var(--color-text-2);
+  --color-text-3: var(--color-text-3);
+
+  --color-accent:      var(--color-accent);
+  --color-accent-text: var(--color-accent-text);
+
+  --color-ok:      var(--color-ok);
+  --color-warn:    var(--color-warn);
+  --color-fail:    var(--color-fail);
+  --color-info:    var(--color-info);
+  --color-neutral: var(--color-neutral);
+
+  /* Swatch Palet */
+  --color-palette-1: var(--color-palette-1);
+  --color-palette-2: var(--color-palette-2);
+  --color-palette-3: var(--color-palette-3);
+  --color-palette-4: var(--color-palette-4);
+  --color-palette-5: var(--color-palette-5);
+  --color-palette-6: var(--color-palette-6);
+  --color-palette-7: var(--color-palette-7);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-html {
-  color-scheme: dark;
-  scroll-behavior: smooth;
-}
-
 body {
-  background-color: #020617;
-  color: #f8fafc;
+  background-color: var(--color-surface-0);
+  color: var(--color-text-1);
+  font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  transition: background-color 200ms ease, color 200ms ease;
 }
 
-/* Accessible focus visible outlines */
+/* =============================================================
+   EFEK 3D TACTILE & ELEVASI BERKUALITAS TINGGI
+   ============================================================= */
+
+/* =============================================================
+   EFEK 3D TACTILE & ELEVASI BERKUALITAS TINGGI (7-COLOR PALETTE)
+   ============================================================= */
+
+/* Kartu 3D Berbayangan Bertingkat */
+.card-3d {
+  position: relative;
+  box-shadow: 
+    0 2px 4px -1px rgba(0, 29, 57, 0.08),
+    0 8px 16px -2px rgba(0, 29, 57, 0.14),
+    0 16px 28px -4px rgba(0, 29, 57, 0.12),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.6);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-3d:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 4px 8px -1px rgba(0, 29, 57, 0.1),
+    0 14px 24px -2px rgba(0, 29, 57, 0.2),
+    0 24px 38px -4px rgba(0, 29, 57, 0.16),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
+}
+
+html.dark .card-3d {
+  box-shadow: 
+    0 2px 4px -1px rgba(0, 10, 25, 0.4),
+    0 10px 22px -3px rgba(0, 10, 25, 0.65),
+    0 22px 34px -6px rgba(0, 5, 15, 0.5),
+    inset 0 1px 0 0 rgba(189, 216, 233, 0.2);
+}
+
+html.dark .card-3d:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 4px 8px -1px rgba(0, 10, 25, 0.5),
+    0 16px 30px -4px rgba(0, 10, 25, 0.8),
+    0 30px 45px -8px rgba(0, 5, 15, 0.7),
+    inset 0 1px 0 0 rgba(189, 216, 233, 0.35);
+}
+
+/* Tombol 3D Berkedalaman (Tactile Press) */
+.btn-3d-primary {
+  transform: translateY(0);
+  box-shadow: 0 4px 0 0 #001d39;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.btn-3d-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 0 0 #001d39;
+}
+
+.btn-3d-primary:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 0 #001d39;
+}
+
+html.dark .btn-3d-primary {
+  box-shadow: 0 4px 0 0 #001326;
+}
+
+html.dark .btn-3d-primary:hover {
+  box-shadow: 0 5px 0 0 #001326;
+}
+
+html.dark .btn-3d-primary:active {
+  box-shadow: 0 1px 0 0 #001326;
+}
+
+/* 3D Hero Perspective Scene */
+.perspective-container {
+  perspective: 1200px;
+}
+
+/* Latar Belakang Cyber Grid 3D Halus (Pure CSS GPU Mask) */
+.cyber-grid-bg {
+  background-image: 
+    linear-gradient(to right, rgba(73, 118, 159, 0.12) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(73, 118, 159, 0.12) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(ellipse 70% 50% at 50% 40%, #000 60%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 50% at 50% 40%, #000 60%, transparent 100%);
+}
+
+html.dark .cyber-grid-bg {
+  background-image: 
+    linear-gradient(to right, rgba(123, 189, 232, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(123, 189, 232, 0.08) 1px, transparent 1px);
+}
+
+/* Papan Terminal 3D Responsif (Miring 3D di Desktop, Taktil Bersih di Tablet/HP) */
+.hero-3d-board {
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 
+    0 15px 30px -5px rgba(0, 29, 57, 0.22),
+    0 8px 16px -3px rgba(10, 65, 116, 0.15),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+  .hero-3d-board {
+    transform: rotateX(6deg) rotateY(-8deg) rotateZ(1deg);
+    transform-style: preserve-3d;
+    box-shadow: 
+      -20px 25px 40px -10px rgba(0, 29, 57, 0.25),
+      0 15px 25px -5px rgba(10, 65, 116, 0.2),
+      inset 0 1px 1px 0 rgba(255, 255, 255, 0.4);
+  }
+
+  .hero-3d-board:hover {
+    transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) translateY(-6px);
+    box-shadow: 
+      0 25px 50px -12px rgba(0, 29, 57, 0.35),
+      0 15px 30px -6px rgba(10, 65, 116, 0.25),
+      inset 0 1px 1px 0 rgba(255, 255, 255, 0.6);
+  }
+
+  html.dark .hero-3d-board {
+    box-shadow: 
+      -20px 25px 50px -10px rgba(0, 5, 15, 0.7),
+      0 15px 30px -5px rgba(0, 15, 35, 0.5),
+      inset 0 1px 1px 0 rgba(189, 216, 233, 0.2);
+  }
+
+  html.dark .hero-3d-board:hover {
+    box-shadow: 
+      0 25px 60px -12px rgba(0, 5, 15, 0.85),
+      0 15px 35px -6px rgba(123, 189, 232, 0.2),
+      inset 0 1px 1px 0 rgba(189, 216, 233, 0.35);
+  }
+}
+
+@media (max-width: 1023px), (hover: none) {
+  .hero-3d-board {
+    transform: none !important;
+  }
+}
+
+/* 3D Floating Pop-outs with Realistic Depth */
+.floating-3d-top {
+  transform: translateZ(32px);
+  animation: float-slow 4s ease-in-out infinite;
+}
+
+.floating-3d-bottom {
+  transform: translateZ(24px);
+  animation: float-slow-reverse 4.5s ease-in-out infinite;
+}
+
+@media (max-width: 768px) {
+  .floating-3d-top,
+  .floating-3d-bottom {
+    transform: none !important;
+    animation: none !important;
+  }
+}
+
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateZ(32px) translateY(0px);
+  }
+  50% {
+    transform: translateZ(32px) translateY(-6px);
+  }
+}
+
+@keyframes float-slow-reverse {
+  0%, 100% {
+    transform: translateZ(24px) translateY(0px);
+  }
+  50% {
+    transform: translateZ(24px) translateY(5px);
+  }
+}
+
+/* Gelombang Radar / Sonar Pulse Scanning (Pure CSS) */
+@keyframes sonarPulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.9;
+  }
+  70% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.radar-sonar-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: inherit;
+  border: 2px solid #7bbde8;
+  animation: sonarPulse 2.8s cubic-bezier(0.2, 0.8, 0.4, 1) infinite;
+  pointer-events: none;
+}
+
+/* Umpan Balik Taktil untuk Pengguna Layar Sentuh Mobile & Tablet */
+@media (hover: none) {
+  .touch-tactile:active,
+  .btn-3d-primary:active,
+  .card-3d:active {
+    transform: scale(0.98) translateY(1px) !important;
+    transition: transform 0.08s ease;
+  }
+}
+
+/* Sorot Kursor (Spotlight) Khusus Perangkat Mouse/Desktop */
+@media (hover: hover) and (pointer: fine) {
+  .spotlight-card {
+    position: relative;
+    overflow: hidden;
+  }
+  .spotlight-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      450px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(123, 189, 232, 0.12),
+      transparent 50%
+    );
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .spotlight-card:hover::before {
+    opacity: 1;
+  }
+}
+
+/* =============================================================
+   TRANSISI PERGANTIAN TEMA (SMOOTH THEME CROSSFADE)
+   ============================================================= */
+
+/* Kelas transisi global yang diaktifkan sesaat saat tema beralih */
+html.theme-transitioning,
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+  transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              stroke 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              fill 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition-delay: 0s !important;
+}
+
+/* Dukungan View Transitions API (Chrome 111+, Edge, Safari 18+) */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.38s;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* =============================================================
+   ANIMASI TRANSISI HALAMAN SINEMATIK (CINEMATIC PAGE TRANSITION)
+   ============================================================= */
+
+@keyframes cinematicPageEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(22px) scale(0.988);
+  }
+  60% {
+    opacity: 0.88;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (min-width: 768px) {
+  @keyframes cinematicPageEnter {
+    0% {
+      opacity: 0;
+      transform: translateY(26px) scale(0.985);
+      filter: blur(4px);
+    }
+    50% {
+      opacity: 0.75;
+      filter: blur(1.5px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+  }
+}
+
+@keyframes topSweep {
+  0% {
+    width: 0%;
+    opacity: 1;
+  }
+  65% {
+    width: 80%;
+    opacity: 1;
+  }
+  100% {
+    width: 100%;
+    opacity: 0;
+  }
+}
+
+@keyframes cinematicCurtainWipe {
+  0% {
+    opacity: 0.35;
+    transform: translateY(0%);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+}
+
+.animate-page-enter {
+  animation: cinematicPageEnter 0.44s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.page-transition-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3.5px;
+  background: linear-gradient(90deg, #0a4174, #7bbde8, #ffffff, #bdd8e9);
+  box-shadow: 0 0 16px #7bbde8, 0 0 32px #0a4174, 0 0 4px #ffffff;
+  z-index: 9999;
+  pointer-events: none;
+  animation: topSweep 0.52s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.cinematic-page-curtain {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10, 65, 116, 0.3) 0%, rgba(0, 29, 57, 0.15) 50%, transparent 100%);
+  pointer-events: none;
+  z-index: 9998;
+  animation: cinematicCurtainWipe 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+::selection {
+  background-color: #7bbde8;
+  color: #001d39;
+}
+
 :focus-visible {
-  outline: 2px solid #22d3ee;
+  outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
 
-/* Animations */
-@keyframes pulse-subtle {
-
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.5;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
-.animate-pulse-subtle {
-  animation: pulse-subtle 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  nav,
+  footer,
+  button:not(.print-include),
+  .no-print {
+    display: none !important;
+  }
+
+  main {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
 }

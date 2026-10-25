@@ -1,10 +1,13 @@
 import React, { HTMLAttributes } from "react";
 
 export interface CardProps extends HTMLAttributes<HTMLDivElement> {
-  variant?: "default" | "glass" | "subtle" | "glow";
+  variant?: "default" | "subtle" | "inset";
   isHoverable?: boolean;
 }
 
+/**
+ * Card — kontainer kartu bersih & modern dengan border halus dan bayangan lembut.
+ */
 export function Card({
   children,
   className = "",
@@ -13,20 +16,18 @@ export function Card({
   ...props
 }: CardProps) {
   const variantStyles = {
-    default: "bg-slate-900/80 border-slate-800 text-slate-100",
-    glass:
-      "bg-slate-900/40 backdrop-blur-xl border-slate-800/80 text-slate-100 shadow-2xl shadow-black/40",
-    subtle: "bg-slate-950/60 border-slate-800/50 text-slate-200",
-    glow: "bg-slate-900/70 border-cyan-500/30 text-slate-100 shadow-lg shadow-cyan-500/10",
+    default: "bg-surface-1 border-border card-3d text-text-1",
+    subtle:  "bg-surface-0 border-border text-text-1",
+    inset:   "bg-surface-2 border-border text-text-1",
   };
 
   const hoverStyle = isHoverable
-    ? "transition-all duration-300 hover:border-slate-700 hover:translate-y-[-2px] hover:shadow-cyan-500/5"
+    ? "transition-all duration-200 hover:border-border-control hover:shadow-sm"
     : "";
 
   return (
     <div
-      className={`rounded-2xl border p-6 ${variantStyles[variant]} ${hoverStyle} ${className}`}
+      className={`rounded-lg border p-6 ${variantStyles[variant]} ${hoverStyle} ${className}`}
       {...props}
     >
       {children}
@@ -54,7 +55,7 @@ export function CardTitle({
 }: HTMLAttributes<HTMLHeadingElement> & { as?: "h2" | "h3" | "h4" | "h5" }) {
   return (
     <Component
-      className={`text-xl font-bold tracking-tight text-white ${className}`}
+      className={`text-base font-semibold text-text-1 tracking-tight ${className}`}
       {...props}
     >
       {children}
@@ -68,7 +69,7 @@ export function CardDescription({
   ...props
 }: HTMLAttributes<HTMLParagraphElement>) {
   return (
-    <p className={`text-sm text-slate-400 leading-relaxed ${className}`} {...props}>
+    <p className={`text-xs text-text-3 leading-relaxed ${className}`} {...props}>
       {children}
     </p>
   );
@@ -80,7 +81,7 @@ export function CardContent({
   ...props
 }: HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={`text-slate-200 ${className}`} {...props}>
+    <div className={`space-y-4 ${className}`} {...props}>
       {children}
     </div>
   );
@@ -93,7 +94,7 @@ export function CardFooter({
 }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={`mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between text-sm ${className}`}
+      className={`mt-4 pt-4 border-t border-border flex items-center justify-between text-xs text-text-3 ${className}`}
       {...props}
     >
       {children}

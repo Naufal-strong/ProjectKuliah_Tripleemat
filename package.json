@@ -7,13 +7,15 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test:crypto": "node --import tsx --test test/crypto.test.ts"
+    "test:crypto": "node --import tsx --test test/crypto.test.ts",
+    "test:skema": "node --import tsx --test test/skema.test.ts"
   },
   "dependencies": {
     "next": "16.4.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "server-only": "^0.0.1"
+    "server-only": "^0.0.1",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",

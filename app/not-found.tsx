@@ -4,8 +4,8 @@ import Link from "next/link";
 /**
  * Next.js App Router Not Found UI (Server Component)
  *
- * Ditampilkan saat fungsi notFound() dipanggil atau ketika pengguna
- * mengakses URL yang tidak cocok dengan rute mana pun di aplikasi.
+ * Perubahan: tanpa gradient, bg-clip-text, blur dekoratif, animate-pulse.
+ * "404" ditampilkan sebagai angka besar tanpa teks gradient.
  */
 export default function NotFound() {
   const quickLinks = [
@@ -15,7 +15,7 @@ export default function NotFound() {
       href: "/",
       icon: (
         <svg
-          className="w-5 h-5 text-cyan-400"
+          className="w-4 h-4 text-text-3"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -35,7 +35,7 @@ export default function NotFound() {
       href: "/scan",
       icon: (
         <svg
-          className="w-5 h-5 text-emerald-400"
+          className="w-4 h-4 text-text-3"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -55,7 +55,7 @@ export default function NotFound() {
       href: "/asvs",
       icon: (
         <svg
-          className="w-5 h-5 text-blue-400"
+          className="w-4 h-4 text-text-3"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -70,12 +70,12 @@ export default function NotFound() {
       ),
     },
     {
-      title: "Laporan Audit Eksekutif",
+      title: "Laporan Audit",
       description: "Tinjau scorecard keamanan terverifikasi SHA-256 dan riwayat pemindaian.",
       href: "/report",
       icon: (
         <svg
-          className="w-5 h-5 text-indigo-400"
+          className="w-4 h-4 text-text-3"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -88,7 +88,6 @@ export default function NotFound() {
           <polyline points="14 2 14 8 20 8" />
           <line x1="16" y1="13" x2="8" y2="13" />
           <line x1="16" y1="17" x2="8" y2="17" />
-          <polyline points="10 9 9 9 8 9" />
         </svg>
       ),
     },
@@ -97,65 +96,44 @@ export default function NotFound() {
   return (
     <main
       id="main-content"
-      className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 flex flex-col items-center justify-center"
+      className="flex-1 w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 flex flex-col items-center justify-center"
     >
-      <div className="w-full text-center mb-12">
-        {/* Lencana Status Kode 404 */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-mono font-semibold tracking-wider uppercase mb-6 shadow-sm shadow-cyan-500/10">
-          <span className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse" />
-          <span>Status 404 • Resource Not Found</span>
-        </div>
+      <div className="w-full text-center mb-10">
+        {/* Kode 404 — tanpa gradient teks */}
+        <p className="text-xs font-mono text-text-3 mb-4 tracking-widest uppercase">
+          404 · Halaman Tidak Ditemukan
+        </p>
 
-        {/* Angka 404 Cyber Gradient */}
-        <div className="relative inline-block mb-4">
-          <span className="text-7xl sm:text-9xl font-black tracking-tighter bg-gradient-to-b from-slate-200 via-slate-400 to-slate-700 bg-clip-text text-transparent select-none">
-            404
-          </span>
-          <div className="absolute inset-0 bg-cyan-500/10 blur-3xl rounded-full -z-10" />
-        </div>
-
-        {/* Heading dan Pesan Penjelasan */}
-        <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight mb-3">
-          Endpoint Target Tidak Ditemukan
+        <h1 className="text-6xl sm:text-8xl font-bold text-text-1 tabular-nums select-none mb-4">
+          404
         </h1>
-        <p className="text-base text-slate-300 max-w-xl mx-auto">
-          Halaman atau sumber daya audit yang Anda tuju berada di luar jangkauan pemetaan sistem Tripleemat Security Assessor.
+
+        <p className="text-base text-text-2 max-w-md mx-auto leading-relaxed">
+          Halaman atau sumber daya audit yang Anda tuju berada di luar jangkauan pemetaan sistem
+          Tripleemat Security Assessor.
         </p>
       </div>
 
       {/* Navigasi Cepat ke Modul Utama */}
-      <div className="w-full max-w-3xl mb-10">
-        <h2 className="text-xs font-mono font-semibold text-slate-400 uppercase tracking-wider mb-4 text-center">
-          Jalur Navigasi Modul yang Tersedia
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="w-full mb-8">
+        <p className="text-xs text-text-3 font-medium mb-4 text-center">
+          Modul yang tersedia
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {quickLinks.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="group p-5 rounded-xl border border-slate-800/80 bg-slate-900/40 hover:bg-slate-800/60 hover:border-cyan-500/40 transition-all duration-200 flex items-start gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+              className="group p-4 rounded-lg border border-border bg-surface-1 hover:border-border-control transition-colors duration-150 flex items-start gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             >
-              <div className="p-2.5 rounded-lg bg-slate-950/80 border border-slate-800 group-hover:border-slate-700 transition-colors">
+              <div className="p-2 rounded bg-surface-2 border border-border mt-0.5 shrink-0">
                 {item.icon}
               </div>
-              <div className="text-left">
-                <div className="font-semibold text-sm text-white group-hover:text-cyan-300 transition-colors flex items-center gap-1.5">
-                  <span>{item.title}</span>
-                  <svg
-                    className="w-3.5 h-3.5 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="M5 12h14" />
-                    <path d="m12 5 7 7-7 7" />
-                  </svg>
+              <div className="text-left min-w-0">
+                <div className="font-medium text-sm text-text-1 group-hover:text-accent transition-colors">
+                  {item.title}
                 </div>
-                <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                <p className="text-xs text-text-3 mt-0.5 leading-relaxed">
                   {item.description}
                 </p>
               </div>
@@ -164,17 +142,17 @@ export default function NotFound() {
         </div>
       </div>
 
-      {/* Tombol Utama */}
+      {/* Satu aksi utama */}
       <Link
         href="/"
-        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-sm tracking-wide shadow-lg shadow-cyan-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 transition-all duration-200"
+        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-accent text-accent-text font-semibold text-sm transition-colors duration-150 hover:bg-blue-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
       >
         <svg
           className="w-4 h-4"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          strokeWidth="2.2"
+          strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
           aria-hidden="true"
