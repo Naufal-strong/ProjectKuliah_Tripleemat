@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// Selaras dengan union `Severity` di src/types/index.ts baris 1
+enum Severity {
+  critical
+  high
+  medium
+  low
+  info
+}
+
+/// Kolom disamakan persis dengan `ScanFormData` di src/types/index.ts baris 65-74
+model Target {
+  id               String    @id
+  label            String
+  targetUrl        String    @unique
+  auditScope       String
+  asvsLevel        String
+  intervalJam      Int?
+  auditorEmail     String?
+  notifyOnComplete Boolean   @default(false)
+  notes            String?
+  dibuatPada       DateTime  @default(now())
+  temuan           Temuan[]
+}
+
+/// Kolom disamakan persis dengan `ScanFinding` di src/types/index.ts baris 27-36
+model Temuan {
+  id          Int      @id @default(autoincrement())
+  findingId   String
+  title       String
+  category    String
+  severity    Severity
+  description String
+  remediation String
+  cwe         String?
+  asvsRef     String?
+  dibuatPada  DateTime @default(now())
+  targetId    String
+  target      Target   @relation(fields: [targetId], references: [id], onDelete: Restrict)
+
+  @@unique([targetId, findingId])
+}
