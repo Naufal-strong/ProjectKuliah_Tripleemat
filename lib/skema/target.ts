@@ -67,8 +67,11 @@ export const skemaTarget = z.object({
     .transform((nilai) => (nilai === "" ? undefined : nilai))
     .optional(),
 
-  // Kotak centang: "on"/"true"/"1" -> true; kunci tidak ada -> false (default).
-  notifyOnComplete: z.stringbool().default(false),
+  // Kotak centang: menerima boolean atau "on"/"true"/"1" -> true; kunci tidak ada -> false.
+  notifyOnComplete: z.preprocess(
+    (v) => (typeof v === "boolean" ? (v ? "on" : "false") : v),
+    z.stringbool().default(false)
+  ),
 
   notes: z
     .string()

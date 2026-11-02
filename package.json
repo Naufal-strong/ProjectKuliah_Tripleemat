@@ -8,10 +8,15 @@
     "start": "next start",
     "lint": "eslint",
     "test:crypto": "node --import tsx --test test/crypto.test.ts",
-    "test:skema": "node --import tsx --test test/skema.test.ts"
+    "test:skema": "node --import tsx --test test/skema.test.ts",
+    "test:modul6": "node --import tsx --test test/crud-modul6.test.ts"
   },
   "dependencies": {
+    "@prisma/adapter-pg": "^7.10.1",
+    "@prisma/client": "^7.10.1",
+    "dotenv": "^18.0.9",
     "next": "16.4.0",
+    "pg": "^8.23.1",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "server-only": "^0.0.1",
@@ -20,11 +25,14 @@
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^20",
+    "@types/pg": "^8.23.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.4.0",
+    "prisma": "^7.10.1",
     "tailwindcss": "^4",
+    "tsx": "^4.23.15",
     "typescript": "^5"
   }
 }

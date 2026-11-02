@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "../../src/components/ui/Button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../../src/components/ui/Card";
 import { Badge } from "../../src/components/ui/Badge";
@@ -14,8 +15,10 @@ import { defaultSecurityHeaders } from "../../src/data/mockSecurityHeaders";
 import { sampleScanResults } from "../../src/data/mockScans";
 import { skemaTarget } from "@/lib/skema";
 import { z } from "zod";
+import { simpanHasilScan } from "./actions";
 
 export default function ScannerPage() {
+  const router = useRouter();
   // Form State
   const [formData, setFormData] = useState<ScanFormData>({
     label: "",
@@ -34,6 +37,12 @@ export default function ScannerPage() {
   const [scanProgress, setScanProgress] = useState(0);
   const [scanStepText, setScanStepText] = useState("");
   const [activeResult, setActiveResult] = useState<ScanResult | null>(null);
+  const [savedDbStatus, setSavedDbStatus] = useState<{
+    sukses: boolean;
+    sudahAda?: boolean;
+    targetId?: string;
+    pesan?: string;
+  } | null>(null);
 
   // Validasi Skema Zod 4 (Modul 5 — Validasi deklaratif tanpa if-else manual)
   const validateForm = (): boolean => {
@@ -69,11 +78,14 @@ export default function ScannerPage() {
       return;
     }
 
-    // Mulai simulasi pemindaian audit
+    // Mulai simulasi pemindaian audit dan simpan ke basis data PostgreSQL
     setIsScanning(true);
     setScanProgress(10);
     setScanStepText("Memulai resolusi DNS & jabat tangan (handshake) TLS...");
     setActiveResult(null);
+    setSavedDbStatus(null);
+
+    const dbPromise = simpanHasilScan(formData);
 
     setTimeout(() => {
       setScanProgress(40);
@@ -90,14 +102,31 @@ export default function ScannerPage() {
       setScanStepText("Menghitung tanda tangan integritas kriptografis dengan SHA-256...");
     }, 1700);
 
-    setTimeout(() => {
+    setTimeout(async () => {
       setScanProgress(100);
       setIsScanning(false);
       setScanStepText("Audit berhasil diselesaikan.");
 
-      // Bentuk hasil audit tiruan berdasarkan masukan
+      let dbResult = null;
+      try {
+        dbResult = await dbPromise;
+        setSavedDbStatus(dbResult);
+      } catch (err) {
+        console.error("Gagal simpan ke DB:", err);
+      }
+
+      if (dbResult?.sukses) {
+        setScanStepText(`Data tersimpan ke basis data (${dbResult.targetId}). Membuka Katalog Target...`);
+        setTimeout(() => {
+          router.push("/target");
+        }, 600);
+      }
+
+      const idFinal = dbResult?.targetId || `scan-${Date.now().toString().slice(-6)}`;
+
+      // Bentuk hasil audit berdasarkan masukan
       const simulatedResult: ScanResult = {
-        id: `scan-${Date.now().toString().slice(-6)}`,
+        id: idFinal,
         targetUrl: formData.targetUrl.trim(),
         scannedAt: new Date().toISOString(),
         durationMs: 1980,
@@ -184,6 +213,16 @@ export default function ScannerPage() {
                   className="mb-6"
                 >
                   Silakan periksa dan perbaiki kesalahan yang tersorot di bawah ini sebelum melanjutkan pemindaian.
+                </Alert>
+              )}
+
+              {savedDbStatus && !savedDbStatus.sukses && (
+                <Alert
+                  variant="fail"
+                  title="Penyimpanan Basis Data Ditolak"
+                  className="mb-6"
+                >
+                  {savedDbStatus.pesan}
                 </Alert>
               )}
 
@@ -577,8 +616,22 @@ export default function ScannerPage() {
                     <span className="text-accent break-all">{activeResult.integrityHash}</span>
                   </div>
 
+                  {/* Status Database PostgreSQL */}
+                  {savedDbStatus && (
+                    <div
+                      className={`p-3 rounded-lg border text-xs flex items-center gap-2 ${
+                        savedDbStatus.sukses
+                          ? "bg-emerald-950/40 border-emerald-500/40 text-emerald-300"
+                          : "bg-rose-950/40 border-rose-500/40 text-rose-300"
+                      }`}
+                    >
+                      <span className={`h-2 w-2 rounded-full ${savedDbStatus.sukses ? "bg-emerald-400" : "bg-rose-400"} shrink-0`} />
+                      <span className="font-medium">{savedDbStatus.pesan}</span>
+                    </div>
+                  )}
+
                   {/* Link to Full Executive Report */}
-                  <div className="pt-2">
+                  <div className="pt-2 space-y-2">
                     <Link href="/report">
                       <Button
                         id="view-full-report-btn"
@@ -594,6 +647,24 @@ export default function ScannerPage() {
                         Buka Laporan Eksekutif Lengkap &amp; Remediasi
                       </Button>
                     </Link>
+
+                    {savedDbStatus?.targetId && (
+                      <Link href={`/target/${savedDbStatus.targetId}`}>
+                        <Button
+                          id="view-catalog-target-btn"
+                          size="md"
+                          variant="secondary"
+                          className="w-full justify-between border-cyan-500/40 text-cyan-300 hover:bg-cyan-950/50"
+                          rightIcon={
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                            </svg>
+                          }
+                        >
+                          Buka di Katalog Target ({savedDbStatus.targetId}) &rarr;
+                        </Button>
+                      </Link>
+                    )}
                   </div>
                 </CardContent>
               </Card>

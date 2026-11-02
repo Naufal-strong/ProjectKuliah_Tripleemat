@@ -14,6 +14,7 @@ export function Navbar() {
   const navLinks = [
     { label: "Beranda", href: "/" },
     { label: "Pemindai Keamanan", href: "/scan" },
+    { label: "Katalog Target", href: "/target" },
     { label: "Matriks OWASP ASVS", href: "/asvs" },
     { label: "Laporan Audit", href: "/report" },
   ];

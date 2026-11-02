@@ -59,11 +59,25 @@ Platform ini memungkinkan auditor keamanan, pengembang web, administrator IT kam
 6. **Vault Kriptografi & Verifikasi:** Menandatangani catatan audit dengan hash SHA-256 dan cipher AEAD untuk membuktikan bahwa data rekam audit belum dimanipulasi pasca-audit.
 
 ### Peta Jalan Milestone & Ekstensibilitas Masa Depan
-* **Milestone 1 (Pekan 3 — UI & Desain Sistem):** Arsitektur Frontend, Sistem UI Reusable (6 komponen modular), Alur Halaman Inti (`/`, `/scan`, `/asvs`, `/report`), Validasi Formulir Sisi Klien, Data Tiruan (Mock Data), Tata Letak Responsif Mobile-First, dan Optimalisasi Aksesibilitas WCAG 2.1 AA (Lighthouse ≥ 95).
-* **Milestone 2 (Pekan 4 — Modul 4 App Router & Rute Dinamis):** Penguatan Arsitektur Next.js 16 App Router — Rute Dinamis `/report/[id]` dengan penanganan `await params`, validasi format regex `/^scan-\d{4}-\d{3}$/`, `notFound()`, optimasi SSG via `generateStaticParams()`, proteksi data sisi server melalui paket `server-only` di `lib/data.ts`, analisis siklus hidup layout vs template via `KolomCatatan.tsx`, dan navigasi aktif aksesibel via `TautanNav.tsx` (`usePathname`, `aria-current="page"`). Laporan teknis lengkap di [`docs/praktikum/modul-04.md`](docs/praktikum/modul-04.md).
-* **Milestone 3 (Pekan 5 — Modul 5: Formulir, Validasi, Server Action, Session & Cookie):** Implementasi skema validasi Zod 4 deklaratif (`skemaTarget`, `skemaMasuk`), alur Server Action mutasi 5-tahap dengan `useActionState` React 19, sistem manajemen cookie sesi kriptografis `server-only` (`HttpOnly`, `SameSite=Lax`, `Max-Age=28800`), penapisan rute terproteksi via `proxy.ts`, pengujian otomatis 10 kasus uji, serta penyusunan dokumen teknis lengkap di [`docs/praktikum/modul-05.md`](docs/praktikum/modul-05.md).
-* **Milestone 4 (Desain Visual & Branding 3D):** Restrukturisasi desain visual dengan palet 7 warna samudra baja (`#001D39` hingga `#BDD8E9`), dasbor 3D isometrik dengan pendaran sonar radar dan live telemetry stream, transisi tema mulus dengan View Transitions API, transisi halaman sinematik, serta integrasi identitas logo perisai resmi.
-* **Milestone 5 (Roadmap Selanjutnya):** Integrasi basis data relasional (PostgreSQL via Prisma), asynchronous worker jobs untuk audit jaringan real-time, dan ekspor laporan ke format PDF bersertifikat digital.
+* **Milestone 1 (v0.1 — Pekan 3):** Arsitektur Frontend, Sistem UI Reusable (6 komponen modular), Alur Halaman Inti (`/`, `/scan`, `/asvs`, `/report`), Validasi Formulir Sisi Klien, Data Tiruan (Mock Data), Tata Letak Responsif Mobile-First, dan Optimalisasi Aksesibilitas WCAG 2.1 AA (Lighthouse ≥ 95).
+* **Milestone 2 (v0.2 — Pekan 4–6 / Tugas 2):** Pengembangan Logika Server & Integrasi Database Persisten:
+  - **Pekan 4 (App Router & Rute Dinamis):** Rute Dinamis `/report/[id]` dan `/target/[id]`, penanganan `await params`, validasi format regex `/^scan-\d{4}-\d{3}$/`, batas `notFound()`, isolasi `server-only`, dan navigasi aktif aksesibel.
+  - **Pekan 5 (Formulir, Zod 4 & Sesi):** Skema validasi Zod 4 deklaratif, Server Actions mutasi 5-tahap, manajemen cookie sesi `HttpOnly` FIPS 199, dan filter rute `proxy.ts`.
+  - **Pekan 6 (PostgreSQL 18 & Prisma ORM 7):** Perancangan 2 entitas relasional (`Target` dan `Temuan`), constraint unik dan `onDelete: Restrict`, driver adapter `@prisma/adapter-pg`, seed idempoten `.upsert()`, operasi CRUD lengkap kedua entitas, transaksi atomik rollback terbukti, dan 10 skenario pengujian CRUD (100% lulus).
+* **Milestone Selanjutnya (v0.3+):** REST API Route Handlers (Modul 8), Autentikasi Pengguna & Kepemilikan Data (Modul 10–12), asynchronous worker jobs untuk audit jaringan real-time, dan ekspor laporan ke format PDF bersertifikat digital.
+
+### 🚀 Perkembangan Fitur dari v0.1 ke v0.2 (Tugas 2)
+
+| Fitur / Aspek | Versi v0.1 (Milestone 1) | Versi v0.2 (Milestone 2 / Tugas 2) |
+|---|---|---|
+| **Persistensi Data** | Array JavaScript tiruan di memori (`mockScans.ts`). Data hilang saat browser dimuat ulang (*ephemeral*). | **PostgreSQL 18.6** terkelola via **Prisma ORM 7** dengan driver adapter `@prisma/adapter-pg`. Data permanen tersimpan di basis data. |
+| **Model Relasi Data** | Objek tunggal tidak berelasi (*flat array*). | **Dua entitas berelasi 1:N** (`Target` 1 ──< N `Temuan`) dengan aturan integritas ketat `onDelete: Restrict`. |
+| **Logika Mutasi Data** | Simulasi manipulasi state sisi klien (*Client-side state*). | **Next.js Server Actions** (`"use server"`) dengan alur mutasi terverifikasi (sesi ➔ Zod ➔ Prisma ➔ revalidatePath ➔ redirect). |
+| **Operasi CRUD** | Hanya Create tiruan dan Read dari mock data. | **CRUD Lengkap pada Kedua Entitas**: Create, Read, Update, Delete penuh untuk `Target` dan `Temuan` melalui antarmuka pengguna. |
+| **Validasi Sisi Server** | Validasi dasar atribut HTML5 di browser. | **Validasi Deklaratif Zod 4** (`skemaTarget`, `skemaTemuan`, `skemaMasuk`) dengan umpan balik pesan kesalahan spesifik per field (*field errors*). |
+| **Integritas Transaksi** | Tidak ada dukungan transaksi. | **Transaksi Atomik** (`prisma.$transaction`) yang membuktikan *all-or-nothing rollback* saat salah satu query gagal. |
+| **Otentikasi & Sesi** | Tidak ada sesi. | **Cookie Sesi Auditor Stateful** (`HttpOnly`, `SameSite=Lax`, `Max-Age=28800`) dan gerbang tepi `proxy.ts`. |
+| **Otomatisasi Pengujian** | Unit test kriptografi dasar. | **Suite Pengujian Otomatis 10 Skenario** (8 CRUD + 2 Relasi Data) menggunakan runner native `node:test` (100% PASS). |
 
 ---
 
@@ -74,9 +88,11 @@ Platform ini memungkinkan auditor keamanan, pengembang web, administrator IT kam
 | **Framework** | Next.js 16.4.0 (App Router) | Framework React berkinerja tinggi dengan server components, Server Actions & `proxy.ts` |
 | **Bahasa** | TypeScript 5 | Pengetikan statis ketat untuk domain models, skema validasi, dan Server Actions |
 | **Pustaka UI** | React 19.3.0 | Pustaka antarmuka deklaratif dengan hook form aksi modern `useActionState` & `useSyncExternalStore` |
-| **Validasi Skema** | Zod 4.6.5 | Validasi deklaratif terpusat (`lib/skema/`) untuk formulir target audit dan autentikasi |
+| **Basis Data** | PostgreSQL 18.6 (Docker) | RDBMS relasional persisten tingkat enterprise berstandar ACID pada port 5432 |
+| **ORM** | Prisma ORM 7.10.1 | ORM tipe ketat deklaratif Next.js dengan driver adapter `@prisma/adapter-pg` di atas driver `pg` |
+| **Validasi Skema** | Zod 4.6.5 | Validasi deklaratif terpusat (`lib/skema/`) untuk target audit, temuan, dan autentikasi |
 | **Styling** | Tailwind CSS v4 | Mesin CSS utility-first yang diselaraskan dengan palet 7 warna samudra & efek 3D |
-| **Proteksi Server** | `server-only` | Paket resmi Next.js untuk mengunci modul sesi dan data agar tidak bocor ke peramban |
+| **Proteksi Server** | `server-only` | Paket resmi Next.js untuk mengunci modul sesi dan database agar tidak bocor ke peramban |
 | **Tipografi / Font** | Geist & Geist Mono (Google Fonts) | Tipografi sans-serif dan monospace modern dengan keterbacaan tinggi |
 | **Kriptografi** | `node:crypto` (OpenSSL backend) | AES-256-GCM, SHA-256 digest, HMAC, dan CSPRNG UUID tingkat OS berstandar FIPS 199 |
 | **Ikon** | Accessible Inline SVG | Ikon yang dapat diskalakan penuh dan aksesibel dengan atribut `aria-hidden="true"` |
@@ -98,32 +114,49 @@ tripleemat/
 │   ├── not-found.tsx                   # Antarmuka 404 ketika notFound() atau rute tak cocok (Server Component)
 │   ├── page.tsx                        # Halaman 1: Beranda Utama (Dasbor 3D Isometrik & Telemetri)
 │   ├── scan/
-│   │   ├── page.tsx                    # Halaman 2: Pemindai Header Keamanan & SSL (dengan form tervalidasi)
-│   │   └── actions.ts                  # Server Action simpanTargetAudit (5 Tahap Mutasi Ketat)
+│   │   ├── page.tsx                    # Halaman 2: Pemindai Header Keamanan & SSL (form tervalidasi Zod)
+│   │   └── actions.ts                  # Server Action simpanTargetAudit (Tersimpan ke PostgreSQL)
 │   ├── asvs/
 │   │   └── page.tsx                    # Halaman 3: Matriks Kepatuhan OWASP ASVS v4.0.3
 │   ├── masuk/
 │   │   ├── page.tsx                    # Halaman Autentikasi Auditor (Deteksi Sesi Aktif)
 │   │   └── actions.ts                  # Server Actions: masuk & keluar (Manajemen Cookie Sesi)
-│   └── report/
-│       ├── layout.tsx                  # Nested Layout: Menjaga state catatan tetap persisten
-│       ├── template.tsx                # Nested Template: Me-reset state catatan per navigasi
-│       ├── page.tsx                    # Halaman 4: Scorecard Keamanan Eksekutif & Riwayat Audit
+│   ├── report/
+│   │   ├── layout.tsx                  # Nested Layout: Menjaga state catatan tetap persisten
+│   │   ├── template.tsx                # Nested Template: Me-reset state catatan per navigasi
+│   │   ├── page.tsx                    # Halaman 4: Scorecard Keamanan Eksekutif & Riwayat Audit
+│   │   └── [id]/
+│   │       └── page.tsx                # Rute Dinamis: Detail Laporan Audit (await params, regex, notFound)
+│   └── target/
+│       ├── page.tsx                    # Halaman 5: Katalog Target Audit (Server Component via connection())
+│       ├── loading.tsx                 # Suspense boundary katalog target
+│       ├── actions.ts                  # Server Actions: tambahTarget, ubahTarget, hapusTarget (transaksi)
+│       ├── temuan-actions.ts           # Server Actions: tambahTemuan, hapusTemuan
 │       └── [id]/
-│           └── page.tsx                # Rute Dinamis: Detail Laporan Audit (await params, regex, notFound)
-├── components/                         # Komponen Reusable Tambahan Modul 4 & Modul 5
+│           └── page.tsx                # Rincian Target & Temuan Kerentanan (FormTemuan & FormUbahTarget)
+├── components/                         # Komponen Reusable Tambahan Modul 4, 5 & 6
 │   ├── FormMasuk.tsx                   # Client Component form autentikasi (React 19 useActionState + ARIA)
+│   ├── FormTemuan.tsx                  # Client Component form tambah temuan kerentanan (Modul 6)
+│   ├── FormUbahTarget.tsx              # Client Component form ubah catatan/informasi target (Modul 6)
 │   ├── KolomCatatan.tsx                # Client Component penguji persistensi state layout vs template
 │   └── TautanNav.tsx                   # Client Component navigasi aktif dengan aria-current="page"
 ├── lib/                                # Logika Bisnis, Data Access & Validasi Skema
-│   ├── data.ts                         # Server-only Data Access Layer (import "server-only")
+│   ├── data.ts                         # Server-only Data Access Layer (Kueri PostgreSQL via Prisma)
+│   ├── prisma.ts                       # Singleton Prisma Client 7 (@prisma/adapter-pg, server-only)
 │   ├── sesi.ts                         # Server-only Session & Cookie Engine (crypto.randomUUID)
 │   ├── status-form.ts                  # Tipe data kembalian Server Action (StatusForm)
 │   ├── skema.ts                        # Re-ekspor modul skema Zod
 │   └── skema/                          # Skema Validasi Zod 4 Terpisah
-│       ├── index.ts                    # Barrel export skema
+│       ├── index.ts                    # Barrel export skema (target, masuk, temuan)
 │       ├── target.ts                   # skemaTarget (Validasi 8 Atribut Target Audit)
+│       ├── temuan.ts                   # skemaTemuan (Validasi Entitas Temuan Audit)
 │       └── masuk.ts                    # skemaMasuk (Validasi Kredensial Email & Sandi)
+├── prisma/                             # Konfigurasi & Artefak Basis Data Prisma ORM 7
+│   ├── schema.prisma                   # Skema model Target, Temuan, dan enum Severity
+│   ├── seed.ts                         # Skrip seed idempoten menggunakan .upsert() bertingkat
+│   ├── data-awal.ts                    # Dataset awal 6 target audit sintetis & 8 temuan kerentanan
+│   └── migrations/                     # Riwayat berkas migrasi SQL DDL PostgreSQL
+├── prisma.config.ts                    # Konfigurasi Prisma 7 (migrations path, datasource env, seed)
 ├── proxy.ts                            # Pemeriksaan optimistik cookie di Next.js 16 (Tepi / Edge Gate)
 ├── public/
 │   └── logo.png                        # Logo resmi perisai produk Tripleemat Security Assessor
@@ -138,7 +171,7 @@ tripleemat/
 │   │   │   ├── ProgressBar.tsx         # Bilah progres aksesibel dengan aria-valuenow
 │   │   │   └── index.ts                # Barrel export komponen
 │   │   └── layout/
-│   │       ├── Navbar.tsx              # Navigasi responsif terintegrasi logo perisai & tombol pemindai 3D
+│   │       ├── Navbar.tsx              # Navigasi responsif terintegrasi logo perisai & link /target
 │   │       ├── ThemeToggle.tsx         # Pengalih tema gelap/terang mulus via View Transitions API
 │   │       └── Footer.tsx              # Footer semantik dengan logo resmi & tautan modul
 │   ├── data/                           # Kumpulan Data Tiruan (Mock Data)
@@ -153,16 +186,18 @@ tripleemat/
 ├── docs/                               # Dokumentasi Teknis & Bukti Pengujian
 │   ├── praktikum/
 │   │   ├── modul-04.md                 # Dokumentasi Teknis Praktikum Modul 4 (App Router)
-│   │   └── modul-05.md                 # Dokumentasi Teknis Praktikum Modul 5 (Formulir, Sesi, Cookie)
+│   │   ├── modul-05.md                 # Dokumentasi Teknis Praktikum Modul 5 (Formulir & Sesi)
+│   │   └── modul-06.md                 # Dokumentasi Teknis Praktikum Modul 6 (PostgreSQL & Prisma)
 │   └── Screenshot/
 │       ├── Modul4/                     # Bukti visual pengujian rute dinamis, layout, & template
 │       └── Modul5/                     # Bukti visual validasi form, bypass novalidate, & cookie sesi
 ├── test/
 │   ├── crypto.test.ts                  # Unit test kriptografi (100% lolos)
-│   └── skema.test.ts                   # Unit test validasi skema Zod 4 (10/10 lolos)
-├── .env.example                        # Contoh konfigurasi kredensial lingkungan demo
+│   ├── skema.test.ts                   # Unit test validasi skema Zod 4 (10/10 lolos)
+│   └── crud-modul6.test.ts             # Pengujian otomatis 10 skenario CRUD & relasi (10/10 lolos)
+├── .env.example                        # Template konfigurasi kredensial lingkungan demo
 ├── AI-Log .md                          # Log penggunaan Gen-AI & catatan verifikasi mandiri
-├── package.json                        # Dependensi proyek dan npm scripts
+├── package.json                        # Dependensi proyek dan npm scripts (termasuk test:modul6)
 └── tsconfig.json                       # Konfigurasi compiler TypeScript
 ```
 
@@ -380,8 +415,9 @@ Pengujian dilakukan menggunakan Google Chrome Lighthouse di seluruh rute aplikas
 ## 🚀 11. Panduan Menjalankan Proyek
 
 ### Prasyarat
-* **Node.js** v20+ atau v22+ (direkomendasikan untuk eksekusi native `node:test`)
+* **Node.js** v20+ atau v24 LTS
 * **npm** v10+
+* **Docker Desktop** (untuk container PostgreSQL 18)
 
 ### Panduan Langkah demi Langkah
 
@@ -392,7 +428,26 @@ cd tripleemat
 # 2. Pasang seluruh dependensi yang diperlukan
 npm install
 
-# 3. Jalankan server pengembangan Next.js
+# 3. Jalankan container basis data PostgreSQL 18 via Docker
+docker run --name pg-praktikum \
+  -e POSTGRES_USER=praktikum \
+  -e POSTGRES_PASSWORD=lokal-saja-123 \
+  -e POSTGRES_DB=produk \
+  -p 5432:5432 -d postgres:18
+
+# 4. Salin file environment lokal (jika belum ada)
+cp .env.example .env
+
+# 5. Terapkan migrasi schema database
+npx prisma migrate dev --name init
+
+# 6. Generate Prisma Client bertipe ke generated/prisma
+npx prisma generate
+
+# 7. Jalankan seeding data awal sintetis (idempoten via upsert)
+npx prisma db seed
+
+# 8. Jalankan server pengembangan Next.js
 npm run dev
 ```
 
@@ -401,23 +456,23 @@ Buka peramban Anda dan akses: **[http://localhost:3000](http://localhost:3000)**
 ### Skrip Pengujian & Validasi Kualitas
 
 ```bash
-# 1. Jalankan pengujian unit skema validasi Zod 4 (10 kasus uji otomatis)
+# 1. Jalankan pengujian 10 Skenario CRUD & Relasi Modul 6 (Tugas 2)
+npm run test:modul6
+
+# 2. Jalankan pengujian unit skema validasi Zod 4 (10 kasus uji)
 npx tsx test/skema.test.ts
 
-# 2. Jalankan pengujian unit mesin kriptografi FIPS 199
+# 3. Jalankan pengujian unit mesin kriptografi FIPS 199
 npm run test:crypto
 
-# 3. Jalankan pemeriksaan tipe statis TypeScript ketat
+# 4. Jalankan pemeriksaan tipe statis TypeScript ketat (0 error)
 npx tsc --noEmit
 
-# 4. Jalankan analisis linter kode ESLint
+# 5. Jalankan analisis linter kode ESLint (0 warning, 0 error)
 npm run lint
 
-# 5. Kompilasi build produksi Next.js
+# 6. Kompilasi build produksi Next.js
 npm run build
-
-# 6. Jalankan server produksi
-npm run start
 ```
 
 ---
