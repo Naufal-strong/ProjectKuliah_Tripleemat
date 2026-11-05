@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "crypto:cli": "node --import tsx src/lib/crypto/cli.ts",
     "test:crypto": "node --import tsx --test test/crypto.test.ts",
     "test:skema": "node --import tsx --test test/skema.test.ts",
     "test:modul6": "node --import tsx --test test/crud-modul6.test.ts"

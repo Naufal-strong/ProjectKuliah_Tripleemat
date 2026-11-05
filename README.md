@@ -196,7 +196,7 @@ tripleemat/
 │   ├── skema.test.ts                   # Unit test validasi skema Zod 4 (10/10 lolos)
 │   └── crud-modul6.test.ts             # Pengujian otomatis 10 skenario CRUD & relasi (10/10 lolos)
 ├── .env.example                        # Template konfigurasi kredensial lingkungan demo
-├── AI-Log .md                          # Log penggunaan Gen-AI & catatan verifikasi mandiri
+├── AI_LOG.md                          # Log penggunaan Gen-AI & catatan verifikasi mandiri
 ├── package.json                        # Dependensi proyek dan npm scripts (termasuk test:modul6)
 └── tsconfig.json                       # Konfigurasi compiler TypeScript
 ```
@@ -456,7 +456,13 @@ Buka peramban Anda dan akses: **[http://localhost:3000](http://localhost:3000)**
 ### Skrip Pengujian & Validasi Kualitas
 
 ```bash
-# 1. Jalankan pengujian 10 Skenario CRUD & Relasi Modul 6 (Tugas 2)
+# 1. Jalankan pengujian kriptografi terintegrasi T1 -> T2 & AEAD (22 pengujian lulus 100%)
+npm run test:crypto
+
+# 2. Bangkitkan master key CSPRNG 256-bit di luar repositori (~/.tripleemat/audit.key)
+npm run crypto:cli keygen
+
+# 3. Jalankan pengujian 10 Skenario CRUD & Relasi Modul 6 (Tugas 2)
 npm run test:modul6
 
 # 2. Jalankan pengujian unit skema validasi Zod 4 (10 kasus uji)
@@ -484,7 +490,7 @@ npm run build
 * **Rangkuman Proyek & Kriptografi:** [`Rangkuman Tripleemat.md`](Rangkuman%20Tripleemat.md) — Ringkasan eksekutif dan implementasi modul kriptografi FIPS 199.
 * **Inventaris Aset Keamanan:** [`security/asset-inventory.md`](security/asset-inventory.md) — Tabel penilaian dampak CIA FIPS 199.
 * **Model Ancaman STRIDE:** [`security/threat-modeling.md`](security/threat-modeling.md) — Analisis batas kepercayaan dan mitigasi ancaman.
-* **Log Penggunaan Gen-AI:** [`AI-Log .md`](AI-Log%20.md) — Transparansi peran AI dan verifikasi mandiri pengembang.
+* **Log Penggunaan Gen-AI:** [`AI_LOG.md`](AI_LOG.md) — Transparansi peran AI dan verifikasi mandiri pengembang.
 
 ---
 
@@ -492,5 +498,5 @@ npm run build
 
 * **Tidak Ada Kredensial Rahasia:** Repositori ini tidak memuat private key, API secret, maupun kredensial produksi nyata.
 * **Hanya Data Sintetis:** Seluruh domain target audit (`kampus.ac.id`) dan laporan pemindaian menggunakan data tiruan sintetis.
-* **Keterbukaan AI:** Seluruh interaksi pair-programming AI dan verifikasi mandiri manusia didokumentasikan secara transparan dalam [`AI-Log .md`](AI-Log%20.md).
+* **Keterbukaan AI:** Seluruh interaksi pair-programming AI dan verifikasi mandiri manusia didokumentasikan secara transparan dalam [`AI_LOG.md`](AI_LOG.md).
 
