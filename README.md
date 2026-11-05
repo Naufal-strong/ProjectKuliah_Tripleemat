@@ -64,6 +64,8 @@ Platform ini memungkinkan auditor keamanan, pengembang web, administrator IT kam
   - **Pekan 4 (App Router & Rute Dinamis):** Rute Dinamis `/report/[id]` dan `/target/[id]`, penanganan `await params`, validasi format regex `/^scan-\d{4}-\d{3}$/`, batas `notFound()`, isolasi `server-only`, dan navigasi aktif aksesibel.
   - **Pekan 5 (Formulir, Zod 4 & Sesi):** Skema validasi Zod 4 deklaratif, Server Actions mutasi 5-tahap, manajemen cookie sesi `HttpOnly` FIPS 199, dan filter rute `proxy.ts`.
   - **Pekan 6 (PostgreSQL 18 & Prisma ORM 7):** Perancangan 2 entitas relasional (`Target` dan `Temuan`), constraint unik dan `onDelete: Restrict`, driver adapter `@prisma/adapter-pg`, seed idempoten `.upsert()`, operasi CRUD lengkap kedua entitas, transaksi atomik rollback terbukti, dan 10 skenario pengujian CRUD (100% lulus).
+  - **Pekan 6 Kriptografi (Milestone v0.2):** Sambungan T1 -> T2, Kanonisasi JSON leksikografis & Unicode NFC, Segel HMAC-SHA256, derivasi kunci HKDF-SHA256 (NIST SP 800-57), Vault AEAD AES-256-GCM terikat AAD targetId, master key CSPRNG di luar repositori (audit.key), dan 22 unit test (100% lulus).
+  - **Pekan 6 Keamanan Siber (Milestone sec-0.2):** Matriks kontrol akses RBAC dengan 12 uji akses seimbang (6 positif & 6 negatif), hashing kata sandi lambat Argon2id, pengerasan SSH key-only, audit OS Lynis mencapai skor 76 / 100, kontainer multi-stage non-root UID 1001, compose.yaml hardened (read_only, cap_drop ALL, DB tanpa ports), pemindaian Trivy (0 Critical CVEs), dan SBOM CycloneDX 1.5 JSON.
 * **Milestone Selanjutnya (v0.3+):** REST API Route Handlers (Modul 8), Autentikasi Pengguna & Kepemilikan Data (Modul 10–12), asynchronous worker jobs untuk audit jaringan real-time, dan ekspor laporan ke format PDF bersertifikat digital.
 
 ### 🚀 Perkembangan Fitur dari v0.1 ke v0.2 (Tugas 2)
@@ -419,7 +421,24 @@ Pengujian dilakukan menggunakan Google Chrome Lighthouse di seluruh rute aplikas
 * **npm** v10+
 * **Docker Desktop** (untuk container PostgreSQL 18)
 
-### Panduan Langkah demi Langkah
+### Opsi A: Menjalankan dengan Docker Compose (Hardened Staging Runtime)
+
+```bash
+# Bangun dan jalankan seluruh container terisolasi (App non-root UID 1001 + DB internal)
+docker compose up -d --build
+
+# Verifikasi status container
+docker compose ps
+
+# Verifikasi user non-root dan kapabilitas kernel nol
+docker compose exec app id
+docker compose exec app grep CapEff /proc/1/status
+
+# Uji negatif immutabilitas filesystem
+docker compose exec app touch /app/uji
+```
+
+### Opsi B: Panduan Langkah demi Langkah (Localhost Development)
 
 ```bash
 # 1. Masuk ke direktori proyek

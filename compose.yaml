@@ -1,0 +1,87 @@
+# -----------------------------------------------------------------------------
+# Tripleemat Security Assessor — Hardened Container Orchestration
+# Milestone: sec-0.2 (Keamanan Komputasi dan Siber - Pekan 6)
+# Standar: CIS Docker Benchmark & NIST SP 800-190
+# -----------------------------------------------------------------------------
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: tripleemat-app:sec-0.2
+    container_name: tripleemat-app
+    restart: unless-stopped
+    # 1. Least Privilege: Jalankan sebagai user non-root (UID:GID 1001:1001)
+    user: "1001:1001"
+    
+    # 2. Filesystem Immutability: Cegah modifikasi biner/kode saat runtime
+    read_only: true
+    tmpfs:
+      - /tmp:mode=1777,size=64M
+    
+    # 3. Kernel Privilege Isolation: Buang semua Linux capability
+    cap_drop:
+      - ALL
+    
+    # 4. Pencegahan Eskalasi Hak Akses: Larang binary setuid menambah privilese
+    security_opt:
+      - no-new-privileges:true
+    
+    # Injeksi secrets saat runtime (bukan di-bake ke dalam image layer)
+    env_file:
+      - .env
+    
+    # Port aplikasi web dipublikasikan hanya ke localhost/reverse proxy
+    ports:
+      - "127.0.0.1:3000:3000"
+    
+    depends_on:
+      db:
+        condition: service_healthy
+    
+    networks:
+      - internal_net
+
+  db:
+    image: postgres:17-alpine
+    container_name: tripleemat-db
+    restart: unless-stopped
+    
+    # Hardening Basis Data:
+    # PERHATIAN: TANPA atribut "ports"!
+    # Basis data HANYA dapat diakses melalui jaringan internal Compose (internal_net)
+    # Port 5432 TIDAK terekspos ke host maupun internet luar.
+    
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-praktikum}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-lokal-saja-123}
+      POSTGRES_DB: ${POSTGRES_DB:-produk}
+    
+    user: "postgres"
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U praktikum -d produk"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    
+    networks:
+      - internal_net
+
+volumes:
+  pgdata:
+    name: tripleemat_pgdata
+
+networks:
+  internal_net:
+    name: tripleemat_internal_net
+    driver: bridge
+

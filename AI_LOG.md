@@ -5,7 +5,58 @@
 **Repositori:** `tripleemat`  
 **Standar Pelaporan:** Rubrik R2 (Milestone v0.2 / Minggu 06)  
 
-Dokumen ini adalah satu-satunya catatan resmi (*single source of truth*) yang mencatat secara transparan seluruh penggunaan alat bantu kecerdasan buatan (Generative AI) sepanjang pengembangan proyek Tripleemat, mencakup Milestone 1 (`sec-0.1` & `v-0.1`) hingga Milestone 2 (`v0.2`).
+Dokumen ini adalah satu-satunya catatan resmi (*single source of truth*) yang mencatat secara transparan seluruh penggunaan alat bantu kecerdasan buatan (Generative AI) sepanjang pengembangan proyek Tripleemat, mencakup Milestone 1 (`sec-0.1` & `v-0.1`), Milestone 2 Kriptografi (`v0.2`), hingga Milestone 2 Keamanan Siber (`sec-0.2`).
+
+---
+
+## 📌 Milestone `sec-0.2` — Kontrol Akses, System Hardening, & Software Supply Chain (Pekan 6)
+
+**Pekan:** 6 — Keamanan Container, OS Hardening, & Software Supply Chain (Kode MK: 052353)  
+**Tanggal:** 2026-11-05  
+**Penanda Rilis:** `sec-0.2`  
+
+### 1. Alat AI yang Digunakan
+* **Model AI:** Gemini 3.8 Flash & Antigravity IDE Assistant
+* **Peran AI:** Asisten perancangan sistem pengerasan (hardening), pembangkitan matriks kontrol akses (RBAC), penyusunan konfigurasi `Dockerfile` multi-stage dan `compose.yaml` terisolasi, serta verifikasi laporan Lynis, Trivy, dan CycloneDX SBOM.
+* **Tanggung Jawab Siswa:** Mahasiswa memahami seluruh konsep isolasi kernel, kapabilitas Linux, mitigasi supply chain (kasus Shai-Hulud & Trivy), alasan teknis konfigurasi SSH/sysctl, dan mampu mendemonstrasikan seluruh konfigurasi dalam sesi demonstrasi 5–7 menit.
+
+### 2. Tujuan Penggunaan AI
+1. Merancang matriks hak akses berbasis peran (RBAC) dan 12 skenario pengujian akses dengan keseimbangan mutlak 6 uji positif dan 6 uji negatif (`security/access-tests.md`).
+2. Menentukan parameter fungsi hash lambat Argon2id ($m=65536, t=3, p=4$) dan mendokumentasikan bukti representasi hash tanpa mengekspos data kredensial nyata.
+3. Menyusun pengerasan VM Linux: konfigurasi SSH berbasis kunci saja (`PasswordAuthentication no`, `PermitRootLogin no`), parameter kernel `sysctl` (`config/00-hardening.conf`), dan dokumentasi peningkatan skor audit Lynis dari 58 menjadi 76 (`lynis-before.txt` & `lynis-after.txt`).
+4. Mengembangkan `Dockerfile` multi-stage non-root (UID 1001) dan `compose.yaml` terisolasi (`read_only: true`, `cap_drop: ALL`, `no-new-privileges: true`, serta port basis data 5432 tidak terekspos ke host).
+5. Menyusun laporan pemindaian citra Trivy sebelum vs sesudah hardening dengan 0 kerentanan kritis (`image-scan-before.txt` & `image-scan-after.txt`), pembuatan SBOM CycloneDX (`sbom.cdx.json`), dan pembaruan `risk-register.md`.
+
+### 3. Ringkasan Perintah (Prompt Summary)
+1. *"Tasks: Create an access matrix by role and test each unauthorized access attempt using test accounts; document the results in security/access-tests.md..."*
+2. *"Ensure passwords are stored using a slow hashing function and provide evidence of this without exposing actual user data."*
+3. *"Harden the VM: allow SSH login only via keys, disable root login, and achieve a Lynis score of at least 70 (provide lynis-before.txt and lynis-after.txt)."*
+4. *"Harden the container: use a non-root user, restrict capabilities, and ensure application and database ports are not exposed."*
+5. *"Scan the image before and after hardening (provide image-scan-before.txt and image-scan-after.txt) and generate an SBOM (sbom.cdx.json)."*
+6. *"Reference the risk IDs from Task 1 for each control, apply the sec-0.2 tag, and prepare a demonstration."*
+
+### 4. Bagian Kode & Dokumen yang Dihasilkan / Dimodifikasi
+
+| Berkas | Bagian yang Disentuh | Modifikasi / Verifikasi Mandiri Mahasiswa |
+|---|---|---|
+| `Dockerfile` | Multi-stage build (`deps`, `builder`, `runner`) & user non-root UID 1001 | Memverifikasi instruksi `USER nextjs`, penggunaan base image minimal `node:22-alpine`, dan pembersihan build-tools dari runtime. |
+| `compose.yaml` | Definisi layanan `app` dan `db` | Menetapkan `read_only: true`, alokasi `tmpfs /tmp`, `cap_drop: ALL`, `no-new-privileges: true`, dan memastikan port 5432 **tidak dipublikasikan** ke host. |
+| `.dockerignore` | Penyaringan berkas sensitif | Memastikan berkas `.env`, `*.key`, `.git`, dan artefak pengujian tidak ikut tersalin ke layer container image. |
+| `config/00-hardening.conf` | Pengerasan SSH dan sysctl kernel | Menerapkan `PasswordAuthentication no`, `PermitRootLogin no`, serta proteksi SYN Cookies dan IP Spoofing. |
+| `security/access-tests.md` | Matriks RBAC & 12 Skenario Pengujian | Mengonfigurasi tepat 6 skenario positif dan 6 skenario negatif, serta spesifikasi detail parameter Argon2id. |
+| `security/hardening-notes.md`| Catatan teknis & hasil audit | Mendokumentasikan bukti keluaran `id`, `CapEff: 0`, kegagalan penulisan read-only filesystem, dan justifikasi temuan Lynis. |
+| `security/lynis-before.txt` & `lynis-after.txt` | Laporan audit Lynis | Memverifikasi pencapaian skor 76 / 100 (melampaui target minimal $\ge 70$). |
+| `security/image-scan-before.txt` & `image-scan-after.txt` | Laporan pemindaian kerentanan Trivy | Memverifikasi eliminasi seluruh kerentanan tingkat CRITICAL (0 Critical CVEs pada image akhir). |
+| `security/sbom.cdx.json` | Software Bill of Materials (SBOM) | Memvalidasi kepatuhan terhadap skema standar OWASP CycloneDX 1.5 JSON. |
+| `security/risk-register.md` | Pembaruan status kontrol risiko | Menautkan setiap kontrol pengerasan ke risiko `RR-01` sampai `RR-05` dari Task 1. |
+
+### 5. Metode Verifikasi Independen
+1. **Verifikasi SSH Hardening:** Memeriksa keluaran biner `sshd -T` pada host: `sudo sshd -T | grep -E 'passwordauthentication|permitrootlogin'` terbukti menghasilkan `no` untuk kedua parameter.
+2. **Verifikasi Indeks Lynis:** Memeriksa log audit Lynis yang menunjukkan kenaikan skor dari 58 menjadi **76**.
+3. **Verifikasi Integritas Kontainer:** Memeriksa UID 1001 via `docker compose exec app id`, `CapEff: 0000000000000000`, dan pembuktian error `Read-only file system` saat menjalankan `touch /app/uji`.
+4. **Verifikasi Isolasi Jaringan Basis Data:** Menjalankan `sudo ss -tlpn | grep 5432` pada host (hasil: kosong/tidak terpublikasi).
+5. **Verifikasi Keseimbangan Uji Akses:** Memastikan 6 uji positif dan 6 uji negatif tertolak 100% pada `access-tests.md`.
+6. **Verifikasi Eliminasi Critical CVE:** Memeriksa tabel Trivy scan pada `image-scan-after.txt` yang menunjukkan 0 Critical Vulnerabilities.
 
 ---
 
