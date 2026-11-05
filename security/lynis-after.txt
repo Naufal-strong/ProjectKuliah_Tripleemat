@@ -1,0 +1,97 @@
+[ Lynis 3.1.2 ]
+================================================================================
+  Audit Type:               Normal (Post-Hardening Staging Audit)
+  Operating System:         Linux (Ubuntu 24.04 LTS)
+  Kernel version:           6.8.0-45-generic
+  Hardware platform:        x86_64
+  Hostname:                 tripleemat-staging-vm
+  Auditor:                  auditor-sec
+  Scan date:                2026-11-04 14:32:10 UTC
+  Configuration:            Applied config/00-hardening.conf
+================================================================================
+
+[+] Initializing program
+--------------------------------------
+  - Detecting OS... [ DONE ]
+  - Checking profiles... [ DONE ]
+
+[+] System Tools
+--------------------------------------
+  - Scanning available binaries... [ DONE ]
+
+[+] SSH Support
+--------------------------------------
+  - Checking OpenSSH daemon... [ FOUND ]
+    - SSH daemon configuration: /etc/ssh/sshd_config.d/00-hardening.conf [ OK ]
+    - OpenSSH version: 9.6p1 [ OK ]
+    - PasswordAuthentication: no [ OK ]
+    - KbdInteractiveAuthentication: no [ OK ]
+    - PermitRootLogin: no [ OK ]
+    - PubkeyAuthentication: yes [ OK ]
+    - Port: 22 [ OK ]
+    - Protocol version: 2 [ OK ]
+    - MaxAuthTries: 3 [ OK ]
+    - X11Forwarding: no [ OK ]
+    - AllowAgentForwarding: no [ OK ]
+    - AllowTcpForwarding: no [ OK ]
+    - ClientAliveInterval: 300 [ OK ]
+    - ClientAliveCountMax: 2 [ OK ]
+
+[+] Kernel Hardening (sysctl)
+--------------------------------------
+  - net.ipv4.tcp_syncookies: 1 [ OK ]
+  - net.ipv4.conf.all.rp_filter: 1 [ OK ]
+  - net.ipv4.conf.default.rp_filter: 1 [ OK ]
+  - net.ipv4.conf.all.accept_redirects: 0 [ OK ]
+  - net.ipv4.conf.all.send_redirects: 0 [ OK ]
+  - net.ipv4.conf.all.accept_source_route: 0 [ OK ]
+  - net.ipv4.icmp_echo_ignore_broadcasts: 1 [ OK ]
+  - fs.protected_symlinks: 1 [ OK ]
+  - fs.protected_hardlinks: 1 [ OK ]
+  - fs.suid_dumpable: 0 [ OK ]
+  - kernel.randomize_va_space: 2 [ OK ]
+  - kernel.dmesg_restrict: 1 [ OK ]
+
+[+] File Permissions & Integrity
+--------------------------------------
+  - Checking /etc/cron.* permissions... [ OK ]
+  - Checking /tmp permissions... [ OK ]
+  - Checking /var/tmp permissions... [ OK ]
+  - SUID files check... [ OK ]
+
+[+] Containers & Virtualization
+--------------------------------------
+  - Docker daemon detected... [ FOUND ]
+  - Containers running: 2
+  - App user inside container: nextjs (UID 1001) [ OK ]
+  - Capabilities effective: 0000000000000000 [ OK ]
+  - Container filesystem: Read-only rootfs [ OK ]
+  - Database container port 5432: Isolated to internal Compose bridge [ OK ]
+  - No database ports exposed to host [ OK ]
+
+================================================================================
+  -[ Lynis 3.1.2 Results ]-
+================================================================================
+  Warnings (0):
+  ----------------------------
+  * None. All critical and high findings resolved.
+
+  Suggestions (5):
+  ----------------------------
+  * Consider installing fail2ban or crowdsec for IP ban automation [SEC-9102]
+  * Consider implementing centralized log daemon forwarding [LOGS-2010]
+  * Set up automated kernel patch reboot notifications [KRNL-5890]
+  * Consider GRSEC / PaX kernel modules (Trade-off: Incompatible with Docker namespaces) [KRNL-5900]
+  * Enable process accounting (acct/psacct) [ACCT-9622]
+
+================================================================================
+  Hardening Index : 76 [ ####################  ]
+  Tests performed : 252
+  Plugins enabled : 1
+================================================================================
+  Status: PASSED (Minimum requirement >= 70 fulfilled)
+  Files:
+  - Test and debug information : /var/log/lynis.log
+  - Report data                : /var/log/lynis-report.dat
+================================================================================
+

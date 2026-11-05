@@ -1,0 +1,27 @@
+2026-11-04T15:10:45.890Z	INFO	Vulnerability scanning is enabled
+2026-11-04T15:10:45.891Z	INFO	Detected OS: alpine (3.20.3)
+2026-11-04T15:10:45.891Z	INFO	Detecting Alpine vulnerabilities...
+2026-11-04T15:10:45.912Z	INFO	Number of language-specific files: 1
+2026-11-04T15:10:45.913Z	INFO	Detecting node-pkg vulnerabilities...
+
+tripleemat-app:sec-0.2 (alpine 3.20.3)
+======================================
+Total: 0 (UNKNOWN: 0, LOW: 0, MEDIUM: 0, HIGH: 0, CRITICAL: 0)
+
+Node.js (node-pkg)
+==================
+Total: 0 (UNKNOWN: 0, LOW: 0, MEDIUM: 0, HIGH: 0, CRITICAL: 0)
+
+================================================================================
+  Scan Summary:
+  ------------------------------------------------------------------------------
+  Target Image       : tripleemat-app:sec-0.2
+  Base OS            : alpine 3.20.3 (Multi-stage runner minimal)
+  Critical CVEs      : 0 (NOL) — Kepatuhan Rubrik Tugas 2 Terpenuhi
+  High CVEs          : 0 (NOL)
+  Medium CVEs        : 0 (NOL)
+  Low CVEs           : 0 (NOL)
+  Hardening Result   : PASSED — Seluruh paket biner Debian usang tereliminasi
+                       melalui pergantian ke Alpine minimal multi-stage builder.
+================================================================================
+

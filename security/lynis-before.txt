@@ -1,0 +1,85 @@
+[ Lynis 3.1.2 ]
+================================================================================
+  Audit Type:               Normal
+  Operating System:         Linux (Ubuntu 24.04 LTS)
+  Kernel version:           6.8.0-45-generic
+  Hardware platform:        x86_64
+  Hostname:                 tripleemat-staging-vm
+  Auditor:                  auditor-sec
+  Scan date:                2026-11-04 09:14:22 UTC
+================================================================================
+
+[+] Initializing program
+--------------------------------------
+  - Detecting OS... [ DONE ]
+  - Checking profiles... [ DONE ]
+
+[+] System Tools
+--------------------------------------
+  - Scanning available binaries... [ DONE ]
+
+[+] SSH Support
+--------------------------------------
+  - Checking OpenSSH daemon... [ FOUND ]
+    - SSH daemon configuration: /etc/ssh/sshd_config [ OK ]
+    - OpenSSH version: 9.6p1 [ OK ]
+    - PasswordAuthentication: yes [ WARNING ]
+    - PermitRootLogin: yes [ WARNING ]
+    - Port: 22 [ OK ]
+    - Protocol version: 2 [ OK ]
+    - MaxAuthTries: 6 [ SUGGESTION ]
+    - X11Forwarding: yes [ SUGGESTION ]
+
+[+] Kernel Hardening (sysctl)
+--------------------------------------
+  - net.ipv4.tcp_syncookies: 0 [ WARNING ]
+  - net.ipv4.conf.all.rp_filter: 0 [ WARNING ]
+  - net.ipv4.conf.all.accept_redirects: 1 [ WARNING ]
+  - net.ipv4.conf.all.accept_source_route: 1 [ WARNING ]
+  - fs.protected_symlinks: 0 [ SUGGESTION ]
+  - fs.protected_hardlinks: 0 [ SUGGESTION ]
+  - kernel.randomize_va_space: 1 [ SUGGESTION ]
+
+[+] File Permissions & Integrity
+--------------------------------------
+  - Checking /etc/cron.* permissions... [ SUGGESTION ]
+  - Checking /tmp permissions... [ OK ]
+  - Checking umask in /etc/login.defs... [ 022 ]
+
+[+] Containers & Virtualization
+--------------------------------------
+  - Docker daemon detected... [ FOUND ]
+  - Containers running: 2
+  - Exposed ports on host: 0.0.0.0:5432, 0.0.0.0:3000 [ WARNING ]
+
+================================================================================
+  -[ Lynis 3.1.2 Results ]-
+================================================================================
+  Warnings (7):
+  ----------------------------
+  * SSH daemon allows password authentication [SSH-7408]
+  * SSH daemon allows root login directly [SSH-7412]
+  * TCP SYN cookies disabled in sysctl [KRNL-5820]
+  * Reverse path filtering disabled in sysctl [KRNL-5830]
+  * ICMP redirects accepted in sysctl [NETW-3004]
+  * IP source routing accepted [NETW-3012]
+  * Database port 5432 exposed to public interface [DOCK-6002]
+
+  Suggestions (14):
+  ----------------------------
+  * Set MaxAuthTries to 3 or 4 in sshd_config [SSH-7420]
+  * Disable X11Forwarding if not strictly required [SSH-7430]
+  * Configure fs.protected_symlinks=1 in sysctl [KRNL-5840]
+  * Restrict container capabilities with cap_drop [CONT-8102]
+  * Run container services as non-root user [CONT-8108]
+
+================================================================================
+  Hardening Index : 58 [ ##############      ]
+  Tests performed : 248
+  Plugins enabled : 1
+================================================================================
+  Files:
+  - Test and debug information : /var/log/lynis.log
+  - Report data                : /var/log/lynis-report.dat
+================================================================================
+
