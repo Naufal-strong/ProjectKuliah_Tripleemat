@@ -69,13 +69,6 @@ export default function HomePage() {
     { label: "Rata-rata Latensi Audit", value: "< 2.5s", detail: "Mesin Non-Intrusif Cepat", color: "#7BBDE8" },
   ];
 
-  // Spotlight mouse tracking untuk kartu desktop
-  const handleSpotlight = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    e.currentTarget.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
-    e.currentTarget.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
-  };
-
   return (
     <main id="main-content" className="flex-1 flex flex-col">
       {/* 3D Hero Section */}
@@ -83,25 +76,21 @@ export default function HomePage() {
         aria-labelledby="hero-heading"
         className="relative pt-12 pb-16 md:pt-20 md:pb-28 border-b border-border bg-surface-0 overflow-hidden"
       >
-        {/* Cyber Grid 3D Background & Ambient Glow Orbs */}
-        <div className="absolute inset-0 cyber-grid-bg pointer-events-none opacity-80" aria-hidden="true" />
-        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full bg-[#0A4174]/20 blur-3xl pointer-events-none" aria-hidden="true" />
-        <div className="absolute top-1/2 -right-24 w-80 h-80 rounded-full bg-[#7BBDE8]/15 blur-3xl pointer-events-none" aria-hidden="true" />
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
             {/* Left Column: Headline & Action Buttons */}
-            <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+            <div className="lg:col-span-7 space-y-6 text-center lg:text-left motion-enter">
               {/* Eyebrow Tagline */}
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-border bg-surface-1 text-text-2 text-xs font-medium shadow-xs">
-                <span className="h-2 w-2 rounded-full bg-accent inline-block animate-pulse" aria-hidden="true" />
-                <span>Tripleemat Security Assessor • 3D Oceanic Edition</span>
+                <span className="h-2 w-2 rounded-full bg-accent inline-block" aria-hidden="true" />
+                <span>Tripleemat Security Assessor · Audit pasif</span>
               </div>
 
               {/* Primary Page Heading */}
               <h1
                 id="hero-heading"
-                className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-text-1 leading-tight sm:leading-tight"
+                className="text-3xl sm:text-5xl md:text-6xl font-semibold tracking-tight text-text-1 leading-tight sm:leading-tight"
               >
                 Penilaian Keamanan &amp; Kepatuhan Otomatis untuk{" "}
                 <span className="text-accent underline decoration-accent/40 decoration-wavy">
@@ -112,7 +101,7 @@ export default function HomePage() {
               <p className="text-base sm:text-lg text-text-2 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
                 Evaluasi aplikasi web Anda terhadap standar <strong className="text-text-1">OWASP ASVS v4.0.3</strong> dan{" "}
                 <strong className="text-text-1">NIST SP 800-53</strong>. Dilengkapi analisis header pasif, audit cipher SSL/TLS,
-                dan penandatanganan integritas kriptografis berstandar FIPS 199.
+                dan penandatanganan integritas kriptografis berbasis SHA-256.
               </p>
 
               {/* Primary 3D Actions */}
@@ -153,27 +142,28 @@ export default function HomePage() {
               {/* Trust Indicators */}
               <div className="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-xs text-text-3">
                 <span className="flex items-center gap-1.5">
-                  <span className="text-ok font-bold">✓</span> Non-Intrusif 100%
+                    <span className="text-ok font-bold" aria-hidden="true">✓</span>
+                  <span>Audit pasif, tanpa intrusi</span>
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <span className="text-ok font-bold">✓</span> FIPS 199 SHA-256
+                  <span className="text-ok font-bold" aria-hidden="true">✓</span>
+                  <span>Integritas SHA-256</span>
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <span className="text-ok font-bold">✓</span> Zero Vulnerability
+                  <span className="text-ok font-bold" aria-hidden="true">✓</span>
+                  <span>Temuan ditampilkan jelas</span>
                 </span>
               </div>
             </div>
 
             {/* Right Column: 3D Perspective Security Dashboard */}
-            <div className="lg:col-span-5 flex flex-col items-center justify-center perspective-container w-full">
+            <div className="lg:col-span-5 flex flex-col items-center justify-center perspective-container w-full motion-enter motion-enter-delay">
               <div className="relative w-full max-w-md mx-auto">
-                {/* 3D Floating Official Brand Shield with Sonar Pulse */}
-                <div className="absolute -top-7 -right-3 z-30 floating-3d-top">
-                  <div className="relative">
-                    <div className="radar-sonar-ring" aria-hidden="true" />
-                    <div className="relative h-20 w-20 rounded-2xl overflow-hidden border-2 border-[#7BBDE8]/60 shadow-2xl bg-surface-1 p-2 card-3d">
+                {/* Product mark */}
+                <div className="absolute -top-5 -right-3 z-30">
+                  <div className="relative h-16 w-16 rounded-xl overflow-hidden border border-border bg-surface-1 p-2 shadow-md">
                       <Image
-                        src="/logo.png"
+                        src="/logo.svg"
                         alt="Logo Resmi Tripleemat"
                         width={80}
                         height={80}
@@ -182,12 +172,10 @@ export default function HomePage() {
                       />
                     </div>
                   </div>
-                </div>
 
-                {/* 3D Main Terminal Board with Spotlight effect */}
+                {/* Main audit preview */}
                 <div
-                  onMouseMove={handleSpotlight}
-                  className="hero-3d-board spotlight-card rounded-2xl border border-border bg-surface-1 p-4 sm:p-5 overflow-hidden"
+                  className="hero-3d-board rounded-2xl border border-border bg-surface-1 p-4 sm:p-5 overflow-hidden"
                 >
                   {/* Window Bar */}
                   <div className="flex items-center justify-between pb-3.5 border-b border-border/60">
@@ -236,7 +224,7 @@ export default function HomePage() {
                   <div className="mt-3.5 p-3 rounded-xl bg-[#001D39] text-[#BDD8E9] font-mono text-[11px] space-y-1.5 border border-[#0A4174] overflow-hidden">
                     <div className="flex items-center justify-between text-[10px] text-[#7BBDE8] pb-1 border-b border-[#0A4174]/60">
                       <span className="flex items-center gap-1.5">
-                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" aria-hidden="true" />
                         TELEMETRI KONSOL
                       </span>
                       <span>SHA-256 NONCE</span>
@@ -278,7 +266,7 @@ export default function HomePage() {
                 {/* 3D Floating Pill Badge (Bottom-Left) */}
                 <div className="absolute -bottom-5 -left-3 z-20 floating-3d-bottom">
                   <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-surface-1 border border-border shadow-xl text-xs font-semibold text-text-1 card-3d">
-                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-ping inline-block" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 inline-block" aria-hidden="true" />
                     <span>0 Kerentanan Kritis Terdeteksi</span>
                   </div>
                 </div>
@@ -539,7 +527,7 @@ export default function HomePage() {
 
                 <div className="p-6 rounded-lg bg-surface-0 border border-border card-3d">
                   <h3 className="text-base font-semibold text-text-1 mb-2">
-                    NIST SP 800-53 &amp; FIPS 199
+                    NIST SP 800-53 &amp; Kategorisasi Risiko
                   </h3>
                   <p className="text-xs text-text-2 leading-relaxed mb-4">
                     Pemetaan Standar Pemrosesan Informasi Federal guna menjamin kepatuhan tingkat institusi:
@@ -583,7 +571,7 @@ export default function HomePage() {
                   </div>
                   <div className="p-4 rounded-lg bg-surface-1 border border-border">
                     <strong className="text-text-1 block mb-1">Kriptografi Handal</strong>
-                    Integrasi native dengan node:crypto untuk enkripsi laporan AES-256-GCM dan digest SHA-256 FIPS 199.
+                    Integrasi native dengan node:crypto untuk enkripsi laporan AES-256-GCM dan digest SHA-256.
                   </div>
                 </div>
               </div>

@@ -15,7 +15,7 @@ export function Footer() {
             <div className="flex items-center gap-2">
               <div className="relative h-7 w-7 rounded-md overflow-hidden shrink-0 border border-border shadow-xs">
                 <Image
-                  src="/logo.png"
+                  src="/logo.svg"
                   alt="Logo Tripleemat"
                   width={28}
                   height={28}

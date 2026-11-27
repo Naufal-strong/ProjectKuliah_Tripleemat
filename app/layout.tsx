@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import React from "react";
+import React, { Suspense } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "../src/components/layout/Navbar";
@@ -30,8 +30,8 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Tim Keamanan Tripleemat" }],
   icons: {
-    icon: "/logo.png",
-    apple: "/logo.png",
+    icon: "/logo.svg",
+    apple: "/logo.svg",
   },
 };
 
@@ -56,7 +56,9 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col bg-surface-0 text-text-1 font-sans">
-        <Navbar />
+        <Suspense fallback={null}>
+          <Navbar />
+        </Suspense>
         <div className="flex-1 flex flex-col">{children}</div>
         <Footer />
       </body>

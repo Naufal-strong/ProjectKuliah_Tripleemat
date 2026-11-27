@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Tripleemat</title>
+  <desc id="desc">Perisai audit keamanan dengan tanda verifikasi</desc>
+  <path d="M32 5 53 13v16c0 13.5-8.7 24.7-21 30C19.7 53.7 11 42.5 11 29V13L32 5Z" fill="#0A4174"/>
+  <path d="M32 12 46 17v12c0 9.2-5.4 17.2-14 21.6C23.4 46.2 18 38.2 18 29V17l14-5Z" fill="#001D39"/>
+  <path d="m22.5 31.5 6.2 6.2 13-14" fill="none" stroke="#7BBDE8" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/>
+</svg>
