@@ -1,0 +1,400 @@
+openapi: 3.1.0
+info:
+  title: Tripleemat Security Assessor API
+  version: 0.3.0
+  description: >-
+    RESTful API untuk pengelolaan Target Audit Keamanan dan Temuan Kerentanan
+    pada Tripleemat Security Assessor. Semua galat memakai Problem Details (RFC 9457).
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Server pengembangan lokal Next.js
+security: [] # belum ada autentikasi; diisi pada Modul 10
+paths:
+  /target:
+    get:
+      summary: Daftar target audit dengan paginasi dan filter
+      operationId: daftarTarget
+      parameters:
+        - name: halaman
+          in: query
+          description: Nomor halaman hasil paginasi
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: batas
+          in: query
+          description: Jumlah maksimum data per halaman (maksimal 50)
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+        - name: auditScope
+          in: query
+          description: Filter cakupan audit
+          schema:
+            $ref: "#/components/schemas/AuditScope"
+        - name: asvsLevel
+          in: query
+          description: Filter level verifikasi OWASP ASVS
+          schema:
+            $ref: "#/components/schemas/AsvsLevel"
+      responses:
+        "200":
+          description: Satu halaman daftar target audit
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HalamanTarget"
+        "400":
+          $ref: "#/components/responses/Problem"
+    post:
+      summary: Mendaftarkan target audit baru
+      operationId: buatTarget
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TargetBaru"
+      responses:
+        "201":
+          description: Target audit baru berhasil dibuat
+          headers:
+            Location:
+              description: URL resource target audit baru
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Target"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+        "422":
+          $ref: "#/components/responses/Problem"
+  /target/{id}:
+    parameters:
+      - $ref: "#/components/parameters/IdTarget"
+    get:
+      summary: Detail satu target audit
+      operationId: ambilTarget
+      responses:
+        "200":
+          description: Target audit ditemukan
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Target"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+    patch:
+      summary: Mengubah sebagian field target audit
+      operationId: ubahTarget
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TargetUbah"
+      responses:
+        "200":
+          description: Target audit berhasil diperbarui
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Target"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+        "422":
+          $ref: "#/components/responses/Problem"
+    delete:
+      summary: Menghapus target audit tanpa temuan
+      operationId: hapusTarget
+      responses:
+        "204":
+          description: Target audit berhasil dihapus tanpa isi body
+        "400":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+        "409":
+          $ref: "#/components/responses/Problem"
+  /target/{id}/temuan:
+    parameters:
+      - $ref: "#/components/parameters/IdTarget"
+    get:
+      summary: Daftar temuan kerentanan milik target tertentu
+      operationId: daftarTemuanTarget
+      responses:
+        "200":
+          description: Daftar temuan kerentanan untuk target terkait
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DaftarTemuan"
+        "400":
+          $ref: "#/components/responses/Problem"
+        "404":
+          $ref: "#/components/responses/Problem"
+components:
+  parameters:
+    IdTarget:
+      name: id
+      in: path
+      required: true
+      description: Pengenal unik target audit berformat scan-YYYY-NNN
+      schema:
+        type: string
+        pattern: "^scan-\\d{4}-\\d{3}$"
+  schemas:
+    AuditScope:
+      type: string
+      enum:
+        - standard
+        - full
+        - ssl-only
+    AsvsLevel:
+      type: string
+      enum:
+        - L1
+        - L2
+        - L3
+    Severity:
+      type: string
+      enum:
+        - critical
+        - high
+        - medium
+        - low
+        - info
+    TargetBaru:
+      type: object
+      required:
+        - label
+        - targetUrl
+        - auditScope
+        - asvsLevel
+      properties:
+        label:
+          type: string
+          minLength: 3
+          maxLength: 80
+        targetUrl:
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 200
+        auditScope:
+          $ref: "#/components/schemas/AuditScope"
+        asvsLevel:
+          $ref: "#/components/schemas/AsvsLevel"
+        intervalJam:
+          type: integer
+          minimum: 1
+          maximum: 168
+        auditorEmail:
+          type: string
+          format: email
+          maxLength: 120
+        notifyOnComplete:
+          type: boolean
+          default: false
+        notes:
+          type: string
+          maxLength: 300
+    TargetUbah:
+      type: object
+      minProperties: 1
+      properties:
+        label:
+          type: string
+          minLength: 3
+          maxLength: 80
+        targetUrl:
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 200
+        auditScope:
+          $ref: "#/components/schemas/AuditScope"
+        asvsLevel:
+          $ref: "#/components/schemas/AsvsLevel"
+        intervalJam:
+          type: integer
+          minimum: 1
+          maximum: 168
+        auditorEmail:
+          type: string
+          format: email
+          maxLength: 120
+        notifyOnComplete:
+          type: boolean
+        notes:
+          type: string
+          maxLength: 300
+    Target:
+      type: object
+      required:
+        - id
+        - label
+        - targetUrl
+        - auditScope
+        - asvsLevel
+        - notifyOnComplete
+        - dibuatPada
+      properties:
+        id:
+          type: string
+          pattern: "^scan-\\d{4}-\\d{3}$"
+        label:
+          type: string
+          minLength: 3
+          maxLength: 80
+        targetUrl:
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 200
+        auditScope:
+          $ref: "#/components/schemas/AuditScope"
+        asvsLevel:
+          $ref: "#/components/schemas/AsvsLevel"
+        intervalJam:
+          type:
+            - integer
+            - "null"
+          minimum: 1
+          maximum: 168
+        auditorEmail:
+          type:
+            - string
+            - "null"
+          maxLength: 120
+        notifyOnComplete:
+          type: boolean
+        notes:
+          type:
+            - string
+            - "null"
+          maxLength: 300
+        dibuatPada:
+          type: string
+          format: date-time
+    MetaPaginasi:
+      type: object
+      required:
+        - halaman
+        - batas
+        - total
+      properties:
+        halaman:
+          type: integer
+          minimum: 1
+        batas:
+          type: integer
+          minimum: 1
+          maximum: 50
+        total:
+          type: integer
+          minimum: 0
+    HalamanTarget:
+      type: object
+      required:
+        - data
+        - meta
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Target"
+        meta:
+          $ref: "#/components/schemas/MetaPaginasi"
+    Temuan:
+      type: object
+      required:
+        - id
+        - findingId
+        - title
+        - category
+        - severity
+        - description
+        - remediation
+        - dibuatPada
+      properties:
+        id:
+          type: integer
+        findingId:
+          type: string
+        title:
+          type: string
+        category:
+          type: string
+        severity:
+          $ref: "#/components/schemas/Severity"
+        description:
+          type: string
+        remediation:
+          type: string
+        cwe:
+          type:
+            - string
+            - "null"
+        asvsRef:
+          type:
+            - string
+            - "null"
+        dibuatPada:
+          type: string
+          format: date-time
+    DaftarTemuan:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Temuan"
+    Problem:
+      type: object
+      required:
+        - type
+        - title
+        - status
+      properties:
+        type:
+          type: string
+          format: uri-reference
+          default: about:blank
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+  responses:
+    Problem:
+      description: Galat dalam format Problem Details (RFC 9457)
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"

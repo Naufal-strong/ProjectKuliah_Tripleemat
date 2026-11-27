@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -42,7 +42,7 @@ export function Navbar() {
           >
             <div className="relative h-9 w-9 rounded-lg overflow-hidden shrink-0 border border-border shadow-xs">
               <Image
-                src="/logo.png"
+                src="/logo.svg"
                 alt="Logo Tripleemat"
                 width={36}
                 height={36}
@@ -62,7 +62,9 @@ export function Navbar() {
 
           {/* Desktop Navigation Links via TautanNav (Client Component) */}
           <div className="hidden md:flex items-center">
-            <TautanNav tautan={navLinks} />
+            <Suspense fallback={<nav aria-label="Navigasi Utama" />}>
+              <TautanNav tautan={navLinks} />
+            </Suspense>
           </div>
 
           {/* Desktop Actions: Theme Toggle & Quick CTA */}

@@ -135,6 +135,37 @@ body {
   transition: background-color 200ms ease, color 200ms ease;
 }
 
+/* Motion: entrance feedback only; no decorative loops */
+.motion-enter {
+  animation: motion-enter 220ms ease-out both;
+}
+
+.motion-enter-delay {
+  animation-delay: 70ms;
+}
+
+@keyframes motion-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
+  }
+}
+
 /* =============================================================
    EFEK 3D TACTILE & ELEVASI BERKUALITAS TINGGI
    ============================================================= */
@@ -151,16 +182,14 @@ body {
     0 8px 16px -2px rgba(0, 29, 57, 0.14),
     0 16px 28px -4px rgba(0, 29, 57, 0.12),
     inset 0 1px 0 0 rgba(255, 255, 255, 0.6);
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: box-shadow 160ms ease, border-color 160ms ease;
 }
 
 .card-3d:hover {
-  transform: translateY(-4px);
+  border-color: var(--color-border-control);
   box-shadow: 
-    0 4px 8px -1px rgba(0, 29, 57, 0.1),
-    0 14px 24px -2px rgba(0, 29, 57, 0.2),
-    0 24px 38px -4px rgba(0, 29, 57, 0.16),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
+    0 4px 12px -4px rgba(0, 29, 57, 0.18),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.6);
 }
 
 html.dark .card-3d {
@@ -184,7 +213,7 @@ html.dark .card-3d:hover {
 .btn-3d-primary {
   transform: translateY(0);
   box-shadow: 0 4px 0 0 #001d39;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+  transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease;
 }
 
 .btn-3d-primary:hover {
@@ -214,131 +243,17 @@ html.dark .btn-3d-primary:active {
   perspective: 1200px;
 }
 
-/* Latar Belakang Cyber Grid 3D Halus (Pure CSS GPU Mask) */
-.cyber-grid-bg {
-  background-image: 
-    linear-gradient(to right, rgba(73, 118, 159, 0.12) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(73, 118, 159, 0.12) 1px, transparent 1px);
-  background-size: 32px 32px;
-  mask-image: radial-gradient(ellipse 70% 50% at 50% 40%, #000 60%, transparent 100%);
-  -webkit-mask-image: radial-gradient(ellipse 70% 50% at 50% 40%, #000 60%, transparent 100%);
-}
-
-html.dark .cyber-grid-bg {
-  background-image: 
-    linear-gradient(to right, rgba(123, 189, 232, 0.08) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(123, 189, 232, 0.08) 1px, transparent 1px);
-}
-
 /* Papan Terminal 3D Responsif (Miring 3D di Desktop, Taktil Bersih di Tablet/HP) */
 .hero-3d-board {
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: box-shadow 180ms ease, border-color 180ms ease;
   box-shadow: 
     0 15px 30px -5px rgba(0, 29, 57, 0.22),
     0 8px 16px -3px rgba(10, 65, 116, 0.15),
     inset 0 1px 1px 0 rgba(255, 255, 255, 0.4);
 }
 
-@media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
-  .hero-3d-board {
-    transform: rotateX(6deg) rotateY(-8deg) rotateZ(1deg);
-    transform-style: preserve-3d;
-    box-shadow: 
-      -20px 25px 40px -10px rgba(0, 29, 57, 0.25),
-      0 15px 25px -5px rgba(10, 65, 116, 0.2),
-      inset 0 1px 1px 0 rgba(255, 255, 255, 0.4);
-  }
 
-  .hero-3d-board:hover {
-    transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) translateY(-6px);
-    box-shadow: 
-      0 25px 50px -12px rgba(0, 29, 57, 0.35),
-      0 15px 30px -6px rgba(10, 65, 116, 0.25),
-      inset 0 1px 1px 0 rgba(255, 255, 255, 0.6);
-  }
 
-  html.dark .hero-3d-board {
-    box-shadow: 
-      -20px 25px 50px -10px rgba(0, 5, 15, 0.7),
-      0 15px 30px -5px rgba(0, 15, 35, 0.5),
-      inset 0 1px 1px 0 rgba(189, 216, 233, 0.2);
-  }
-
-  html.dark .hero-3d-board:hover {
-    box-shadow: 
-      0 25px 60px -12px rgba(0, 5, 15, 0.85),
-      0 15px 35px -6px rgba(123, 189, 232, 0.2),
-      inset 0 1px 1px 0 rgba(189, 216, 233, 0.35);
-  }
-}
-
-@media (max-width: 1023px), (hover: none) {
-  .hero-3d-board {
-    transform: none !important;
-  }
-}
-
-/* 3D Floating Pop-outs with Realistic Depth */
-.floating-3d-top {
-  transform: translateZ(32px);
-  animation: float-slow 4s ease-in-out infinite;
-}
-
-.floating-3d-bottom {
-  transform: translateZ(24px);
-  animation: float-slow-reverse 4.5s ease-in-out infinite;
-}
-
-@media (max-width: 768px) {
-  .floating-3d-top,
-  .floating-3d-bottom {
-    transform: none !important;
-    animation: none !important;
-  }
-}
-
-@keyframes float-slow {
-  0%, 100% {
-    transform: translateZ(32px) translateY(0px);
-  }
-  50% {
-    transform: translateZ(32px) translateY(-6px);
-  }
-}
-
-@keyframes float-slow-reverse {
-  0%, 100% {
-    transform: translateZ(24px) translateY(0px);
-  }
-  50% {
-    transform: translateZ(24px) translateY(5px);
-  }
-}
-
-/* Gelombang Radar / Sonar Pulse Scanning (Pure CSS) */
-@keyframes sonarPulse {
-  0% {
-    transform: scale(0.95);
-    opacity: 0.9;
-  }
-  70% {
-    transform: scale(1.4);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1.5);
-    opacity: 0;
-  }
-}
-
-.radar-sonar-ring {
-  position: absolute;
-  inset: -6px;
-  border-radius: inherit;
-  border: 2px solid #7bbde8;
-  animation: sonarPulse 2.8s cubic-bezier(0.2, 0.8, 0.4, 1) infinite;
-  pointer-events: none;
-}
 
 /* Umpan Balik Taktil untuk Pengguna Layar Sentuh Mobile & Tablet */
 @media (hover: none) {
@@ -351,30 +266,6 @@ html.dark .cyber-grid-bg {
 }
 
 /* Sorot Kursor (Spotlight) Khusus Perangkat Mouse/Desktop */
-@media (hover: hover) and (pointer: fine) {
-  .spotlight-card {
-    position: relative;
-    overflow: hidden;
-  }
-  .spotlight-card::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(
-      450px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-      rgba(123, 189, 232, 0.12),
-      transparent 50%
-    );
-    opacity: 0;
-    transition: opacity 0.25s ease;
-    pointer-events: none;
-    z-index: 1;
-  }
-  .spotlight-card:hover::before {
-    opacity: 1;
-  }
-}
-
 /* =============================================================
    TRANSISI PERGANTIAN TEMA (SMOOTH THEME CROSSFADE)
    ============================================================= */

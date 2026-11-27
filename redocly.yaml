@@ -1,0 +1,5 @@
+extends:
+  - recommended
+rules:
+  # server lokal memang dipakai selama praktikum
+  no-server-example.com: off
